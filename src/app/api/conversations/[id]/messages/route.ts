@@ -2,6 +2,40 @@ import { createClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
 import { getAuthContext } from '@/lib/api-auth'
 import { orchestrator } from '@/lib/agents'
+import { getConversationById } from '@/lib/agent-demo-data'
+import { addDemoMessage } from '@/lib/demo-context'
+
+// Demo AI responses based on message content
+function generateDemoAIResponse(userMessage: string): string {
+  const msg = userMessage.toLowerCase()
+
+  // Detect sentiment and respond accordingly
+  if (msg.includes('stress') || msg.includes('overwhelm') || msg.includes('anxious') || msg.includes('tired')) {
+    return "I hear that you're going through a challenging time. Your wellbeing matters to us. Would you like me to share some resources that might help, or would you prefer to talk more about what's going on?"
+  }
+
+  if (msg.includes('great') || msg.includes('good') || msg.includes('happy') || msg.includes('excited')) {
+    return "That's wonderful to hear! 🎉 What's been the highlight for you? I'd love to know more about what's going well."
+  }
+
+  if (msg.includes('deadline') || msg.includes('workload') || msg.includes('busy')) {
+    return "Thanks for sharing that. Balancing priorities can be tough. Is there anything specific that's taking up most of your bandwidth right now?"
+  }
+
+  if (msg.includes('team') || msg.includes('manager') || msg.includes('colleague')) {
+    return "Team dynamics are so important. How would you describe your working relationship with your team right now?"
+  }
+
+  // Default encouraging responses
+  const responses = [
+    "Thanks for sharing! That's really helpful to hear. Is there anything else on your mind?",
+    "I appreciate you opening up. How are you feeling about the week ahead?",
+    "Got it! Your feedback is valuable. Anything else you'd like to add?",
+    "Thanks for the update! It sounds like you've been thoughtful about this. What's your priority for next week?",
+  ]
+
+  return responses[Math.floor(Math.random() * responses.length)]
+}
 
 // POST /api/conversations/[id]/messages - Send employee message
 export async function POST(
@@ -26,6 +60,38 @@ export async function POST(
 
     if (content.length > 5000) {
       return NextResponse.json({ error: 'Message too long' }, { status: 400 })
+    }
+
+    // Handle demo mode
+    if (authContext.isDemo) {
+      const conv = getConversationById(conversationId, authContext.userId, authContext.isAdmin)
+
+      if (!conv) {
+        return NextResponse.json({ error: 'Conversation not found' }, { status: 404 })
+      }
+
+      // Only participant can send messages
+      if (conv.participant_user_id !== authContext.userId && !authContext.isAdmin) {
+        return NextResponse.json({ error: 'Access denied' }, { status: 403 })
+      }
+
+      // Add the employee's message
+      addDemoMessage(conversationId, content.trim(), 'employee')
+
+      // Generate and add AI response
+      const aiResponseContent = generateDemoAIResponse(content.trim())
+      const aiResponse = addDemoMessage(conversationId, aiResponseContent, 'agent')
+
+      return NextResponse.json({
+        success: true,
+        escalated: false,
+        response: {
+          id: aiResponse.id,
+          content: aiResponse.content,
+          sender_type: aiResponse.sender_type,
+          created_at: aiResponse.created_at,
+        },
+      })
     }
 
     const supabase = await createClient()
@@ -91,6 +157,28 @@ export async function GET(
 
     if (!authContext) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    // Handle demo mode
+    if (authContext.isDemo) {
+      const conv = getConversationById(conversationId, authContext.userId, authContext.isAdmin)
+
+      if (!conv) {
+        return NextResponse.json({ error: 'Conversation not found' }, { status: 404 })
+      }
+
+      // Return messages from static data
+      return NextResponse.json({
+        messages: conv.messages.map(m => ({
+          id: m.id,
+          content: m.content,
+          sender_type: m.sender_type,
+          content_type: 'text',
+          created_at: m.created_at,
+          is_read: true,
+        })),
+        next_cursor: null,
+      })
     }
 
     const supabase = await createClient()
