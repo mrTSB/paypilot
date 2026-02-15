@@ -26,21 +26,24 @@ const stats = [
     change: '+3',
     changeType: 'positive',
     icon: Users,
-    color: 'blue'
+    bgColor: 'bg-blue-100',
+    iconColor: 'text-blue-600'
   },
   {
     name: 'Next Payroll',
     value: '$124,850',
     subtext: 'Feb 20, 2026',
     icon: DollarSign,
-    color: 'emerald'
+    bgColor: 'bg-emerald-100',
+    iconColor: 'text-emerald-600'
   },
   {
     name: 'Pending PTO',
     value: '5',
     subtext: 'requests',
     icon: Calendar,
-    color: 'violet'
+    bgColor: 'bg-violet-100',
+    iconColor: 'text-violet-600'
   },
   {
     name: 'Avg Hours/Week',
@@ -48,7 +51,8 @@ const stats = [
     change: '+1.5',
     changeType: 'neutral',
     icon: Clock,
-    color: 'amber'
+    bgColor: 'bg-amber-100',
+    iconColor: 'text-amber-600'
   }
 ]
 
@@ -103,8 +107,8 @@ export default function DashboardPage() {
           <Card key={stat.name} className="hover:shadow-md transition-shadow">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
-                <div className={`w-10 h-10 rounded-lg flex items-center justify-center bg-${stat.color}-100`}>
-                  <stat.icon className={`w-5 h-5 text-${stat.color}-600`} />
+                <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${stat.bgColor}`}>
+                  <stat.icon className={`w-5 h-5 ${stat.iconColor}`} />
                 </div>
                 {stat.change && (
                   <Badge variant={stat.changeType === 'positive' ? 'default' : 'secondary'} className="text-xs">
