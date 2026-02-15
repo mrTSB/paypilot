@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -16,9 +17,6 @@ import {
   Check,
   Loader2,
   ArrowRight,
-  BarChart3,
-  Wallet,
-  Calendar
 } from "lucide-react"
 
 // Animation variants
@@ -117,130 +115,6 @@ const pricingPlans = [
   }
 ]
 
-// Dashboard mockup component
-function DashboardMockup() {
-  return (
-    <motion.div
-      className="relative w-full max-w-4xl mx-auto"
-      initial={{ opacity: 0, y: 40 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8, delay: 0.3 }}
-    >
-      <div className="bg-white rounded-xl border border-border overflow-hidden">
-        {/* Browser chrome */}
-        <div className="flex items-center gap-2 px-4 py-3 border-b border-border bg-secondary/50">
-          <div className="flex gap-1.5">
-            <div className="w-3 h-3 rounded-full bg-red-400" />
-            <div className="w-3 h-3 rounded-full bg-yellow-400" />
-            <div className="w-3 h-3 rounded-full bg-green-400" />
-          </div>
-          <div className="flex-1 flex justify-center">
-            <div className="bg-background rounded-md px-4 py-1 text-xs text-muted-foreground">
-              app.paypilot.com/dashboard
-            </div>
-          </div>
-        </div>
-
-        {/* Dashboard content */}
-        <div className="p-6 bg-background">
-          <div className="grid grid-cols-4 gap-4 mb-6">
-            {[
-              { label: "Employees", value: "47", icon: Users, color: "text-primary" },
-              { label: "Next Payroll", value: "$127,450", icon: Wallet, color: "text-primary" },
-              { label: "PTO Requests", value: "3", icon: Calendar, color: "text-amber-600" },
-              { label: "Compliance", value: "100%", icon: Shield, color: "text-emerald-600" }
-            ].map((stat, i) => (
-              <motion.div
-                key={stat.label}
-                className="bg-card rounded-lg border border-border p-4"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5 + i * 0.1 }}
-              >
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs text-muted-foreground">{stat.label}</span>
-                  <stat.icon className={`w-4 h-4 ${stat.color}`} />
-                </div>
-                <p className="text-xl font-bold text-foreground">{stat.value}</p>
-              </motion.div>
-            ))}
-          </div>
-
-          {/* Chart placeholder */}
-          <motion.div
-            className="bg-card rounded-lg border border-border p-4"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.9 }}
-          >
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-sm font-medium text-foreground">Payroll History</span>
-              <BarChart3 className="w-4 h-4 text-muted-foreground" />
-            </div>
-            <div className="flex items-end gap-2 h-24">
-              {[40, 65, 45, 80, 55, 90, 70, 85, 60, 95, 75, 88].map((height, i) => (
-                <motion.div
-                  key={i}
-                  className="flex-1 bg-primary/20 rounded-t"
-                  style={{ height: `${height}%` }}
-                  initial={{ scaleY: 0 }}
-                  animate={{ scaleY: 1 }}
-                  transition={{ delay: 1 + i * 0.05, duration: 0.3 }}
-                >
-                  <div
-                    className="w-full bg-primary rounded-t"
-                    style={{ height: `${Math.min(100, height + 20)}%` }}
-                  />
-                </motion.div>
-              ))}
-            </div>
-            <div className="flex justify-between mt-2 text-xs text-muted-foreground">
-              <span>Jan</span>
-              <span>Jun</span>
-              <span>Dec</span>
-            </div>
-          </motion.div>
-        </div>
-      </div>
-
-      {/* Floating elements */}
-      <motion.div
-        className="absolute -right-4 top-20 bg-white rounded-lg border border-border p-3 hidden lg:block"
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 1.2 }}
-      >
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center">
-            <Check className="w-4 h-4 text-emerald-600" />
-          </div>
-          <div>
-            <p className="text-xs font-medium text-foreground">Payroll Complete</p>
-            <p className="text-xs text-muted-foreground">47 employees paid</p>
-          </div>
-        </div>
-      </motion.div>
-
-      <motion.div
-        className="absolute -left-4 bottom-20 bg-white rounded-lg border border-border p-3 hidden lg:block"
-        initial={{ opacity: 0, x: -20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 1.4 }}
-      >
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-accent rounded-full flex items-center justify-center">
-            <MessageSquare className="w-4 h-4 text-primary" />
-          </div>
-          <div>
-            <p className="text-xs font-medium text-foreground">AI Assistant</p>
-            <p className="text-xs text-muted-foreground">Ready to help</p>
-          </div>
-        </div>
-      </motion.div>
-    </motion.div>
-  )
-}
-
 export default function LandingPage() {
   const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null)
 
@@ -310,56 +184,119 @@ export default function LandingPage() {
 
       {/* Hero Section */}
       <section className="px-6 pt-16 pb-8">
-        <div className="max-w-4xl mx-auto text-center">
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={staggerContainer}
-          >
-            <motion.h1
-              className="text-5xl md:text-6xl font-bold text-foreground mb-4 tracking-tight"
-              variants={fadeInUp}
-            >
-              Payroll and HR
-              <br />
-              <span className="text-primary">that runs itself</span>
-            </motion.h1>
-            <motion.p
-              className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto"
-              variants={fadeInUp}
-            >
-              The modern payroll and HR platform with AI at its core.
-              Automate the busywork. Focus on your people.
-            </motion.p>
+        <div className="max-w-6xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Left: Text */}
             <motion.div
-              className="flex flex-col sm:flex-row gap-3 justify-center"
-              variants={fadeInUp}
+              initial="hidden"
+              animate="visible"
+              variants={staggerContainer}
             >
-              <Link href="/signup">
-                <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90">
-                  Start Free Trial
-                  <ArrowRight className="w-4 h-4 ml-2" />
-                </Button>
-              </Link>
-              <Link href="#features">
-                <Button size="lg" variant="outline" className="border-border hover:bg-secondary">
-                  See How It Works
-                </Button>
-              </Link>
+              <motion.h1
+                className="text-5xl md:text-6xl font-bold text-foreground mb-4 tracking-tight"
+                variants={fadeInUp}
+              >
+                Payroll and HR
+                <br />
+                <span className="text-primary">that runs itself</span>
+              </motion.h1>
+              <motion.p
+                className="text-xl text-muted-foreground mb-8 max-w-lg"
+                variants={fadeInUp}
+              >
+                The modern payroll and HR platform with AI at its core.
+                Automate the busywork. Focus on your people.
+              </motion.p>
+              <motion.div
+                className="flex flex-col sm:flex-row gap-3"
+                variants={fadeInUp}
+              >
+                <Link href="/signup">
+                  <Button size="lg" className="bg-primary text-primary-foreground hover:bg-primary/90">
+                    Start Free Trial
+                    <ArrowRight className="w-4 h-4 ml-2" />
+                  </Button>
+                </Link>
+                <Link href="#features">
+                  <Button size="lg" variant="outline" className="border-border hover:bg-secondary">
+                    See How It Works
+                  </Button>
+                </Link>
+              </motion.div>
+              <motion.p
+                className="text-sm text-muted-foreground mt-4"
+                variants={fadeInUp}
+              >
+                No credit card required · 14-day free trial
+              </motion.p>
             </motion.div>
-            <motion.p
-              className="text-sm text-muted-foreground mt-4"
-              variants={fadeInUp}
+
+            {/* Right: Hero Image */}
+            <motion.div
+              className="relative"
+              initial={{ opacity: 0, x: 40 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.3 }}
             >
-              No credit card required · 14-day free trial
-            </motion.p>
-          </motion.div>
+              <div className="relative rounded-xl overflow-hidden border border-border bg-white">
+                <Image
+                  src="/images/hero-dashboard.png"
+                  alt="PayPilot Dashboard"
+                  width={800}
+                  height={500}
+                  className="w-full h-auto"
+                  priority
+                />
+              </div>
+              {/* Floating notification */}
+              <motion.div
+                className="absolute -left-4 bottom-8 bg-white rounded-lg border border-border p-3 hidden lg:block"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 1 }}
+              >
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center">
+                    <Check className="w-4 h-4 text-emerald-600" />
+                  </div>
+                  <div>
+                    <p className="text-xs font-medium text-foreground">Payroll Complete</p>
+                    <p className="text-xs text-muted-foreground">47 employees paid</p>
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          </div>
         </div>
       </section>
 
-      {/* Dashboard Preview */}
-      <section className="px-6 py-12 overflow-hidden">
-        <DashboardMockup />
+      {/* Stats Section */}
+      <section className="px-6 py-16 border-y border-border">
+        <div className="max-w-4xl mx-auto">
+          <motion.div
+            className="grid grid-cols-2 md:grid-cols-4 gap-8"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={staggerContainer}
+          >
+            {[
+              { value: "10k+", label: "Employees Managed" },
+              { value: "99.9%", label: "Uptime" },
+              { value: "$2M+", label: "Payroll Processed" },
+              { value: "4.9★", label: "Customer Rating" }
+            ].map((stat) => (
+              <motion.div
+                key={stat.label}
+                className="text-center"
+                variants={fadeInUp}
+              >
+                <p className="text-3xl font-bold text-primary mb-1">{stat.value}</p>
+                <p className="text-sm text-muted-foreground">{stat.label}</p>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
       </section>
 
       {/* Features Section */}
@@ -413,32 +350,131 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="px-6 py-16 border-y border-border">
-        <div className="max-w-4xl mx-auto">
-          <motion.div
-            className="grid grid-cols-2 md:grid-cols-4 gap-8"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={staggerContainer}
-          >
-            {[
-              { value: "10k+", label: "Employees Managed" },
-              { value: "99.9%", label: "Uptime" },
-              { value: "$2M+", label: "Payroll Processed" },
-              { value: "4.9★", label: "Customer Rating" }
-            ].map((stat) => (
-              <motion.div
-                key={stat.label}
-                className="text-center"
+      {/* How It Works Section with Image */}
+      <section className="px-6 py-20">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Left: Image */}
+            <motion.div
+              initial={{ opacity: 0, x: -40 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+            >
+              <div className="rounded-xl overflow-hidden border border-border">
+                <Image
+                  src="/images/payroll-illustration.png"
+                  alt="Automated Payroll Processing"
+                  width={600}
+                  height={400}
+                  className="w-full h-auto"
+                />
+              </div>
+            </motion.div>
+
+            {/* Right: Text */}
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={staggerContainer}
+            >
+              <motion.h2
+                className="text-3xl font-bold text-foreground mb-4"
                 variants={fadeInUp}
               >
-                <p className="text-3xl font-bold text-primary mb-1">{stat.value}</p>
-                <p className="text-sm text-muted-foreground">{stat.label}</p>
-              </motion.div>
-            ))}
-          </motion.div>
+                Payroll that takes minutes, not hours
+              </motion.h2>
+              <motion.p
+                className="text-muted-foreground mb-6"
+                variants={fadeInUp}
+              >
+                Run payroll in just a few clicks. PayPilot automatically calculates taxes, deductions, and generates pay stubs. Direct deposits happen on schedule, every time.
+              </motion.p>
+              <motion.ul className="space-y-3" variants={staggerContainer}>
+                {[
+                  "Automatic tax calculations and filings",
+                  "Direct deposit to any bank",
+                  "Handles contractors and employees",
+                  "Year-end tax forms generated automatically"
+                ].map((item) => (
+                  <motion.li
+                    key={item}
+                    className="flex items-start gap-2 text-muted-foreground"
+                    variants={fadeInUp}
+                  >
+                    <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                    {item}
+                  </motion.li>
+                ))}
+              </motion.ul>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Team Section with Image */}
+      <section className="px-6 py-20 bg-secondary">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Left: Text */}
+            <motion.div
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={staggerContainer}
+              className="order-2 lg:order-1"
+            >
+              <motion.h2
+                className="text-3xl font-bold text-foreground mb-4"
+                variants={fadeInUp}
+              >
+                Your entire team, one platform
+              </motion.h2>
+              <motion.p
+                className="text-muted-foreground mb-6"
+                variants={fadeInUp}
+              >
+                From onboarding to offboarding, manage your entire employee lifecycle in one place. Track PTO, manage benefits enrollment, and keep everyone informed.
+              </motion.p>
+              <motion.ul className="space-y-3" variants={staggerContainer}>
+                {[
+                  "Self-service employee portal",
+                  "Org chart and directory",
+                  "Document storage and e-signatures",
+                  "Performance tracking and reviews"
+                ].map((item) => (
+                  <motion.li
+                    key={item}
+                    className="flex items-start gap-2 text-muted-foreground"
+                    variants={fadeInUp}
+                  >
+                    <Check className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                    {item}
+                  </motion.li>
+                ))}
+              </motion.ul>
+            </motion.div>
+
+            {/* Right: Image */}
+            <motion.div
+              initial={{ opacity: 0, x: 40 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="order-1 lg:order-2"
+            >
+              <div className="rounded-xl overflow-hidden border border-border">
+                <Image
+                  src="/images/team-illustration.png"
+                  alt="Team Collaboration"
+                  width={600}
+                  height={400}
+                  className="w-full h-auto"
+                />
+              </div>
+            </motion.div>
+          </div>
         </div>
       </section>
 
