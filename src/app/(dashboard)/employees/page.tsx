@@ -52,11 +52,28 @@ import {
   DollarSign,
   Users,
   UserPlus,
-  Download
+  Download,
+  Loader2,
+  CheckCircle2
 } from 'lucide-react'
+import { toast } from 'sonner'
+
+interface Employee {
+  id: string
+  name: string
+  email: string
+  avatar: string
+  department: string
+  jobTitle: string
+  employmentType: string
+  startDate: string
+  salary: number
+  status: string
+  manager: string
+}
 
 // Demo employee data - IDs match demo-data.ts for detail page
-const employees = [
+const initialEmployees: Employee[] = [
   {
     id: 'e0000000-0000-0000-0000-000000000001',
     name: 'Sarah Chen',
@@ -164,13 +181,79 @@ const employees = [
 ]
 
 const departments = ['All', 'Engineering', 'Design', 'Sales', 'Marketing', 'HR', 'Finance']
-const statuses = ['All', 'active', 'onboarding', 'on_leave', 'terminated']
+const statuses = ['All', 'active', 'invited', 'onboarding', 'on_leave', 'terminated']
+
+const generateId = () => `e${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
 
 export default function EmployeesPage() {
+  const [employees, setEmployees] = useState<Employee[]>(initialEmployees)
   const [searchQuery, setSearchQuery] = useState('')
   const [departmentFilter, setDepartmentFilter] = useState('All')
   const [statusFilter, setStatusFilter] = useState('All')
   const [addDialogOpen, setAddDialogOpen] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  // Form state
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    department: '',
+    jobTitle: '',
+    startDate: '',
+    salary: '',
+    employmentType: ''
+  })
+
+  const resetForm = () => {
+    setFormData({
+      firstName: '',
+      lastName: '',
+      email: '',
+      department: '',
+      jobTitle: '',
+      startDate: '',
+      salary: '',
+      employmentType: ''
+    })
+  }
+
+  const handleAddEmployee = async () => {
+    // Validate required fields
+    if (!formData.firstName || !formData.lastName || !formData.email || !formData.department) {
+      toast.error('Please fill in all required fields')
+      return
+    }
+
+    setIsSubmitting(true)
+
+    // Simulate API call
+    await new Promise(resolve => setTimeout(resolve, 1500))
+
+    const newEmployee: Employee = {
+      id: generateId(),
+      name: `${formData.firstName} ${formData.lastName}`,
+      email: formData.email,
+      avatar: `${formData.firstName[0]}${formData.lastName[0]}`.toUpperCase(),
+      department: formData.department,
+      jobTitle: formData.jobTitle || 'Team Member',
+      employmentType: formData.employmentType || 'full_time',
+      startDate: formData.startDate || new Date().toISOString().split('T')[0],
+      salary: parseInt(formData.salary) || 50000,
+      status: 'invited',
+      manager: 'John Doe'
+    }
+
+    setEmployees(prev => [newEmployee, ...prev])
+    setIsSubmitting(false)
+    setAddDialogOpen(false)
+    resetForm()
+
+    toast.success(`Invite sent to ${newEmployee.name}!`, {
+      description: `${newEmployee.email} will receive an onboarding email shortly.`,
+      icon: <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+    })
+  }
 
   const filteredEmployees = employees.filter(emp => {
     const matchesSearch = emp.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -191,6 +274,8 @@ export default function EmployeesPage() {
         return <Badge className="bg-amber-100 text-amber-700 hover:bg-amber-100">On Leave</Badge>
       case 'terminated':
         return <Badge className="bg-red-100 text-red-700 hover:bg-red-100">Terminated</Badge>
+      case 'invited':
+        return <Badge className="bg-violet-100 text-violet-700 hover:bg-violet-100">Invited</Badge>
       default:
         return <Badge variant="secondary">{status}</Badge>
     }
@@ -230,22 +315,45 @@ export default function EmployeesPage() {
               <div className="grid gap-4 py-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="firstName">First Name</Label>
-                    <Input id="firstName" placeholder="John" />
+                    <Label htmlFor="firstName">First Name *</Label>
+                    <Input
+                      id="firstName"
+                      placeholder="John"
+                      value={formData.firstName}
+                      onChange={(e) => setFormData(prev => ({ ...prev, firstName: e.target.value }))}
+                      disabled={isSubmitting}
+                    />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="lastName">Last Name</Label>
-                    <Input id="lastName" placeholder="Doe" />
+                    <Label htmlFor="lastName">Last Name *</Label>
+                    <Input
+                      id="lastName"
+                      placeholder="Doe"
+                      value={formData.lastName}
+                      onChange={(e) => setFormData(prev => ({ ...prev, lastName: e.target.value }))}
+                      disabled={isSubmitting}
+                    />
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input id="email" type="email" placeholder="john@company.com" />
+                  <Label htmlFor="email">Email *</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="john@company.com"
+                    value={formData.email}
+                    onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                    disabled={isSubmitting}
+                  />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="department">Department</Label>
-                    <Select>
+                    <Label htmlFor="department">Department *</Label>
+                    <Select
+                      value={formData.department}
+                      onValueChange={(value) => setFormData(prev => ({ ...prev, department: value }))}
+                      disabled={isSubmitting}
+                    >
                       <SelectTrigger>
                         <SelectValue placeholder="Select department" />
                       </SelectTrigger>
@@ -258,22 +366,45 @@ export default function EmployeesPage() {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="jobTitle">Job Title</Label>
-                    <Input id="jobTitle" placeholder="Software Engineer" />
+                    <Input
+                      id="jobTitle"
+                      placeholder="Software Engineer"
+                      value={formData.jobTitle}
+                      onChange={(e) => setFormData(prev => ({ ...prev, jobTitle: e.target.value }))}
+                      disabled={isSubmitting}
+                    />
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="startDate">Start Date</Label>
-                    <Input id="startDate" type="date" />
+                    <Input
+                      id="startDate"
+                      type="date"
+                      value={formData.startDate}
+                      onChange={(e) => setFormData(prev => ({ ...prev, startDate: e.target.value }))}
+                      disabled={isSubmitting}
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="salary">Annual Salary</Label>
-                    <Input id="salary" type="number" placeholder="75000" />
+                    <Input
+                      id="salary"
+                      type="number"
+                      placeholder="75000"
+                      value={formData.salary}
+                      onChange={(e) => setFormData(prev => ({ ...prev, salary: e.target.value }))}
+                      disabled={isSubmitting}
+                    />
                   </div>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="employmentType">Employment Type</Label>
-                  <Select>
+                  <Select
+                    value={formData.employmentType}
+                    onValueChange={(value) => setFormData(prev => ({ ...prev, employmentType: value }))}
+                    disabled={isSubmitting}
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Select type" />
                     </SelectTrigger>
@@ -287,10 +418,25 @@ export default function EmployeesPage() {
                 </div>
               </div>
               <DialogFooter>
-                <Button variant="outline" onClick={() => setAddDialogOpen(false)}>Cancel</Button>
-                <Button className="bg-gradient-to-r from-blue-600 to-indigo-600">
-                  <UserPlus className="w-4 h-4 mr-2" />
-                  Send Invite
+                <Button variant="outline" onClick={() => { setAddDialogOpen(false); resetForm(); }} disabled={isSubmitting}>
+                  Cancel
+                </Button>
+                <Button
+                  className="bg-gradient-to-r from-blue-600 to-indigo-600"
+                  onClick={handleAddEmployee}
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Sending...
+                    </>
+                  ) : (
+                    <>
+                      <UserPlus className="w-4 h-4 mr-2" />
+                      Send Invite
+                    </>
+                  )}
                 </Button>
               </DialogFooter>
             </DialogContent>
@@ -321,9 +467,9 @@ export default function EmployeesPage() {
               </div>
               <div>
                 <p className="text-2xl font-bold text-slate-900">
-                  {employees.filter(e => e.status === 'onboarding').length}
+                  {employees.filter(e => e.status === 'onboarding' || e.status === 'invited').length}
                 </p>
-                <p className="text-sm text-slate-500">Onboarding</p>
+                <p className="text-sm text-slate-500">New Hires</p>
               </div>
             </div>
           </CardContent>
