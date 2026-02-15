@@ -3,10 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint"
+    "dev:local": "next dev -H 0.0.0.0 -p 3000",
+    "build:local": "next build",
+    "start:local": "next start -H 0.0.0.0 -p 3000",
+    "lint:local": "eslint",
+    "dev": "../../../scripts/modal-run --port 3000 -- npm run dev:local",
+    "build": "../../../scripts/modal-run -- npm run build:local",
+    "start": "../../../scripts/modal-run --port 3000 -- npm run start:local",
+    "lint": "../../../scripts/modal-run -- npm run lint:local"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

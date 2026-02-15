@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -54,10 +55,10 @@ import {
   Download
 } from 'lucide-react'
 
-// Demo employee data
+// Demo employee data - IDs match demo-data.ts for detail page
 const employees = [
   {
-    id: '1',
+    id: 'e0000000-0000-0000-0000-000000000001',
     name: 'Sarah Chen',
     email: 'sarah.chen@acme.com',
     avatar: 'SC',
@@ -70,7 +71,7 @@ const employees = [
     manager: 'John Doe'
   },
   {
-    id: '2',
+    id: 'e0000000-0000-0000-0000-000000000002',
     name: 'Mike Johnson',
     email: 'mike.johnson@acme.com',
     avatar: 'MJ',
@@ -83,7 +84,7 @@ const employees = [
     manager: 'Sarah Chen'
   },
   {
-    id: '3',
+    id: 'e0000000-0000-0000-0000-000000000003',
     name: 'Emily Davis',
     email: 'emily.davis@acme.com',
     avatar: 'ED',
@@ -96,7 +97,7 @@ const employees = [
     manager: 'John Doe'
   },
   {
-    id: '4',
+    id: 'e0000000-0000-0000-0000-000000000004',
     name: 'Tom Wilson',
     email: 'tom.wilson@acme.com',
     avatar: 'TW',
@@ -109,7 +110,7 @@ const employees = [
     manager: 'Lisa Park'
   },
   {
-    id: '5',
+    id: 'e0000000-0000-0000-0000-000000000005',
     name: 'Lisa Park',
     email: 'lisa.park@acme.com',
     avatar: 'LP',
@@ -122,7 +123,7 @@ const employees = [
     manager: 'John Doe'
   },
   {
-    id: '6',
+    id: 'e0000000-0000-0000-0000-000000000006',
     name: 'Alex Wong',
     email: 'alex.wong@acme.com',
     avatar: 'AW',
@@ -135,7 +136,7 @@ const employees = [
     manager: 'John Doe'
   },
   {
-    id: '7',
+    id: 'e0000000-0000-0000-0000-000000000007',
     name: 'Jordan Lee',
     email: 'jordan.lee@acme.com',
     avatar: 'JL',
@@ -148,7 +149,7 @@ const employees = [
     manager: 'Sarah Chen'
   },
   {
-    id: '8',
+    id: 'e0000000-0000-0000-0000-000000000008',
     name: 'Rachel Kim',
     email: 'rachel.kim@acme.com',
     avatar: 'RK',
@@ -414,9 +415,9 @@ export default function EmployeesPage() {
             </TableHeader>
             <TableBody>
               {filteredEmployees.map((employee) => (
-                <TableRow key={employee.id} className="hover:bg-slate-50">
+                <TableRow key={employee.id} className="hover:bg-slate-50 cursor-pointer" onClick={() => window.location.href = `/employees/${employee.id}`}>
                   <TableCell>
-                    <div className="flex items-center gap-3">
+                    <Link href={`/employees/${employee.id}`} className="flex items-center gap-3">
                       <Avatar>
                         <AvatarFallback className="bg-blue-100 text-blue-700">
                           {employee.avatar}
@@ -426,7 +427,7 @@ export default function EmployeesPage() {
                         <p className="font-medium text-slate-900">{employee.name}</p>
                         <p className="text-sm text-slate-500">{employee.email}</p>
                       </div>
-                    </div>
+                    </Link>
                   </TableCell>
                   <TableCell>{employee.department}</TableCell>
                   <TableCell>{employee.jobTitle}</TableCell>
