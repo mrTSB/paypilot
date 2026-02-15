@@ -24,6 +24,10 @@ import {
   Cake,
   PartyPopper,
   Star,
+  Calculator,
+  FileText,
+  Bot,
+  Plus,
 } from 'lucide-react'
 import Link from 'next/link'
 
@@ -98,10 +102,29 @@ export default function OverviewPage() {
             <span className="text-sm text-slate-500">HR Director • Human Resources</span>
           </div>
         </div>
-        <div className="flex gap-2">
-          <Link href="/payroll">
-            <Button className="bg-primary hover:bg-primary/90">
+        <div className="flex flex-wrap gap-2">
+          <Link href="/employees?add=true">
+            <Button variant="outline" size="sm" className="gap-1.5">
+              <UserPlus className="w-4 h-4" />
+              Add Employee
+            </Button>
+          </Link>
+          <Link href="/payroll/run">
+            <Button variant="outline" size="sm" className="gap-1.5">
+              <Calculator className="w-4 h-4" />
               Run Payroll
+            </Button>
+          </Link>
+          <Link href="/agents">
+            <Button variant="outline" size="sm" className="gap-1.5">
+              <Bot className="w-4 h-4" />
+              Launch Agent
+            </Button>
+          </Link>
+          <Link href="/reports">
+            <Button variant="outline" size="sm" className="gap-1.5">
+              <FileText className="w-4 h-4" />
+              Reports
             </Button>
           </Link>
         </div>
