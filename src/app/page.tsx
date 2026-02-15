@@ -208,15 +208,12 @@ function DashboardMockup() {
   )
 }
 
-// Bento Grid Items - premium visual design
+// Bento Grid Items - using site palette (primary green + muted stone colors)
 const bentoItems = [
   {
     title: "Automated Payroll",
     description: "Run payroll in minutes with automatic tax calculations, direct deposits, and full compliance",
     icon: Calculator,
-    gradient: "from-primary/10 via-primary/5 to-transparent",
-    accentColor: "text-primary",
-    bgPattern: "radial-gradient(circle at 80% 20%, rgba(var(--primary-rgb), 0.15) 0%, transparent 50%)",
     size: "large",
     visual: "payroll"
   },
@@ -224,8 +221,6 @@ const bentoItems = [
     title: "Employee Management",
     description: "Centralize all HR data in one place",
     icon: Users,
-    gradient: "from-emerald-50 to-transparent",
-    accentColor: "text-emerald-600",
     size: "small",
     visual: "employees"
   },
@@ -233,8 +228,6 @@ const bentoItems = [
     title: "Time Tracking",
     description: "Track hours, PTO, and attendance",
     icon: Clock,
-    gradient: "from-amber-50 to-transparent",
-    accentColor: "text-amber-600",
     size: "small",
     visual: "time"
   },
@@ -242,8 +235,6 @@ const bentoItems = [
     title: "Benefits Admin",
     description: "Health, dental, vision, and 401(k) management made simple",
     icon: Shield,
-    gradient: "from-violet-50 to-transparent",
-    accentColor: "text-violet-600",
     size: "medium",
     visual: "benefits"
   },
@@ -251,8 +242,6 @@ const bentoItems = [
     title: "AI HR Assistant",
     description: "Instant answers to HR questions",
     icon: MessageSquare,
-    gradient: "from-rose-50 to-transparent",
-    accentColor: "text-rose-600",
     size: "small",
     visual: "ai"
   },
@@ -260,46 +249,44 @@ const bentoItems = [
     title: "Analytics & Reports",
     description: "Insights and workforce analytics",
     icon: BarChart3,
-    gradient: "from-cyan-50 to-transparent",
-    accentColor: "text-cyan-600",
     size: "small",
     visual: "analytics"
   }
 ]
 
-// Visual illustrations for bento boxes
-function BentoVisual({ type, size }: { type: string; size: string }) {
+// Visual illustrations for bento boxes - using only site palette
+function BentoVisual({ type }: { type: string; size?: string }) {
   if (type === "payroll") {
     return (
-      <div className="absolute right-4 bottom-4 opacity-80">
+      <div className="absolute right-4 bottom-4 opacity-90">
         <div className="relative">
-          {/* Floating money/check illustration */}
+          {/* Floating pay stub illustration */}
           <div className="flex items-end gap-2">
             <motion.div
-              className="w-16 h-20 bg-white rounded-lg shadow-lg border border-border p-2"
+              className="w-16 h-20 bg-card rounded-lg border border-border p-2"
               initial={{ y: 10, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.2 }}
             >
               <div className="h-2 w-8 bg-primary/20 rounded mb-1" />
-              <div className="h-1.5 w-10 bg-gray-100 rounded mb-1" />
-              <div className="h-1.5 w-6 bg-gray-100 rounded mb-3" />
-              <div className="h-3 w-full bg-emerald-100 rounded flex items-center justify-end pr-1">
-                <span className="text-[6px] text-emerald-600 font-bold">$12,450</span>
+              <div className="h-1.5 w-10 bg-secondary rounded mb-1" />
+              <div className="h-1.5 w-6 bg-secondary rounded mb-3" />
+              <div className="h-3 w-full bg-accent rounded flex items-center justify-end pr-1">
+                <span className="text-[6px] text-primary font-bold">$12,450</span>
               </div>
             </motion.div>
             <motion.div
-              className="w-12 h-14 bg-emerald-50 rounded-lg border border-emerald-200 flex items-center justify-center"
+              className="w-12 h-14 bg-accent rounded-lg border border-border flex items-center justify-center"
               initial={{ y: 20, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.3 }}
             >
-              <Check className="w-6 h-6 text-emerald-500" />
+              <Check className="w-6 h-6 text-primary" />
             </motion.div>
           </div>
           {/* Decorative circles */}
           <div className="absolute -top-4 -right-4 w-8 h-8 rounded-full bg-primary/10" />
-          <div className="absolute -bottom-2 -left-2 w-4 h-4 rounded-full bg-emerald-200" />
+          <div className="absolute -bottom-2 -left-2 w-4 h-4 rounded-full bg-accent" />
         </div>
       </div>
     )
@@ -311,21 +298,21 @@ function BentoVisual({ type, size }: { type: string; size: string }) {
         {[0, 1, 2].map((i) => (
           <motion.div
             key={i}
-            className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 border-2 border-white shadow-sm flex items-center justify-center"
+            className="w-8 h-8 rounded-full bg-primary border-2 border-card flex items-center justify-center"
             initial={{ scale: 0 }}
             whileInView={{ scale: 1 }}
             transition={{ delay: 0.1 * i }}
           >
-            <span className="text-white text-[10px] font-medium">{['JD', 'SK', 'MR'][i]}</span>
+            <span className="text-primary-foreground text-[10px] font-medium">{['JD', 'SK', 'MR'][i]}</span>
           </motion.div>
         ))}
         <motion.div
-          className="w-8 h-8 rounded-full bg-emerald-100 border-2 border-white shadow-sm flex items-center justify-center"
+          className="w-8 h-8 rounded-full bg-accent border-2 border-card flex items-center justify-center"
           initial={{ scale: 0 }}
           whileInView={{ scale: 1 }}
           transition={{ delay: 0.3 }}
         >
-          <span className="text-emerald-600 text-[10px] font-medium">+47</span>
+          <span className="text-primary text-[10px] font-medium">+47</span>
         </motion.div>
       </div>
     )
@@ -335,14 +322,14 @@ function BentoVisual({ type, size }: { type: string; size: string }) {
     return (
       <div className="absolute right-3 bottom-3">
         <motion.div
-          className="w-14 h-14 rounded-full border-4 border-amber-200 bg-white flex items-center justify-center relative"
+          className="w-14 h-14 rounded-full border-4 border-secondary bg-card flex items-center justify-center relative"
           initial={{ rotate: -30, opacity: 0 }}
           whileInView={{ rotate: 0, opacity: 1 }}
           transition={{ delay: 0.2 }}
         >
-          <div className="absolute w-0.5 h-4 bg-amber-500 rounded-full origin-bottom" style={{ transform: 'rotate(-30deg)' }} />
-          <div className="absolute w-0.5 h-3 bg-amber-400 rounded-full origin-bottom" style={{ transform: 'rotate(60deg)' }} />
-          <div className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+          <div className="absolute w-0.5 h-4 bg-primary rounded-full origin-bottom" style={{ transform: 'rotate(-30deg)' }} />
+          <div className="absolute w-0.5 h-3 bg-muted-foreground rounded-full origin-bottom" style={{ transform: 'rotate(60deg)' }} />
+          <div className="w-1.5 h-1.5 rounded-full bg-primary" />
         </motion.div>
       </div>
     )
@@ -353,13 +340,13 @@ function BentoVisual({ type, size }: { type: string; size: string }) {
       <div className="absolute right-4 bottom-4">
         <div className="flex gap-2">
           {[
-            { icon: "❤️", bg: "bg-red-50", border: "border-red-200" },
-            { icon: "🦷", bg: "bg-blue-50", border: "border-blue-200" },
-            { icon: "👁️", bg: "bg-purple-50", border: "border-purple-200" },
+            { icon: "❤️" },
+            { icon: "🦷" },
+            { icon: "👁️" },
           ].map((item, i) => (
             <motion.div
               key={i}
-              className={`w-10 h-10 rounded-lg ${item.bg} border ${item.border} flex items-center justify-center text-sm`}
+              className="w-10 h-10 rounded-lg bg-secondary border border-border flex items-center justify-center text-sm"
               initial={{ y: 10, opacity: 0 }}
               whileInView={{ y: 0, opacity: 1 }}
               transition={{ delay: 0.1 * i }}
@@ -382,9 +369,9 @@ function BentoVisual({ type, size }: { type: string; size: string }) {
           transition={{ delay: 0.2 }}
         >
           <div className="flex gap-1">
-            <div className="w-1.5 h-1.5 rounded-full bg-rose-400 animate-pulse" />
-            <div className="w-1.5 h-1.5 rounded-full bg-rose-300 animate-pulse" style={{ animationDelay: '0.2s' }} />
-            <div className="w-1.5 h-1.5 rounded-full bg-rose-200 animate-pulse" style={{ animationDelay: '0.4s' }} />
+            <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+            <div className="w-1.5 h-1.5 rounded-full bg-primary/70 animate-pulse" style={{ animationDelay: '0.2s' }} />
+            <div className="w-1.5 h-1.5 rounded-full bg-primary/40 animate-pulse" style={{ animationDelay: '0.4s' }} />
           </div>
         </motion.div>
       </div>
@@ -397,8 +384,8 @@ function BentoVisual({ type, size }: { type: string; size: string }) {
         {[40, 65, 45, 80, 55].map((h, i) => (
           <motion.div
             key={i}
-            className="w-2 bg-gradient-to-t from-cyan-500 to-cyan-300 rounded-t"
-            style={{ height: `${h * 0.4}px` }}
+            className="w-2 bg-primary rounded-t"
+            style={{ height: `${h * 0.4}px`, opacity: 0.4 + (i * 0.15) }}
             initial={{ scaleY: 0 }}
             whileInView={{ scaleY: 1 }}
             transition={{ delay: 0.1 * i }}
@@ -533,7 +520,7 @@ export default function LandingPage() {
       </section>
 
       {/* Bento Grid Features Section */}
-      <section id="features" className="px-6 py-20 bg-gradient-to-b from-background to-secondary/50">
+      <section id="features" className="px-6 py-20 bg-secondary">
         <div className="max-w-6xl mx-auto">
           <motion.div
             initial="hidden"
@@ -541,19 +528,16 @@ export default function LandingPage() {
             viewport={{ once: true, margin: "-100px" }}
             variants={staggerContainer}
           >
-            <motion.div className="text-center mb-16" variants={fadeInUp}>
-              <span className="inline-block px-4 py-1.5 bg-primary/10 text-primary text-sm font-medium rounded-full mb-4">
-                Features
-              </span>
-              <h2 className="text-4xl font-bold text-foreground mb-4">
-                Everything you need to run HR
+            <motion.div className="text-center mb-12" variants={fadeInUp}>
+              <h2 className="text-3xl font-bold text-foreground mb-4">
+                Everything you need
               </h2>
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                From payroll to benefits to compliance, PayPilot handles it all with AI-powered automation.
+              <p className="text-muted-foreground max-w-xl mx-auto">
+                From payroll to benefits to compliance, PayPilot handles it all.
               </p>
             </motion.div>
 
-            {/* Bento Grid - Premium visual design */}
+            {/* Bento Grid - Clean design matching site style */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-[180px]">
               {bentoItems.map((item, index) => (
                 <motion.div
@@ -571,11 +555,11 @@ export default function LandingPage() {
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.08 }}
                 >
-                  <Card className={`h-full overflow-hidden bg-white border border-border/50 hover:border-border hover:shadow-xl transition-all duration-500 group-hover:-translate-y-1`}>
-                    <div className={`relative h-full p-6 flex flex-col bg-gradient-to-br ${item.gradient}`}>
+                  <Card className="h-full overflow-hidden bg-card border border-border hover:border-primary/30 transition-all duration-300">
+                    <div className="relative h-full p-6 flex flex-col">
                       {/* Icon */}
-                      <div className={`w-10 h-10 rounded-lg bg-white shadow-sm border border-border/50 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
-                        <item.icon className={`w-5 h-5 ${item.accentColor}`} />
+                      <div className="w-10 h-10 rounded-lg bg-accent border border-border flex items-center justify-center mb-4 group-hover:scale-105 transition-transform duration-300">
+                        <item.icon className="w-5 h-5 text-primary" />
                       </div>
 
                       {/* Title and Description */}
@@ -587,10 +571,7 @@ export default function LandingPage() {
                       </p>
 
                       {/* Visual illustration */}
-                      <BentoVisual type={item.visual} size={item.size} />
-
-                      {/* Subtle hover glow */}
-                      <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-white/0 to-white/0 group-hover:from-primary/5 group-hover:to-transparent transition-all duration-500 pointer-events-none" />
+                      <BentoVisual type={item.visual} />
                     </div>
                   </Card>
                 </motion.div>
