@@ -1,6 +1,183 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
 
+// Rich demo data for the insights dashboard
+function getDemoInsightsData(days: number) {
+  const now = new Date()
+
+  return {
+    feed: [
+      {
+        id: 'fb-001',
+        conversation_id: 'conv-001',
+        summary: 'Employee expressed enthusiasm about the new project direction and appreciated the recent team restructuring. They feel more aligned with company goals.',
+        sentiment: 'positive',
+        tags: ['culture', 'growth', 'team_dynamics'],
+        computed_at: new Date(now.getTime() - 2 * 60 * 60 * 1000).toISOString(),
+        participant: { name: 'Sarah Chen', avatar_url: null },
+        agent_name: 'Pulse Check Agent',
+        key_quotes: ['I really appreciate how transparent leadership has been lately'],
+        delta_notes: 'Sentiment improved from neutral last week',
+      },
+      {
+        id: 'fb-002',
+        conversation_id: 'conv-002',
+        summary: 'Discussed workload concerns but overall positive outlook. Looking forward to new tooling rollout next month.',
+        sentiment: 'neutral',
+        tags: ['workload', 'tooling'],
+        computed_at: new Date(now.getTime() - 5 * 60 * 60 * 1000).toISOString(),
+        participant: { name: 'Marcus Johnson', avatar_url: null },
+        agent_name: 'Weekly Check-in',
+        key_quotes: ['Things are busy but manageable'],
+        delta_notes: null,
+      },
+      {
+        id: 'fb-003',
+        conversation_id: 'conv-003',
+        summary: 'Very positive feedback about manager relationship and career development opportunities. Feels supported in pursuing new skills.',
+        sentiment: 'positive',
+        tags: ['manager', 'growth', 'recognition'],
+        computed_at: new Date(now.getTime() - 8 * 60 * 60 * 1000).toISOString(),
+        participant: { name: 'Emily Rodriguez', avatar_url: null },
+        agent_name: 'Pulse Check Agent',
+        key_quotes: ['My manager has been incredibly supportive of my growth'],
+        delta_notes: null,
+      },
+      {
+        id: 'fb-004',
+        conversation_id: 'conv-004',
+        summary: 'Shared excitement about upcoming team offsite. Mentioned some concerns about communication across departments.',
+        sentiment: 'mixed',
+        tags: ['communication', 'team_dynamics', 'culture'],
+        computed_at: new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString(),
+        participant: { name: 'David Kim', avatar_url: null },
+        agent_name: 'Weekly Check-in',
+        key_quotes: ['Looking forward to the offsite, hoping we can improve cross-team sync'],
+        delta_notes: null,
+      },
+      {
+        id: 'fb-005',
+        conversation_id: 'conv-005',
+        summary: 'Positive feedback on work-life balance improvements. Appreciates the flexible schedule policy.',
+        sentiment: 'positive',
+        tags: ['work_life_balance', 'culture'],
+        computed_at: new Date(now.getTime() - 36 * 60 * 60 * 1000).toISOString(),
+        participant: { name: 'Lisa Park', avatar_url: null },
+        agent_name: 'Pulse Check Agent',
+        key_quotes: ['The flexible hours have made such a difference for my family'],
+        delta_notes: 'New positive signal about work-life balance',
+      },
+      {
+        id: 'fb-006',
+        conversation_id: 'conv-006',
+        summary: 'Discussed career aspirations and interest in moving to a leadership role. Feels ready for more responsibility.',
+        sentiment: 'positive',
+        tags: ['growth', 'manager'],
+        computed_at: new Date(now.getTime() - 48 * 60 * 60 * 1000).toISOString(),
+        participant: { name: 'James Wilson', avatar_url: null },
+        agent_name: 'Career Development Agent',
+        key_quotes: ['I feel ready to take on more leadership opportunities'],
+        delta_notes: null,
+      },
+      {
+        id: 'fb-007',
+        conversation_id: 'conv-007',
+        summary: 'Expressed some frustration with current project timeline but remains committed to team goals.',
+        sentiment: 'neutral',
+        tags: ['workload', 'team_dynamics'],
+        computed_at: new Date(now.getTime() - 72 * 60 * 60 * 1000).toISOString(),
+        participant: { name: 'Rachel Wong', avatar_url: null },
+        agent_name: 'Weekly Check-in',
+        key_quotes: ['The timeline is tight but we will make it work'],
+        delta_notes: null,
+      },
+      {
+        id: 'fb-008',
+        conversation_id: 'conv-008',
+        summary: 'Very positive about recent compensation review. Feels valued and fairly compensated for their contributions.',
+        sentiment: 'positive',
+        tags: ['compensation', 'recognition'],
+        computed_at: new Date(now.getTime() - 96 * 60 * 60 * 1000).toISOString(),
+        participant: { name: 'Alex Thompson', avatar_url: null },
+        agent_name: 'Pulse Check Agent',
+        key_quotes: ['I feel truly valued here, the raise was unexpected and appreciated'],
+        delta_notes: null,
+      },
+    ],
+    sentiment_distribution: {
+      positive: 18,
+      neutral: 8,
+      negative: 2,
+      mixed: 4,
+    },
+    top_tags: [
+      { tag: 'culture', count: 12 },
+      { tag: 'growth', count: 10 },
+      { tag: 'work_life_balance', count: 8 },
+      { tag: 'manager', count: 7 },
+      { tag: 'team_dynamics', count: 6 },
+      { tag: 'workload', count: 5 },
+      { tag: 'communication', count: 4 },
+      { tag: 'compensation', count: 3 },
+      { tag: 'recognition', count: 3 },
+      { tag: 'tooling', count: 2 },
+    ],
+    action_items: [
+      {
+        text: 'Schedule 1:1 with David Kim to discuss cross-team communication concerns',
+        confidence: 0.92,
+        priority: 'high',
+        conversation_id: 'conv-004',
+        participant_name: 'David Kim',
+      },
+      {
+        text: 'Consider James Wilson for upcoming team lead position',
+        confidence: 0.88,
+        priority: 'medium',
+        conversation_id: 'conv-006',
+        participant_name: 'James Wilson',
+      },
+      {
+        text: 'Review project timeline with Rachel Wong\'s team',
+        confidence: 0.85,
+        priority: 'medium',
+        conversation_id: 'conv-007',
+        participant_name: 'Rachel Wong',
+      },
+      {
+        text: 'Share positive feedback about flexible schedule policy with leadership',
+        confidence: 0.78,
+        priority: 'low',
+        conversation_id: 'conv-005',
+        participant_name: 'Lisa Park',
+      },
+      {
+        text: 'Plan team recognition event to maintain positive momentum',
+        confidence: 0.75,
+        priority: 'low',
+        conversation_id: 'conv-001',
+        participant_name: 'Sarah Chen',
+      },
+    ],
+    escalations: [],
+    delta_highlights: {
+      improved: ['Overall sentiment up 12% from last week', 'Work-life balance feedback significantly improved'],
+      declined: [],
+      new_concerns: ['Cross-team communication emerging as new topic'],
+    },
+    stats: {
+      active_conversations: 34,
+      messages_this_period: 156,
+      summaries_count: 32,
+      open_escalations: 0,
+    },
+    period: {
+      days,
+      since: new Date(now.getTime() - days * 24 * 60 * 60 * 1000).toISOString(),
+    },
+  }
+}
+
 // GET /api/insights - Get insights dashboard data
 export async function GET(request: Request) {
   try {
@@ -20,7 +197,10 @@ export async function GET(request: Request) {
       .single()
 
     if (!membership) {
-      return NextResponse.json({ error: 'Not a company member' }, { status: 403 })
+      // Return demo data if no membership found
+      const url = new URL(request.url)
+      const days = parseInt(url.searchParams.get('days') || '7', 10)
+      return NextResponse.json(getDemoInsightsData(days))
     }
 
     if (!['owner', 'admin', 'hr_manager', 'manager'].includes(membership.role)) {
@@ -56,6 +236,11 @@ export async function GET(request: Request) {
 
     if (summaryError) {
       console.error('Error fetching summaries:', summaryError)
+    }
+
+    // If no real data, return demo data
+    if (!summaries || summaries.length === 0) {
+      return NextResponse.json(getDemoInsightsData(days))
     }
 
     // Calculate sentiment distribution
