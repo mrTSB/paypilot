@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { motion } from 'framer-motion'
 import {
   Bot,
@@ -16,6 +16,9 @@ import {
   TrendingUp,
   Clock,
   CheckCircle2,
+  Search,
+  X,
+  Loader2,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -41,6 +44,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from '@/components/ui/command'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -61,6 +77,7 @@ interface AgentInstance {
   config: {
     tone_preset: string
     audience_type: string
+    target_employee_ids?: string[]
   }
   created_at: string
   agents: Agent
@@ -79,6 +96,14 @@ interface TonePreset {
   slug: string
   name: string
   description: string
+}
+
+interface Employee {
+  id: string
+  full_name: string
+  email: string
+  department?: string
+  job_title?: string
 }
 
 const AGENT_TYPE_ICONS: Record<string, React.ReactNode> = {
@@ -102,6 +127,23 @@ const STATUS_COLORS: Record<string, string> = {
   archived: 'bg-red-500',
 }
 
+// Debounce hook
+function useDebounce<T>(value: T, delay: number): T {
+  const [debouncedValue, setDebouncedValue] = useState<T>(value)
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value)
+    }, delay)
+
+    return () => {
+      clearTimeout(handler)
+    }
+  }, [value, delay])
+
+  return debouncedValue
+}
+
 export default function AgentsPage() {
   const [instances, setInstances] = useState<AgentInstance[]>([])
   const [agents, setAgents] = useState<Agent[]>([])
@@ -109,6 +151,7 @@ export default function AgentsPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [isCreateOpen, setIsCreateOpen] = useState(false)
   const [isCreating, setIsCreating] = useState(false)
+  const [hasShownMembershipError, setHasShownMembershipError] = useState(false)
 
   // Form state
   const [selectedAgentId, setSelectedAgentId] = useState('')
@@ -123,9 +166,27 @@ export default function AgentsPage() {
     no_harassment: true,
   })
 
+  // Employee picker state
+  const [selectedEmployees, setSelectedEmployees] = useState<Employee[]>([])
+  const [employeeSearch, setEmployeeSearch] = useState('')
+  const [employeeResults, setEmployeeResults] = useState<Employee[]>([])
+  const [isSearchingEmployees, setIsSearchingEmployees] = useState(false)
+  const [employeePickerOpen, setEmployeePickerOpen] = useState(false)
+
+  const debouncedEmployeeSearch = useDebounce(employeeSearch, 200)
+
   useEffect(() => {
     fetchData()
   }, [])
+
+  // Search employees when debounced search changes
+  useEffect(() => {
+    if (audienceType === 'individual' && debouncedEmployeeSearch.length >= 2) {
+      searchEmployees(debouncedEmployeeSearch)
+    } else if (debouncedEmployeeSearch.length < 2) {
+      setEmployeeResults([])
+    }
+  }, [debouncedEmployeeSearch, audienceType])
 
   const fetchData = async () => {
     setIsLoading(true)
@@ -138,6 +199,17 @@ export default function AgentsPage() {
       if (instancesRes.ok) {
         const data = await instancesRes.json()
         setInstances(data.instances || [])
+      } else {
+        const errorData = await instancesRes.json()
+        // Only show error once per session
+        if (!hasShownMembershipError && errorData.error) {
+          if (errorData.error === 'Not a company member') {
+            toast.error('Not a company member. Please contact your administrator.')
+          } else {
+            toast.error(errorData.error)
+          }
+          setHasShownMembershipError(true)
+        }
       }
 
       if (agentsRes.ok) {
@@ -150,15 +222,60 @@ export default function AgentsPage() {
       }
     } catch (error) {
       console.error('Failed to fetch data:', error)
-      toast.error('Failed to load agents')
+      if (!hasShownMembershipError) {
+        toast.error('Failed to load agents')
+        setHasShownMembershipError(true)
+      }
     } finally {
       setIsLoading(false)
     }
   }
 
+  const searchEmployees = async (query: string) => {
+    if (query.length < 2) {
+      setEmployeeResults([])
+      return
+    }
+
+    setIsSearchingEmployees(true)
+    try {
+      const res = await fetch(`/api/employees/search?q=${encodeURIComponent(query)}&limit=15`)
+      if (res.ok) {
+        const data = await res.json()
+        // Filter out already selected employees
+        const selectedIds = new Set(selectedEmployees.map(e => e.id))
+        setEmployeeResults((data.employees || []).filter((e: Employee) => !selectedIds.has(e.id)))
+      } else {
+        const errorData = await res.json()
+        // Don't spam toasts on each keystroke
+        console.error('Employee search failed:', errorData)
+      }
+    } catch (error) {
+      console.error('Failed to search employees:', error)
+    } finally {
+      setIsSearchingEmployees(false)
+    }
+  }
+
+  const handleSelectEmployee = (employee: Employee) => {
+    setSelectedEmployees(prev => [...prev, employee])
+    setEmployeeSearch('')
+    setEmployeeResults([])
+    setEmployeePickerOpen(false)
+  }
+
+  const handleRemoveEmployee = (employeeId: string) => {
+    setSelectedEmployees(prev => prev.filter(e => e.id !== employeeId))
+  }
+
   const handleCreate = async () => {
     if (!selectedAgentId || !instanceName) {
       toast.error('Please fill in all required fields')
+      return
+    }
+
+    if (audienceType === 'individual' && selectedEmployees.length === 0) {
+      toast.error('Please select at least one employee')
       return
     }
 
@@ -173,6 +290,9 @@ export default function AgentsPage() {
           config: {
             tone_preset: tonePreset,
             audience_type: audienceType,
+            audience_filter: audienceType === 'individual' ? {
+              employee_ids: selectedEmployees.map(e => e.id),
+            } : undefined,
             guardrails,
           },
           schedule: {
@@ -243,6 +363,9 @@ export default function AgentsPage() {
     setTonePreset('poke_lite')
     setAudienceType('company_wide')
     setCadence('weekly')
+    setSelectedEmployees([])
+    setEmployeeSearch('')
+    setEmployeeResults([])
     setGuardrails({
       no_sensitive_topics: true,
       no_medical_legal: true,
@@ -429,6 +552,7 @@ export default function AgentsPage() {
                       <p className="text-muted-foreground">Audience</p>
                       <p className="font-medium capitalize">
                         {instance.config?.audience_type?.replace('_', ' ')}
+                        {instance.config?.target_employee_ids?.length ? ` (${instance.config.target_employee_ids.length})` : ''}
                       </p>
                     </div>
                     <div>
@@ -476,7 +600,7 @@ export default function AgentsPage() {
 
       {/* Create Agent Dialog */}
       <Dialog open={isCreateOpen} onOpenChange={setIsCreateOpen}>
-        <DialogContent className="max-w-lg">
+        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Create AI Agent</DialogTitle>
             <DialogDescription>
@@ -540,7 +664,12 @@ export default function AgentsPage() {
             {/* Audience */}
             <div className="space-y-2">
               <Label>Audience</Label>
-              <Select value={audienceType} onValueChange={setAudienceType}>
+              <Select value={audienceType} onValueChange={(val) => {
+                setAudienceType(val)
+                if (val !== 'individual') {
+                  setSelectedEmployees([])
+                }
+              }}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -548,10 +677,103 @@ export default function AgentsPage() {
                   <SelectItem value="company_wide">Company-wide</SelectItem>
                   <SelectItem value="department">By Department</SelectItem>
                   <SelectItem value="team">By Team</SelectItem>
-                  <SelectItem value="individual">Individual Employees</SelectItem>
+                  <SelectItem value="individual">Specific Employees</SelectItem>
                 </SelectContent>
               </Select>
             </div>
+
+            {/* Employee Picker - only shown when audience is "individual" */}
+            {audienceType === 'individual' && (
+              <div className="space-y-2">
+                <Label>Select Employees</Label>
+
+                {/* Selected employees as pills */}
+                {selectedEmployees.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mb-2">
+                    {selectedEmployees.map((emp) => (
+                      <Badge
+                        key={emp.id}
+                        variant="secondary"
+                        className="gap-1 pr-1"
+                      >
+                        {emp.full_name}
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveEmployee(emp.id)}
+                          className="ml-1 rounded-full hover:bg-muted p-0.5"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </Badge>
+                    ))}
+                  </div>
+                )}
+
+                {/* Search combobox */}
+                <Popover open={employeePickerOpen} onOpenChange={setEmployeePickerOpen}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      role="combobox"
+                      aria-expanded={employeePickerOpen}
+                      className="w-full justify-start text-muted-foreground font-normal"
+                    >
+                      <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
+                      Search employees...
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-[400px] p-0" align="start">
+                    <Command shouldFilter={false}>
+                      <CommandInput
+                        placeholder="Type to search (min 2 chars)..."
+                        value={employeeSearch}
+                        onValueChange={setEmployeeSearch}
+                      />
+                      <CommandList>
+                        {isSearchingEmployees && (
+                          <div className="flex items-center justify-center py-6">
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                            <span className="ml-2 text-sm text-muted-foreground">Searching...</span>
+                          </div>
+                        )}
+                        {!isSearchingEmployees && employeeSearch.length >= 2 && employeeResults.length === 0 && (
+                          <CommandEmpty>No employees found.</CommandEmpty>
+                        )}
+                        {!isSearchingEmployees && employeeSearch.length < 2 && (
+                          <div className="py-6 text-center text-sm text-muted-foreground">
+                            Type at least 2 characters to search
+                          </div>
+                        )}
+                        {employeeResults.length > 0 && (
+                          <CommandGroup heading="Employees">
+                            {employeeResults.map((emp) => (
+                              <CommandItem
+                                key={emp.id}
+                                value={emp.id}
+                                onSelect={() => handleSelectEmployee(emp)}
+                                className="cursor-pointer"
+                              >
+                                <div className="flex flex-col">
+                                  <span className="font-medium">{emp.full_name}</span>
+                                  <span className="text-sm text-muted-foreground">
+                                    {emp.email}
+                                    {emp.job_title && ` • ${emp.job_title}`}
+                                  </span>
+                                </div>
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        )}
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+
+                <p className="text-xs text-muted-foreground">
+                  {selectedEmployees.length} employee{selectedEmployees.length !== 1 ? 's' : ''} selected
+                </p>
+              </div>
+            )}
 
             {/* Cadence */}
             <div className="space-y-2">
@@ -580,7 +802,7 @@ export default function AgentsPage() {
                       id={key}
                       checked={value}
                       onCheckedChange={(checked) =>
-                        setGuardrails({ ...guardrails, [key]: checked })
+                        setGuardrails({ ...guardrails, [key]: checked as boolean })
                       }
                     />
                     <label htmlFor={key} className="text-sm capitalize">

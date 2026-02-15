@@ -1,28 +1,69 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
 import { CreateAgentInstanceRequest } from '@/lib/agents/types'
+import { getAuthContext, hasRole } from '@/lib/api-auth'
+
+// Demo agent instances for when in demo mode
+const DEMO_INSTANCES = [
+  {
+    id: '00000000-0000-0000-0000-000000000100',
+    name: 'Weekly Team Pulse',
+    status: 'active',
+    config: { tone_preset: 'poke_lite', audience_type: 'company_wide', target_employee_ids: [] },
+    created_at: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+    agents: {
+      id: '00000000-0000-0000-0000-000000000001',
+      name: 'Pulse Check',
+      slug: 'pulse_check',
+      description: 'Weekly check-in to gauge team morale and workload',
+      agent_type: 'pulse_check',
+    },
+    agent_schedules: [
+      {
+        cadence: 'weekly',
+        next_run_at: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(),
+      },
+    ],
+    stats: { conversations: 23, messages: 156 },
+  },
+  {
+    id: '00000000-0000-0000-0000-000000000101',
+    name: 'New Hire Onboarding',
+    status: 'active',
+    config: { tone_preset: 'friendly_peer', audience_type: 'team', target_employee_ids: [] },
+    created_at: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
+    agents: {
+      id: '00000000-0000-0000-0000-000000000002',
+      name: 'Onboarding Buddy',
+      slug: 'onboarding',
+      description: 'Guide new hires through their first weeks',
+      agent_type: 'onboarding',
+    },
+    agent_schedules: [
+      {
+        cadence: 'daily',
+        next_run_at: new Date(Date.now() + 12 * 60 * 60 * 1000).toISOString(),
+      },
+    ],
+    stats: { conversations: 8, messages: 45 },
+  },
+]
 
 // GET /api/agents/instances - List agent instances for company
 export async function GET() {
   try {
-    const supabase = await createClient()
+    const auth = await getAuthContext()
 
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-
-    if (authError || !user) {
+    if (!auth) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    // Get user's company
-    const { data: membership } = await supabase
-      .from('company_members')
-      .select('company_id, role')
-      .eq('user_id', user.id)
-      .single()
-
-    if (!membership) {
-      return NextResponse.json({ instances: [] })
+    // Demo mode - return demo instances
+    if (auth.isDemo) {
+      return NextResponse.json({ instances: DEMO_INSTANCES })
     }
+
+    const supabase = await createClient()
 
     // Get agent instances with related data
     const { data: instances, error } = await supabase
@@ -33,11 +74,15 @@ export async function GET() {
         agent_schedules (*),
         profiles!agent_instances_created_by_fkey (full_name)
       `)
-      .eq('company_id', membership.company_id)
+      .eq('company_id', auth.companyId)
       .order('created_at', { ascending: false })
 
     if (error) {
-      console.error('Error fetching instances:', error)
+      console.error('[Agent Instances] Error fetching:', {
+        companyId: auth.companyId,
+        error: error.message,
+        code: error.code,
+      })
       return NextResponse.json({ error: 'Failed to fetch instances' }, { status: 500 })
     }
 
@@ -66,7 +111,7 @@ export async function GET() {
 
     return NextResponse.json({ instances: instancesWithStats })
   } catch (error) {
-    console.error('Agent instances API error:', error)
+    console.error('[Agent Instances] API error:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
@@ -74,26 +119,14 @@ export async function GET() {
 // POST /api/agents/instances - Create new agent instance
 export async function POST(request: Request) {
   try {
-    const supabase = await createClient()
+    const auth = await getAuthContext()
 
-    const { data: { user }, error: authError } = await supabase.auth.getUser()
-
-    if (authError || !user) {
+    if (!auth) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    // Get user's company and verify admin/hr role
-    const { data: membership } = await supabase
-      .from('company_members')
-      .select('company_id, role')
-      .eq('user_id', user.id)
-      .single()
-
-    if (!membership) {
-      return NextResponse.json({ error: 'Not a company member' }, { status: 403 })
-    }
-
-    if (!['owner', 'admin', 'hr_manager'].includes(membership.role)) {
+    // Check role permissions
+    if (!hasRole(auth, ['owner', 'admin', 'hr_manager'])) {
       return NextResponse.json({ error: 'Insufficient permissions' }, { status: 403 })
     }
 
@@ -104,13 +137,31 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
+    // Demo mode - return fake success
+    if (auth.isDemo) {
+      const fakeInstance = {
+        id: crypto.randomUUID(),
+        company_id: auth.companyId,
+        agent_id: body.agent_id,
+        created_by: auth.userId,
+        name: body.name,
+        config: body.config,
+        status: 'active',
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      }
+      return NextResponse.json({ instance: fakeInstance })
+    }
+
+    const supabase = await createClient()
+
     // Create agent instance
     const { data: instance, error: instanceError } = await supabase
       .from('agent_instances')
       .insert({
-        company_id: membership.company_id,
+        company_id: auth.companyId,
         agent_id: body.agent_id,
-        created_by: user.id,
+        created_by: auth.userId,
         name: body.name,
         config: body.config,
         status: 'active',
@@ -119,7 +170,11 @@ export async function POST(request: Request) {
       .single()
 
     if (instanceError) {
-      console.error('Error creating instance:', instanceError)
+      console.error('[Agent Instances] Error creating:', {
+        companyId: auth.companyId,
+        error: instanceError.message,
+        code: instanceError.code,
+      })
       return NextResponse.json({ error: 'Failed to create instance' }, { status: 500 })
     }
 
@@ -138,7 +193,7 @@ export async function POST(request: Request) {
       })
 
     if (scheduleError) {
-      console.error('Error creating schedule:', scheduleError)
+      console.error('[Agent Instances] Error creating schedule:', scheduleError)
       // Don't fail the whole request, schedule can be created later
     }
 
@@ -146,9 +201,9 @@ export async function POST(request: Request) {
     await supabase
       .from('audit_logs')
       .insert({
-        company_id: membership.company_id,
-        actor_user_id: user.id,
-        actor_role: membership.role,
+        company_id: auth.companyId,
+        actor_user_id: auth.userId,
+        actor_role: auth.role,
         action: 'agent_instance_created',
         target_type: 'agent_instance',
         target_id: instance.id,
@@ -157,7 +212,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ instance })
   } catch (error) {
-    console.error('Create agent instance error:', error)
+    console.error('[Agent Instances] Create error:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

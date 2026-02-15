@@ -6,6 +6,7 @@ import { PolicyGuard } from './policy-guard'
 import { InsightExtractor } from './insight-extractor'
 import { MemoryStore } from './memory-store'
 import { InAppAdapter } from './channel-adapter'
+import { generateAgentResponse, generateInitialMessage, isAnthropicConfigured, AgentContext } from '@/lib/anthropic'
 
 // System prompts for different tones
 const TONE_PROMPTS: Record<string, string> = {
@@ -308,6 +309,21 @@ export class AgentOrchestrator {
 
     // If no messages yet, send opening message
     if (!context || context.messages.length === 0) {
+      // Try to use Anthropic for personalized opening
+      if (isAnthropicConfigured()) {
+        try {
+          return await generateInitialMessage({
+            employeeName,
+            agentType: agent.agent_type,
+            tonePreset: config.tone_preset,
+          })
+        } catch (error) {
+          console.error('[Orchestrator] Failed to generate initial message with Claude:', error)
+          // Fall through to static openings
+        }
+      }
+
+      // Fallback to static openings
       const openings = OPENING_MESSAGES[agent.agent_type] || OPENING_MESSAGES.pulse_check
       return openings[Math.floor(Math.random() * openings.length)]
     }
@@ -333,7 +349,7 @@ export class AgentOrchestrator {
   }
 
   /**
-   * Generate agent response to employee message
+   * Generate agent response to employee message using Anthropic Claude
    */
   private async generateAgentResponse(
     agent: Agent,
@@ -342,9 +358,40 @@ export class AgentOrchestrator {
     employeeMessage: string,
     employeeName: string
   ): Promise<string> {
-    // Simple pattern-based responses for demo
-    // In production, this would call an LLM API
+    // Try to use Anthropic Claude for real LLM responses
+    if (isAnthropicConfigured()) {
+      try {
+        // Build conversation history
+        const conversationHistory = previousMessages.map(m => ({
+          role: m.sender_type === 'employee' ? 'user' as const : 'assistant' as const,
+          content: m.content,
+        }))
 
+        // Add the new user message
+        conversationHistory.push({ role: 'user', content: employeeMessage })
+
+        const context: AgentContext = {
+          employeeName,
+          agentType: agent.agent_type,
+          tonePreset: config.tone_preset,
+          conversationHistory,
+        }
+
+        const response = await generateAgentResponse(context)
+
+        // If escalated, handle that separately
+        if (response.shouldEscalate) {
+          console.log('[Orchestrator] Claude detected escalation:', response.escalationType)
+        }
+
+        return response.content
+      } catch (error) {
+        console.error('[Orchestrator] Anthropic API error, falling back to pattern-based:', error)
+        // Fall through to pattern-based response
+      }
+    }
+
+    // Fallback: Simple pattern-based responses for demo
     const lowerMsg = employeeMessage.toLowerCase()
     const firstName = employeeName.split(' ')[0]
 
