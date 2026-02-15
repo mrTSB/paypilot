@@ -106,13 +106,13 @@ export default function OverviewPage() {
       {/* Welcome header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Good morning, Alex!</h1>
-          <p className="text-slate-600">Here&apos;s what&apos;s happening at Acme Corporation today.</p>
+          <h1 className="text-2xl font-bold text-foreground">Good morning, Alex!</h1>
+          <p className="text-muted-foreground">Here&apos;s what&apos;s happening at Acme Corporation today.</p>
           <div className="flex items-center gap-2 mt-2">
             <Badge variant="outline" className="text-primary border-primary/20 bg-primary/5">
               Admin
             </Badge>
-            <span className="text-sm text-slate-500">HR Director • Human Resources</span>
+            <span className="text-sm text-muted-foreground">HR Director • Human Resources</span>
           </div>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -151,14 +151,14 @@ export default function OverviewPage() {
               <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-accent">
                 <Users className="w-5 h-5 text-primary" />
               </div>
-              <Badge variant="outline" className="text-emerald-600 border-emerald-200 bg-emerald-50">
+              <Badge variant="outline" className="text-primary border-primary/20 bg-accent">
                 <ArrowUpRight className="w-3 h-3 mr-1" />
                 +3
               </Badge>
             </div>
             <div className="mt-4">
-              <p className="text-2xl font-bold text-slate-900">{STATS.totalEmployees}</p>
-              <p className="text-sm text-slate-500">Total Employees</p>
+              <p className="text-2xl font-bold text-foreground">{STATS.totalEmployees}</p>
+              <p className="text-sm text-muted-foreground">Total Employees</p>
             </div>
           </CardContent>
         </Card>
@@ -166,13 +166,13 @@ export default function OverviewPage() {
         <Card className="hover:shadow-md transition-shadow">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
-              <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-emerald-100">
-                <DollarSign className="w-5 h-5 text-emerald-600" />
+              <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-accent">
+                <DollarSign className="w-5 h-5 text-primary" />
               </div>
             </div>
             <div className="mt-4">
-              <p className="text-2xl font-bold text-slate-900">${STATS.nextPayrollAmount.toLocaleString()}</p>
-              <p className="text-sm text-slate-500">{STATS.nextPayDate}</p>
+              <p className="text-2xl font-bold text-foreground">${STATS.nextPayrollAmount.toLocaleString()}</p>
+              <p className="text-sm text-muted-foreground">{STATS.nextPayDate}</p>
             </div>
           </CardContent>
         </Card>
@@ -180,13 +180,13 @@ export default function OverviewPage() {
         <Card className="hover:shadow-md transition-shadow">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
-              <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-violet-100">
-                <Calendar className="w-5 h-5 text-violet-600" />
+              <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-accent">
+                <Calendar className="w-5 h-5 text-primary" />
               </div>
             </div>
             <div className="mt-4">
-              <p className="text-2xl font-bold text-slate-900">{STATS.pendingPto}</p>
-              <p className="text-sm text-slate-500">Pending PTO</p>
+              <p className="text-2xl font-bold text-foreground">{STATS.pendingPto}</p>
+              <p className="text-sm text-muted-foreground">Pending PTO</p>
             </div>
           </CardContent>
         </Card>
@@ -194,17 +194,17 @@ export default function OverviewPage() {
         <Card className="hover:shadow-md transition-shadow">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
-              <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-amber-100">
-                <TrendingUp className="w-5 h-5 text-amber-600" />
+              <div className="w-10 h-10 rounded-lg flex items-center justify-center bg-accent">
+                <TrendingUp className="w-5 h-5 text-primary" />
               </div>
-              <Badge variant="outline" className="text-emerald-600 border-emerald-200 bg-emerald-50">
+              <Badge variant="outline" className="text-primary border-primary/20 bg-accent">
                 <ArrowUpRight className="w-3 h-3 mr-1" />
                 +2.1%
               </Badge>
             </div>
             <div className="mt-4">
-              <p className="text-2xl font-bold text-slate-900">{STATS.retentionRate}%</p>
-              <p className="text-sm text-slate-500">Retention Rate</p>
+              <p className="text-2xl font-bold text-foreground">{STATS.retentionRate}%</p>
+              <p className="text-sm text-muted-foreground">Retention Rate</p>
             </div>
           </CardContent>
         </Card>
@@ -228,27 +228,27 @@ export default function OverviewPage() {
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-              <div className="p-4 bg-slate-50 rounded-lg">
-                <p className="text-sm text-slate-500">Gross Pay</p>
-                <p className="text-xl font-semibold text-slate-900">
+              <div className="p-4 bg-accent/50 rounded-lg">
+                <p className="text-sm text-muted-foreground">Gross Pay</p>
+                <p className="text-xl font-semibold text-foreground">
                   ${PAYROLL.grossPay.toLocaleString()}
                 </p>
               </div>
-              <div className="p-4 bg-slate-50 rounded-lg">
-                <p className="text-sm text-slate-500">Taxes</p>
+              <div className="p-4 bg-accent/50 rounded-lg">
+                <p className="text-sm text-muted-foreground">Taxes</p>
                 <p className="text-xl font-semibold text-red-600">
                   -${PAYROLL.taxes.toLocaleString()}
                 </p>
               </div>
-              <div className="p-4 bg-slate-50 rounded-lg">
-                <p className="text-sm text-slate-500">Deductions</p>
+              <div className="p-4 bg-accent/50 rounded-lg">
+                <p className="text-sm text-muted-foreground">Deductions</p>
                 <p className="text-xl font-semibold text-amber-600">
                   -${PAYROLL.deductions.toLocaleString()}
                 </p>
               </div>
-              <div className="p-4 bg-emerald-50 rounded-lg">
-                <p className="text-sm text-emerald-600">Net Pay</p>
-                <p className="text-xl font-semibold text-emerald-700">
+              <div className="p-4 bg-accent rounded-lg">
+                <p className="text-sm text-primary">Net Pay</p>
+                <p className="text-xl font-semibold text-primary">
                   ${PAYROLL.netPay.toLocaleString()}
                 </p>
               </div>
@@ -259,8 +259,8 @@ export default function OverviewPage() {
                   <Users className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <p className="font-medium text-slate-900">{PAYROLL.employees} employees</p>
-                  <p className="text-sm text-slate-500">will be paid on {PAYROLL.date}</p>
+                  <p className="font-medium text-foreground">{PAYROLL.employees} employees</p>
+                  <p className="text-sm text-muted-foreground">will be paid on {PAYROLL.date}</p>
                 </div>
               </div>
               <Link href="/payroll">
@@ -282,7 +282,7 @@ export default function OverviewPage() {
               </CardDescription>
             </div>
             {pendingApprovals.length > 0 && (
-              <Badge variant="secondary" className="bg-amber-100 text-amber-700">
+              <Badge variant="secondary" className="bg-accent text-primary">
                 <AlertCircle className="w-3 h-3 mr-1" />
                 {pendingApprovals.length}
               </Badge>
@@ -290,24 +290,24 @@ export default function OverviewPage() {
           </CardHeader>
           <CardContent className="space-y-3">
             {pendingApprovals.length === 0 ? (
-              <div className="text-center py-6 text-slate-500">
-                <CheckCircle2 className="w-10 h-10 mx-auto mb-2 text-emerald-500" />
+              <div className="text-center py-6 text-muted-foreground">
+                <CheckCircle2 className="w-10 h-10 mx-auto mb-2 text-primary" />
                 <p className="font-medium">All approvals complete!</p>
                 <p className="text-sm">Great job staying on top of requests.</p>
               </div>
             ) : (
               pendingApprovals.slice(0, 4).map((item) => (
-                <div key={item.id} className="flex items-center gap-3 p-3 bg-slate-50 rounded-lg">
+                <div key={item.id} className="flex items-center gap-3 p-3 bg-accent/50 rounded-lg">
                   <Avatar className="w-10 h-10">
                     <AvatarFallback className="bg-accent text-primary text-sm">{item.avatar}</AvatarFallback>
                   </Avatar>
                   <div className="flex-1 min-w-0">
-                    <p className="font-medium text-slate-900 truncate">{item.name}</p>
-                    <p className="text-sm text-slate-500">{item.type} - {item.details}</p>
+                    <p className="font-medium text-foreground truncate">{item.name}</p>
+                    <p className="text-sm text-muted-foreground">{item.type} - {item.details}</p>
                   </div>
                   <Button
                     size="sm"
-                    className="bg-emerald-600 hover:bg-emerald-700"
+                    className="bg-primary hover:bg-primary/90"
                     onClick={() => handleApprove(item.id, item.name, item.type)}
                   >
                     Approve
@@ -327,57 +327,57 @@ export default function OverviewPage() {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-4">
-            <div className="flex flex-col items-center p-3 bg-slate-50 rounded-lg">
+            <div className="flex flex-col items-center p-3 bg-accent/50 rounded-lg">
               <Users className="w-5 h-5 text-primary mb-2" />
-              <p className="text-xl font-bold text-slate-900">{STATS.totalEmployees}</p>
-              <p className="text-xs text-slate-500 text-center">Employees</p>
+              <p className="text-xl font-bold text-foreground">{STATS.totalEmployees}</p>
+              <p className="text-xs text-muted-foreground text-center">Employees</p>
             </div>
-            <div className="flex flex-col items-center p-3 bg-slate-50 rounded-lg">
-              <Building2 className="w-5 h-5 text-violet-500 mb-2" />
-              <p className="text-xl font-bold text-slate-900">{STATS.departments}</p>
-              <p className="text-xs text-slate-500 text-center">Departments</p>
+            <div className="flex flex-col items-center p-3 bg-accent/50 rounded-lg">
+              <Building2 className="w-5 h-5 text-primary mb-2" />
+              <p className="text-xl font-bold text-foreground">{STATS.departments}</p>
+              <p className="text-xs text-muted-foreground text-center">Departments</p>
             </div>
-            <div className="flex flex-col items-center p-3 bg-slate-50 rounded-lg">
-              <Briefcase className="w-5 h-5 text-amber-500 mb-2" />
-              <p className="text-xl font-bold text-slate-900">{STATS.openPositions}</p>
-              <p className="text-xs text-slate-500 text-center">Open Roles</p>
+            <div className="flex flex-col items-center p-3 bg-accent/50 rounded-lg">
+              <Briefcase className="w-5 h-5 text-primary mb-2" />
+              <p className="text-xl font-bold text-foreground">{STATS.openPositions}</p>
+              <p className="text-xs text-muted-foreground text-center">Open Roles</p>
             </div>
-            <div className="flex flex-col items-center p-3 bg-emerald-50 rounded-lg">
-              <TrendingUp className="w-5 h-5 text-emerald-500 mb-2" />
-              <p className="text-xl font-bold text-emerald-700">{STATS.retentionRate}%</p>
-              <p className="text-xs text-slate-500 text-center">Retention</p>
+            <div className="flex flex-col items-center p-3 bg-accent rounded-lg">
+              <TrendingUp className="w-5 h-5 text-primary mb-2" />
+              <p className="text-xl font-bold text-primary">{STATS.retentionRate}%</p>
+              <p className="text-xs text-muted-foreground text-center">Retention</p>
             </div>
-            <div className="flex flex-col items-center p-3 bg-slate-50 rounded-lg">
-              <Home className="w-5 h-5 text-blue-500 mb-2" />
-              <p className="text-xl font-bold text-slate-900">{STATS.remoteToday}</p>
-              <p className="text-xs text-slate-500 text-center">Remote Today</p>
+            <div className="flex flex-col items-center p-3 bg-accent/50 rounded-lg">
+              <Home className="w-5 h-5 text-primary mb-2" />
+              <p className="text-xl font-bold text-foreground">{STATS.remoteToday}</p>
+              <p className="text-xs text-muted-foreground text-center">Remote Today</p>
             </div>
-            <div className="flex flex-col items-center p-3 bg-slate-50 rounded-lg">
-              <Calendar className="w-5 h-5 text-red-400 mb-2" />
-              <p className="text-xl font-bold text-slate-900">{STATS.onLeaveToday}</p>
-              <p className="text-xs text-slate-500 text-center">On Leave</p>
+            <div className="flex flex-col items-center p-3 bg-accent/50 rounded-lg">
+              <Calendar className="w-5 h-5 text-muted-foreground mb-2" />
+              <p className="text-xl font-bold text-foreground">{STATS.onLeaveToday}</p>
+              <p className="text-xs text-muted-foreground text-center">On Leave</p>
             </div>
-            <div className="flex flex-col items-center p-3 bg-slate-50 rounded-lg">
-              <Gift className="w-5 h-5 text-pink-500 mb-2" />
-              <p className="text-xl font-bold text-slate-900">{STATS.birthdaysThisWeek}</p>
-              <p className="text-xs text-slate-500 text-center">Birthdays</p>
+            <div className="flex flex-col items-center p-3 bg-accent/50 rounded-lg">
+              <Gift className="w-5 h-5 text-primary mb-2" />
+              <p className="text-xl font-bold text-foreground">{STATS.birthdaysThisWeek}</p>
+              <p className="text-xs text-muted-foreground text-center">Birthdays</p>
             </div>
-            <div className="flex flex-col items-center p-3 bg-slate-50 rounded-lg">
-              <Award className="w-5 h-5 text-amber-500 mb-2" />
-              <p className="text-xl font-bold text-slate-900">{STATS.anniversaries}</p>
-              <p className="text-xs text-slate-500 text-center">Anniversaries</p>
+            <div className="flex flex-col items-center p-3 bg-accent/50 rounded-lg">
+              <Award className="w-5 h-5 text-primary mb-2" />
+              <p className="text-xl font-bold text-foreground">{STATS.anniversaries}</p>
+              <p className="text-xs text-muted-foreground text-center">Anniversaries</p>
             </div>
           </div>
           <div className="mt-4 flex flex-wrap gap-3">
-            <Badge variant="outline" className="text-emerald-600 border-emerald-200 bg-emerald-50">
+            <Badge variant="outline" className="text-primary border-primary/20 bg-accent">
               <UserPlus className="w-3 h-3 mr-1" />
               +3 this month
             </Badge>
-            <Badge variant="outline" className="text-blue-600 border-blue-200 bg-blue-50">
+            <Badge variant="outline" className="text-primary border-primary/20 bg-accent">
               <Clock className="w-3 h-3 mr-1" />
               Avg tenure: 2.4 years
             </Badge>
-            <Badge variant="outline" className="text-violet-600 border-violet-200 bg-violet-50">
+            <Badge variant="outline" className="text-primary border-primary/20 bg-accent">
               <Clock className="w-3 h-3 mr-1" />
               {STATS.avgHoursPerWeek}h avg/week
             </Badge>
@@ -395,7 +395,7 @@ export default function OverviewPage() {
                 <CardTitle className="text-lg">Company Pulse</CardTitle>
                 <CardDescription>Employee sentiment this week</CardDescription>
               </div>
-              <Badge variant="outline" className="text-emerald-600 border-emerald-200 bg-emerald-50">
+              <Badge variant="outline" className="text-primary border-primary/20 bg-accent">
                 {PULSE_DATA.trend} vs last week
               </Badge>
             </div>
@@ -412,11 +412,11 @@ export default function OverviewPage() {
                   />
                 </svg>
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <span className="text-2xl font-bold text-slate-900">{PULSE_DATA.moodScore}</span>
+                  <span className="text-2xl font-bold text-foreground">{PULSE_DATA.moodScore}</span>
                 </div>
               </div>
               <div className="flex-1">
-                <p className="text-sm font-medium text-slate-700 mb-2">Top Topics</p>
+                <p className="text-sm font-medium text-foreground mb-2">Top Topics</p>
                 <div className="flex flex-wrap gap-2">
                   {PULSE_DATA.topTopics.map((topic, i) => (
                     <Badge key={i} variant="secondary" className="text-xs">
@@ -444,7 +444,7 @@ export default function OverviewPage() {
               </div>
               <CardTitle className="text-white">AI Assistant</CardTitle>
             </div>
-            <CardDescription className="text-slate-300">
+            <CardDescription className="text-muted-foreground">
               Ask me anything about HR
             </CardDescription>
           </CardHeader>
@@ -463,7 +463,7 @@ export default function OverviewPage() {
               ))}
             </div>
             <Link href="/ai">
-              <Button className="w-full bg-white text-slate-900 hover:bg-slate-100">
+              <Button className="w-full bg-white text-foreground hover:bg-slate-100">
                 <Sparkles className="w-4 h-4 mr-2" />
                 Open AI Assistant
               </Button>
@@ -491,20 +491,20 @@ export default function OverviewPage() {
             {CELEBRATIONS.map((celebration) => (
               <div
                 key={celebration.id}
-                className="flex-shrink-0 w-40 p-4 bg-white rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow text-center"
+                className="flex-shrink-0 w-40 p-4 bg-white rounded-xl border border-border shadow-sm hover:shadow-md transition-shadow text-center"
               >
                 <div className="text-2xl mb-2">{celebration.emoji}</div>
                 <Avatar className="w-12 h-12 mx-auto mb-2">
                   <AvatarFallback className={`text-sm font-medium ${
-                    celebration.type === 'birthday' ? 'bg-pink-100 text-pink-700' :
-                    celebration.type === 'anniversary' ? 'bg-amber-100 text-amber-700' :
-                    'bg-emerald-100 text-emerald-700'
+                    celebration.type === 'birthday' ? 'bg-accent text-primary' :
+                    celebration.type === 'anniversary' ? 'bg-accent text-primary' :
+                    'bg-accent text-primary'
                   }`}>
                     {celebration.avatar}
                   </AvatarFallback>
                 </Avatar>
-                <p className="font-medium text-slate-900 text-sm truncate">{celebration.name}</p>
-                <p className="text-xs text-slate-500 mt-1">
+                <p className="font-medium text-foreground text-sm truncate">{celebration.name}</p>
+                <p className="text-xs text-muted-foreground mt-1">
                   {celebration.type === 'birthday' && <span className="flex items-center justify-center gap-1"><Cake className="w-3 h-3" /> {celebration.detail}</span>}
                   {celebration.type === 'anniversary' && <span className="flex items-center justify-center gap-1"><Star className="w-3 h-3" /> {celebration.detail}</span>}
                   {celebration.type === 'new_hire' && <span className="flex items-center justify-center gap-1"><UserPlus className="w-3 h-3" /> {celebration.detail}</span>}
@@ -524,19 +524,19 @@ export default function OverviewPage() {
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {RECENT_ACTIVITY.map((activity) => (
-              <div key={activity.id} className="flex items-center gap-3 p-3 bg-slate-50 rounded-lg">
+              <div key={activity.id} className="flex items-center gap-3 p-3 bg-accent/50 rounded-lg">
                 <div className={`w-2 h-2 rounded-full ${
                   activity.type === 'employee' ? 'bg-primary' :
-                  activity.type === 'payroll' ? 'bg-emerald-500' :
-                  activity.type === 'leave' ? 'bg-violet-500' :
-                  activity.type === 'benefits' ? 'bg-amber-500' :
-                  'bg-slate-400'
+                  activity.type === 'payroll' ? 'bg-primary' :
+                  activity.type === 'leave' ? 'bg-primary/60' :
+                  activity.type === 'benefits' ? 'bg-primary/80' :
+                  'bg-muted-foreground'
                 }`} />
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-slate-900">{activity.action}</p>
-                  <p className="text-xs text-slate-500">{activity.time}</p>
+                  <p className="text-sm font-medium text-foreground">{activity.action}</p>
+                  <p className="text-xs text-muted-foreground">{activity.time}</p>
                 </div>
-                <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                <CheckCircle2 className="w-4 h-4 text-primary" />
               </div>
             ))}
           </div>
