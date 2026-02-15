@@ -51,10 +51,10 @@ interface Message {
 }
 
 const AGENT_TYPE_COLORS: Record<string, string> = {
-  pulse_check: 'bg-green-500',
-  onboarding: 'bg-blue-500',
-  exit_interview: 'bg-orange-500',
-  manager_coaching: 'bg-purple-500',
+  pulse_check: 'bg-primary',
+  onboarding: 'bg-primary/80',
+  exit_interview: 'bg-primary/60',
+  manager_coaching: 'bg-primary/70',
 }
 
 export default function MessagesPage() {

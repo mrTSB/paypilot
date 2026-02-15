@@ -114,10 +114,10 @@ const AGENT_TYPE_ICONS: Record<string, React.ReactNode> = {
 }
 
 const AGENT_TYPE_COLORS: Record<string, string> = {
-  pulse_check: 'bg-green-500/10 text-green-500',
-  onboarding: 'bg-blue-500/10 text-blue-500',
-  exit_interview: 'bg-orange-500/10 text-orange-500',
-  manager_coaching: 'bg-purple-500/10 text-purple-500',
+  pulse_check: 'bg-accent text-primary',
+  onboarding: 'bg-accent text-primary',
+  exit_interview: 'bg-accent text-primary',
+  manager_coaching: 'bg-accent text-primary',
 }
 
 const STATUS_COLORS: Record<string, string> = {
@@ -455,8 +455,8 @@ export default function AgentsPage() {
         <Card>
           <CardContent className="pt-6">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-blue-500/10">
-                <MessageCircle className="h-5 w-5 text-blue-500" />
+              <div className="p-2 rounded-lg bg-accent">
+                <MessageCircle className="h-5 w-5 text-primary" />
               </div>
               <div>
                 <p className="text-2xl font-bold">
@@ -470,8 +470,8 @@ export default function AgentsPage() {
         <Card>
           <CardContent className="pt-6">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-green-500/10">
-                <CheckCircle2 className="h-5 w-5 text-green-500" />
+              <div className="p-2 rounded-lg bg-accent">
+                <CheckCircle2 className="h-5 w-5 text-primary" />
               </div>
               <div>
                 <p className="text-2xl font-bold">
@@ -485,8 +485,8 @@ export default function AgentsPage() {
         <Card>
           <CardContent className="pt-6">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-purple-500/10">
-                <Calendar className="h-5 w-5 text-purple-500" />
+              <div className="p-2 rounded-lg bg-accent">
+                <Calendar className="h-5 w-5 text-primary" />
               </div>
               <div>
                 <p className="text-2xl font-bold">{instances.length}</p>
