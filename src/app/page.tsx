@@ -319,6 +319,23 @@ export default function LandingPage() {
           <p className="text-sm text-slate-500 mt-4">
             No credit card required - 14-day free trial - Cancel anytime
           </p>
+
+          {/* Stats Bar */}
+          <div className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
+            {[
+              { value: '10K+', label: 'Employees Managed' },
+              { value: '500+', label: 'Companies' },
+              { value: '99.9%', label: 'Uptime' },
+              { value: '4.9/5', label: 'Customer Rating' },
+            ].map((stat) => (
+              <div key={stat.label} className="text-center">
+                <p className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 text-transparent bg-clip-text">
+                  {stat.value}
+                </p>
+                <p className="text-sm text-slate-500 mt-1">{stat.label}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
