@@ -26,7 +26,8 @@ import {
   LogOut,
   Menu,
   Bell,
-  ChevronDown
+  ChevronDown,
+  Network
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { toast } from 'sonner'
@@ -34,6 +35,7 @@ import { toast } from 'sonner'
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { name: 'Employees', href: '/employees', icon: Users },
+  { name: 'Org Chart', href: '/org-chart', icon: Network },
   { name: 'Payroll', href: '/payroll', icon: Calculator },
   { name: 'Time & PTO', href: '/time', icon: Clock },
   { name: 'Benefits', href: '/benefits', icon: Shield },
