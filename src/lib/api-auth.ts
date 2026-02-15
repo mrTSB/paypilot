@@ -144,3 +144,16 @@ export function hasRole(context: AuthContext, requiredRoles: string[]): boolean 
 export function checkAdmin(context: AuthContext): boolean {
   return context.isAdmin
 }
+
+/**
+ * Check if we're in demo mode (server-side)
+ */
+export async function isDemoMode(): Promise<boolean> {
+  try {
+    const cookieStore = await cookies()
+    const demoMode = cookieStore.get('paypilot_demo_mode')?.value
+    return demoMode === 'true'
+  } catch {
+    return false
+  }
+}

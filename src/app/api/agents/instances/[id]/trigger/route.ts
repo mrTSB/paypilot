@@ -1,7 +1,12 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
-import { getAuthContext } from '@/lib/api-auth'
+import { getAuthContext, isDemoMode } from '@/lib/api-auth'
 import { generateInitialMessage, isAnthropicConfigured } from '@/lib/anthropic'
+import {
+  STATIC_EMPLOYEES,
+  STATIC_AGENT_INSTANCES,
+  getAgentInstanceById,
+} from '@/lib/static-demo-data'
 
 // POST /api/agents/instances/[id]/trigger - Manually trigger agent (Run button)
 export async function POST(
@@ -21,6 +26,28 @@ export async function POST(
       return NextResponse.json({
         error: 'Insufficient permissions. Only admins can run agents.'
       }, { status: 403 })
+    }
+
+    // Demo mode: return simulated success
+    if (await isDemoMode()) {
+      const instance = getAgentInstanceById(id)
+      if (!instance) {
+        return NextResponse.json({ error: 'Agent instance not found' }, { status: 404 })
+      }
+
+      if (instance.status !== 'active') {
+        return NextResponse.json({ error: 'Agent is not active' }, { status: 400 })
+      }
+
+      // Simulate sending messages to all employees
+      const employeeCount = STATIC_EMPLOYEES.length
+
+      return NextResponse.json({
+        success: true,
+        run_id: `demo_run_${Date.now()}`,
+        messages_sent: employeeCount,
+        conversations_touched: employeeCount,
+      })
     }
 
     // Parse optional target employees

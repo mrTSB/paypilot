@@ -1,5 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
+import { getAuthContext, isDemoMode } from '@/lib/api-auth'
+import { getAgentInstanceById, STATIC_CONVERSATIONS } from '@/lib/static-demo-data'
 
 // GET /api/agents/instances/[id] - Get single agent instance
 export async function GET(
@@ -83,8 +85,33 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const supabase = await createClient()
     const { id } = await params
+    const body = await request.json()
+    const { status, name, config } = body
+
+    // Demo mode: simulate success
+    if (await isDemoMode()) {
+      const authContext = await getAuthContext()
+      if (!authContext?.isAdmin) {
+        return NextResponse.json({ error: 'Insufficient permissions' }, { status: 403 })
+      }
+
+      const instance = getAgentInstanceById(id)
+      if (!instance) {
+        return NextResponse.json({ error: 'Instance not found' }, { status: 404 })
+      }
+
+      // Return updated instance (simulated)
+      return NextResponse.json({
+        instance: {
+          ...instance,
+          status: status || instance.status,
+          name: name || instance.name,
+        }
+      })
+    }
+
+    const supabase = await createClient()
 
     const { data: { user }, error: authError } = await supabase.auth.getUser()
 
@@ -102,9 +129,6 @@ export async function PATCH(
     if (!membership || !['owner', 'admin', 'hr_manager'].includes(membership.role)) {
       return NextResponse.json({ error: 'Insufficient permissions' }, { status: 403 })
     }
-
-    const body = await request.json()
-    const { status, name, config } = body
 
     const updates: Record<string, unknown> = {}
     if (status) updates.status = status
