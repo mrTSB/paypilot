@@ -88,12 +88,12 @@ const kpiCards = [
 ]
 
 const departmentBreakdown = [
-  { name: 'Engineering', count: 18, percentage: 38, color: 'bg-blue-500' },
-  { name: 'Sales', count: 12, percentage: 26, color: 'bg-emerald-500' },
-  { name: 'Marketing', count: 6, percentage: 13, color: 'bg-orange-500' },
-  { name: 'Design', count: 5, percentage: 11, color: 'bg-pink-500' },
-  { name: 'HR', count: 3, percentage: 6, color: 'bg-cyan-500' },
-  { name: 'Finance', count: 3, percentage: 6, color: 'bg-violet-500' }
+  { name: 'Engineering', count: 18, percentage: 38, color: 'bg-primary' },
+  { name: 'Sales', count: 12, percentage: 26, color: 'bg-primary/90' },
+  { name: 'Marketing', count: 6, percentage: 13, color: 'bg-primary/80' },
+  { name: 'Design', count: 5, percentage: 11, color: 'bg-primary/70' },
+  { name: 'HR', count: 3, percentage: 6, color: 'bg-primary/60' },
+  { name: 'Finance', count: 3, percentage: 6, color: 'bg-primary/50' }
 ]
 
 const monthlyPayroll = [
@@ -241,7 +241,7 @@ export default function ReportsPage() {
                 </div>
                 <Badge
                   variant={kpi.trend === 'up' ? 'default' : 'secondary'}
-                  className={kpi.trend === 'up' ? 'bg-emerald-100 text-emerald-700' : 'bg-accent text-primary'}
+                  className={kpi.trend === 'up' ? 'bg-accent text-primary' : 'bg-accent/50 text-muted-foreground'}
                 >
                   {kpi.trend === 'up' ? (
                     <ArrowUpRight className="w-3 h-3 mr-1" />
@@ -287,7 +287,7 @@ export default function ReportsPage() {
                     }`}
                     style={{ height: `${(month.amount / maxPayroll) * 100}%` }}
                   />
-                  <span className="text-xs text-slate-500 mt-2">{month.month}</span>
+                  <span className="text-xs text-muted-foreground mt-2">{month.month}</span>
                 </div>
               ))}
             </div>
