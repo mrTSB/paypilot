@@ -19,6 +19,8 @@ import {
   Search,
   X,
   Loader2,
+  Mic,
+  Volume2,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -60,6 +62,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Checkbox } from '@/components/ui/checkbox'
+import { Slider } from '@/components/ui/slider'
 import { toast } from 'sonner'
 import { useUser } from '@/contexts/user-context'
 import {
@@ -188,6 +191,16 @@ export default function AgentsPage() {
     no_coercion: true,
     no_harassment: true,
   })
+
+  // Voice Agent mode state
+  const [agentMode, setAgentMode] = useState<'chat' | 'voice'>('chat')
+  const [voiceConfig, setVoiceConfig] = useState({
+    lang: 'en-US',
+    style: 'friendly',
+    rate: 1.0,
+    pitch: 1.0,
+  })
+  const [isPreviewingSpeech, setIsPreviewingSpeech] = useState(false)
 
   // Employee picker state
   const [selectedEmployees, setSelectedEmployees] = useState<Employee[]>([])
@@ -399,6 +412,8 @@ export default function AgentsPage() {
               employee_ids: selectedEmployees.map(e => e.id),
             } : undefined,
             guardrails,
+            mode: agentMode,
+            voice_config: agentMode === 'voice' ? voiceConfig : undefined,
           },
           schedule: {
             cadence,
@@ -477,9 +492,53 @@ export default function AgentsPage() {
       no_coercion: true,
       no_harassment: true,
     })
+    setAgentMode('chat')
+    setVoiceConfig({
+      lang: 'en-US',
+      style: 'friendly',
+      rate: 1.0,
+      pitch: 1.0,
+    })
     if (agents.length > 0) {
       setSelectedAgentId(agents[0].id)
     }
+  }
+
+  // Voice preview function
+  const previewVoice = () => {
+    if (!window.speechSynthesis) {
+      toast.error('Speech synthesis not supported in this browser')
+      return
+    }
+
+    // Cancel any ongoing speech
+    window.speechSynthesis.cancel()
+
+    if (isPreviewingSpeech) {
+      setIsPreviewingSpeech(false)
+      return
+    }
+
+    const previewText = `Hi! I'm your ${voiceConfig.style} AI assistant. How are you feeling today?`
+    const utterance = new SpeechSynthesisUtterance(previewText)
+    utterance.rate = voiceConfig.rate
+    utterance.pitch = voiceConfig.pitch
+
+    // Find a voice matching the selected language
+    const voices = window.speechSynthesis.getVoices()
+    const matchingVoice = voices.find(v => v.lang === voiceConfig.lang) ||
+      voices.find(v => v.lang.startsWith(voiceConfig.lang.split('-')[0])) ||
+      voices[0]
+
+    if (matchingVoice) {
+      utterance.voice = matchingVoice
+    }
+
+    utterance.onstart = () => setIsPreviewingSpeech(true)
+    utterance.onend = () => setIsPreviewingSpeech(false)
+    utterance.onerror = () => setIsPreviewingSpeech(false)
+
+    window.speechSynthesis.speak(utterance)
   }
 
   const formatDate = (date: string) => {
@@ -780,6 +839,147 @@ export default function AgentsPage() {
                 </SelectContent>
               </Select>
             </div>
+
+            {/* Agent Mode - Chat vs Voice */}
+            <div className="space-y-2">
+              <Label>Agent Mode</Label>
+              <div className="flex gap-2">
+                <Button
+                  type="button"
+                  variant={agentMode === 'chat' ? 'default' : 'outline'}
+                  className="flex-1 gap-2"
+                  onClick={() => setAgentMode('chat')}
+                >
+                  <MessageCircle className="h-4 w-4" />
+                  Chat
+                </Button>
+                <Button
+                  type="button"
+                  variant={agentMode === 'voice' ? 'default' : 'outline'}
+                  className="flex-1 gap-2"
+                  onClick={() => setAgentMode('voice')}
+                >
+                  <Mic className="h-4 w-4" />
+                  Voice
+                </Button>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {agentMode === 'chat'
+                  ? 'Text-based conversations in the Messages page'
+                  : 'Voice-enabled conversations with speech input/output'}
+              </p>
+            </div>
+
+            {/* Voice Settings - only when voice mode */}
+            {agentMode === 'voice' && (
+              <div className="space-y-4 p-4 bg-accent/50 rounded-lg border">
+                <div className="flex items-center gap-2 mb-2">
+                  <Volume2 className="h-4 w-4 text-primary" />
+                  <span className="font-medium text-sm">Voice Settings</span>
+                </div>
+
+                {/* Voice Accent */}
+                <div className="space-y-2">
+                  <Label className="text-sm">Voice Accent</Label>
+                  <Select
+                    value={voiceConfig.lang}
+                    onValueChange={(val) => setVoiceConfig({ ...voiceConfig, lang: val })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="en-US">English (US)</SelectItem>
+                      <SelectItem value="en-GB">English (UK)</SelectItem>
+                      <SelectItem value="en-AU">English (Australia)</SelectItem>
+                      <SelectItem value="es-ES">Spanish (Spain)</SelectItem>
+                      <SelectItem value="es-MX">Spanish (Mexico)</SelectItem>
+                      <SelectItem value="fr-FR">French</SelectItem>
+                      <SelectItem value="de-DE">German</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Speaking Style */}
+                <div className="space-y-2">
+                  <Label className="text-sm">Speaking Style</Label>
+                  <Select
+                    value={voiceConfig.style}
+                    onValueChange={(val) => setVoiceConfig({ ...voiceConfig, style: val })}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="friendly">Friendly</SelectItem>
+                      <SelectItem value="professional">Professional</SelectItem>
+                      <SelectItem value="calm">Calm</SelectItem>
+                      <SelectItem value="energetic">Energetic</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Speaking Rate */}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-sm">Speaking Rate</Label>
+                    <span className="text-xs text-muted-foreground">{voiceConfig.rate.toFixed(1)}x</span>
+                  </div>
+                  <Slider
+                    value={[voiceConfig.rate]}
+                    onValueChange={(val) => setVoiceConfig({ ...voiceConfig, rate: val[0] })}
+                    min={0.5}
+                    max={2}
+                    step={0.1}
+                    className="w-full"
+                  />
+                  <div className="flex justify-between text-xs text-muted-foreground">
+                    <span>Slow</span>
+                    <span>Fast</span>
+                  </div>
+                </div>
+
+                {/* Pitch */}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label className="text-sm">Pitch</Label>
+                    <span className="text-xs text-muted-foreground">{voiceConfig.pitch.toFixed(1)}</span>
+                  </div>
+                  <Slider
+                    value={[voiceConfig.pitch]}
+                    onValueChange={(val) => setVoiceConfig({ ...voiceConfig, pitch: val[0] })}
+                    min={0.5}
+                    max={2}
+                    step={0.1}
+                    className="w-full"
+                  />
+                  <div className="flex justify-between text-xs text-muted-foreground">
+                    <span>Low</span>
+                    <span>High</span>
+                  </div>
+                </div>
+
+                {/* Preview Button */}
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full gap-2"
+                  onClick={previewVoice}
+                >
+                  {isPreviewingSpeech ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      Speaking...
+                    </>
+                  ) : (
+                    <>
+                      <Volume2 className="h-4 w-4" />
+                      Preview Voice
+                    </>
+                  )}
+                </Button>
+              </div>
+            )}
 
             {/* Audience */}
             <div className="space-y-2">

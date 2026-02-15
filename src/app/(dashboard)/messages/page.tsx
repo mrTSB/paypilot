@@ -12,9 +12,7 @@ import {
   Clock,
   AlertCircle,
   Mic,
-  MicOff,
   Volume2,
-  Settings2,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -226,10 +224,15 @@ export default function MessagesPage() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between mb-1">
-                          <span className="font-medium truncate">
-                            {agentInstance?.name || 'Agent'}
-                          </span>
-                          <span className="text-xs text-muted-foreground">
+                          <div className="flex items-center gap-1.5 min-w-0">
+                            <span className="font-medium truncate">
+                              {agentInstance?.name || 'Agent'}
+                            </span>
+                            {agentInstance?.mode === 'voice' && (
+                              <Mic className="h-3 w-3 text-primary flex-shrink-0" />
+                            )}
+                          </div>
+                          <span className="text-xs text-muted-foreground flex-shrink-0">
                             {formatTime(conv.lastMessageAt)}
                           </span>
                         </div>
@@ -275,7 +278,15 @@ export default function MessagesPage() {
                   </AvatarFallback>
                 </Avatar>
                 <div>
-                  <h3 className="font-medium">{selectedAgentInstance.name}</h3>
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-medium">{selectedAgentInstance.name}</h3>
+                    {selectedAgentInstance.mode === 'voice' && (
+                      <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20 gap-1 text-xs">
+                        <Volume2 className="h-3 w-3" />
+                        Voice
+                      </Badge>
+                    )}
+                  </div>
                   <p className="text-sm text-muted-foreground capitalize">
                     {selectedAgentInstance.agentType.replace('_', ' ')} Assistant
                   </p>

@@ -33,6 +33,13 @@ export interface Employee {
   performanceRating: number
 }
 
+export interface VoiceConfig {
+  lang: string
+  style: string
+  rate: number
+  pitch: number
+}
+
 export interface AgentInstance {
   id: string
   companyId: string
@@ -46,6 +53,8 @@ export interface AgentInstance {
   conversationsCount: number
   responseRate: number
   avgSentiment: number
+  mode?: 'chat' | 'voice'
+  voiceConfig?: VoiceConfig
 }
 
 export interface Message {
@@ -427,6 +436,28 @@ export const STATIC_AGENT_INSTANCES: AgentInstance[] = [
     conversationsCount: 18,
     responseRate: 0.61,
     avgSentiment: 0.22,
+  },
+  // Voice-enabled agent instance
+  {
+    id: 'inst_009',
+    companyId: DEMO_COMPANY_ID,
+    agentType: 'pulse_check',
+    name: 'Voice Check-in',
+    tone: 'friendly_peer',
+    audienceType: 'engineering',
+    createdAt: '2026-02-10T10:00:00Z',
+    lastRunAt: '2026-02-15T09:00:00Z',
+    status: 'active',
+    conversationsCount: 22,
+    responseRate: 0.88,
+    avgSentiment: 0.58,
+    mode: 'voice',
+    voiceConfig: {
+      lang: 'en-US',
+      style: 'friendly',
+      rate: 1.0,
+      pitch: 1.0,
+    },
   },
 ]
 
