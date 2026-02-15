@@ -1,10 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
 
-// Initialize Stripe with API key
-const stripe = process.env.STRIPE_SECRET_KEY
-  ? new Stripe(process.env.STRIPE_SECRET_KEY)
-  : null
+// Initialize Stripe lazily to ensure env vars are available
+function getStripe(): Stripe | null {
+  const key = process.env.STRIPE_SECRET_KEY
+  if (!key) return null
+  return new Stripe(key, {
+    typescript: true,
+    maxNetworkRetries: 1
+  })
+}
 
 // Price IDs for each plan (would be created in Stripe Dashboard)
 const PRICE_IDS: Record<string, string> = {
@@ -34,6 +39,9 @@ export async function POST(req: NextRequest) {
       )
     }
 
+    // Get Stripe instance
+    const stripe = getStripe()
+
     // If no Stripe key, return demo response
     if (!stripe) {
       console.log('Stripe not configured, returning demo checkout URL')
@@ -42,6 +50,8 @@ export async function POST(req: NextRequest) {
         mode: 'demo'
       })
     }
+
+    console.log('Creating checkout session with priceId:', priceId)
 
     // Create Stripe Checkout Session
     const session = await stripe.checkout.sessions.create({
@@ -78,16 +88,22 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     console.error('Stripe checkout error:', error)
 
-    // Return user-friendly error
+    // Return user-friendly error with details
     if (error instanceof Stripe.errors.StripeError) {
+      console.error('Stripe error details:', {
+        type: error.type,
+        code: error.code,
+        message: error.message
+      })
       return NextResponse.json(
-        { error: error.message },
+        { error: error.message, code: error.code },
         { status: error.statusCode || 500 }
       )
     }
 
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error'
     return NextResponse.json(
-      { error: 'Failed to create checkout session' },
+      { error: `Failed to create checkout session: ${errorMessage}` },
       { status: 500 }
     )
   }
