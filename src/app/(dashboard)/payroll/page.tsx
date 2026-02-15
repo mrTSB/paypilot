@@ -38,6 +38,7 @@ import {
   Loader2
 } from 'lucide-react'
 import { toast } from 'sonner'
+import Link from 'next/link'
 import { canTransitionPayroll, type PayrollStatus } from '@/lib/state-machines'
 
 // Demo payroll data
@@ -281,10 +282,12 @@ export default function PayrollPage() {
             <Download className="w-4 h-4 mr-2" />
             Export Reports
           </Button>
-          <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700">
-            <Play className="w-4 h-4 mr-2" />
-            Run Payroll
-          </Button>
+          <Link href="/payroll/run">
+            <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700">
+              <Play className="w-4 h-4 mr-2" />
+              Run Payroll
+            </Button>
+          </Link>
         </div>
       </div>
 
