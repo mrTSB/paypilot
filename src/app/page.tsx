@@ -637,7 +637,7 @@ export default function LandingPage() {
             {pricingPlans.map((plan) => (
               <Card
                 key={plan.name}
-                className={`border-2 ${plan.popular ? 'border-blue-500 shadow-xl scale-105' : 'border-slate-200'}`}
+                className={`border-2 transition-all duration-300 hover:-translate-y-1 ${plan.popular ? 'border-blue-500 shadow-xl scale-105' : 'border-slate-200 hover:border-blue-300 hover:shadow-lg'}`}
               >
                 <CardContent className="p-6">
                   {plan.popular && (
@@ -651,12 +651,14 @@ export default function LandingPage() {
                     <span className="text-4xl font-bold text-slate-900">${plan.price}</span>
                     <span className="text-slate-600">/month base + $6/employee</span>
                   </div>
-                  <Button
-                    className={`w-full ${plan.popular ? 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700' : ''}`}
-                    variant={plan.popular ? 'default' : 'outline'}
-                  >
-                    Get Started
-                  </Button>
+                  <Link href="/signup">
+                    <Button
+                      className={`w-full ${plan.popular ? 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700' : ''}`}
+                      variant={plan.popular ? 'default' : 'outline'}
+                    >
+                      Get Started
+                    </Button>
+                  </Link>
                   <ul className="mt-6 space-y-3">
                     {plan.features.map((feature) => (
                       <li key={feature} className="flex items-center gap-2 text-slate-600">
