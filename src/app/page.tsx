@@ -368,9 +368,11 @@ export default function LandingPage() {
                 <ChevronRight className="w-5 h-5 ml-2" />
               </Button>
             </Link>
-            <Button size="lg" variant="outline" className="text-lg px-8">
-              Watch Demo
-            </Button>
+            <Link href="/dashboard">
+              <Button size="lg" variant="outline" className="text-lg px-8">
+                Watch Demo
+              </Button>
+            </Link>
           </div>
           <p className="text-sm text-slate-500 mt-4">
             No credit card required - 14-day free trial - Cancel anytime
