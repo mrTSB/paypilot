@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { motion } from 'framer-motion'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -101,10 +102,34 @@ export default function OverviewPage() {
 
   const pendingApprovals = PENDING_APPROVALS.filter((item) => !approvedItems.includes(item.id))
 
+  // Animation variants
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.1 }
+    }
+  }
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: 'easeOut' as const } }
+  }
+
+  const cardVariants = {
+    hidden: { opacity: 0, scale: 0.95 },
+    visible: { opacity: 1, scale: 1, transition: { duration: 0.3 } }
+  }
+
   return (
-    <div className="space-y-6">
+    <motion.div
+      className="space-y-6"
+      initial="hidden"
+      animate="visible"
+      variants={containerVariants}
+    >
       {/* Welcome header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <motion.div variants={itemVariants} className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-foreground">Good morning, Alex!</h1>
           <p className="text-muted-foreground">Here&apos;s what&apos;s happening at Acme Corporation today.</p>
@@ -141,10 +166,11 @@ export default function OverviewPage() {
             </Button>
           </Link>
         </div>
-      </div>
+      </motion.div>
 
       {/* Stats grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <motion.div variants={itemVariants} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <motion.div variants={cardVariants}>
         <Card className="hover:shadow-md transition-shadow">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
@@ -162,7 +188,9 @@ export default function OverviewPage() {
             </div>
           </CardContent>
         </Card>
+        </motion.div>
 
+        <motion.div variants={cardVariants}>
         <Card className="hover:shadow-md transition-shadow">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
@@ -176,7 +204,9 @@ export default function OverviewPage() {
             </div>
           </CardContent>
         </Card>
+        </motion.div>
 
+        <motion.div variants={cardVariants}>
         <Card className="hover:shadow-md transition-shadow">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
@@ -190,7 +220,9 @@ export default function OverviewPage() {
             </div>
           </CardContent>
         </Card>
+        </motion.div>
 
+        <motion.div variants={cardVariants}>
         <Card className="hover:shadow-md transition-shadow">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
@@ -208,10 +240,11 @@ export default function OverviewPage() {
             </div>
           </CardContent>
         </Card>
-      </div>
+        </motion.div>
+      </motion.div>
 
       {/* Main content grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Upcoming Payroll */}
         <Card className="lg:col-span-2">
           <CardHeader className="flex flex-row items-center justify-between">
@@ -317,9 +350,10 @@ export default function OverviewPage() {
             )}
           </CardContent>
         </Card>
-      </div>
+      </motion.div>
 
       {/* Organization Insights */}
+      <motion.div variants={itemVariants}>
       <Card>
         <CardHeader>
           <CardTitle className="text-lg">Organization at a Glance</CardTitle>
@@ -384,9 +418,10 @@ export default function OverviewPage() {
           </div>
         </CardContent>
       </Card>
+      </motion.div>
 
       {/* Company Pulse & AI Assistant */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Company Pulse */}
         <Card>
           <CardHeader>
@@ -470,9 +505,10 @@ export default function OverviewPage() {
             </Link>
           </CardContent>
         </Card>
-      </div>
+      </motion.div>
 
       {/* Employee Spotlight - Celebrations */}
+      <motion.div variants={itemVariants}>
       <Card className="border-2 border-dashed border-primary/20 bg-accent/50">
         <CardHeader>
           <div className="flex items-center justify-between">
@@ -514,8 +550,10 @@ export default function OverviewPage() {
           </div>
         </CardContent>
       </Card>
+      </motion.div>
 
       {/* Recent Activity */}
+      <motion.div variants={itemVariants}>
       <Card>
         <CardHeader>
           <CardTitle className="text-lg">Recent Activity</CardTitle>
@@ -542,6 +580,7 @@ export default function OverviewPage() {
           </div>
         </CardContent>
       </Card>
-    </div>
+      </motion.div>
+    </motion.div>
   )
 }
