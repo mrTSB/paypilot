@@ -1,19 +1,49 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { Sparkles, Loader2, Building2, Info } from 'lucide-react'
+import { Sparkles, Loader2, Building2, Info, CheckCircle2, PartyPopper } from 'lucide-react'
 import { toast } from 'sonner'
 
-export default function SignupPage() {
+function SignupContent() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [step, setStep] = useState(1)
   const [loading, setLoading] = useState(false)
+  const [showSuccess, setShowSuccess] = useState(false)
+
+  // Check for successful Stripe checkout
+  useEffect(() => {
+    const success = searchParams.get('success')
+    const sessionId = searchParams.get('session_id')
+
+    if (success === 'true' && sessionId) {
+      setShowSuccess(true)
+      toast.success('Payment successful! Welcome to PayPilot!')
+
+      // Auto-redirect to dashboard after 3 seconds
+      setTimeout(() => {
+        // Create demo session
+        localStorage.setItem('paypilot_demo_session', JSON.stringify({
+          user: {
+            id: 'stripe-user-' + Date.now(),
+            email: 'subscriber@paypilot.com',
+            name: 'New Subscriber',
+            role: 'company_admin',
+            company: 'My Company',
+            stripeSessionId: sessionId
+          },
+          expiresAt: Date.now() + 24 * 60 * 60 * 1000
+        }))
+        router.push('/dashboard')
+      }, 3000)
+    }
+  }, [searchParams, router])
 
   // Step 1: Account info
   const [email, setEmail] = useState('')
@@ -60,6 +90,50 @@ export default function SignupPage() {
 
     toast.success('Account created! Welcome to PayPilot!')
     router.push('/dashboard')
+  }
+
+  // Show success screen after Stripe checkout
+  if (showSuccess) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white flex items-center justify-center px-4 py-8">
+        <div className="w-full max-w-md text-center">
+          <div className="mb-8">
+            <div className="w-20 h-20 bg-gradient-to-br from-emerald-500 to-green-600 rounded-full flex items-center justify-center mx-auto mb-6 animate-bounce">
+              <CheckCircle2 className="w-10 h-10 text-white" />
+            </div>
+            <h1 className="text-3xl font-bold text-slate-900 mb-2">
+              Welcome to PayPilot! <PartyPopper className="inline w-8 h-8" />
+            </h1>
+            <p className="text-lg text-slate-600">
+              Your 14-day trial has started
+            </p>
+          </div>
+
+          <Card className="shadow-lg mb-6">
+            <CardContent className="p-6">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between p-3 bg-emerald-50 rounded-lg">
+                  <span className="text-emerald-700 font-medium">Payment confirmed</span>
+                  <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+                </div>
+                <div className="flex items-center justify-between p-3 bg-emerald-50 rounded-lg">
+                  <span className="text-emerald-700 font-medium">Account created</span>
+                  <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+                </div>
+                <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+                  <span className="text-blue-700 font-medium">Setting up your workspace...</span>
+                  <Loader2 className="w-5 h-5 text-blue-600 animate-spin" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <p className="text-slate-500">
+            Redirecting to your dashboard...
+          </p>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -230,5 +304,18 @@ export default function SignupPage() {
         </p>
       </div>
     </div>
+  )
+}
+
+// Wrap in Suspense for useSearchParams
+export default function SignupPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+      </div>
+    }>
+      <SignupContent />
+    </Suspense>
   )
 }
