@@ -50,6 +50,7 @@ import {
 } from 'lucide-react'
 import { PayPilotLogo } from '@/components/logo'
 import { KeyboardShortcutsDialog } from '@/components/keyboard-shortcuts'
+import { WhatsNewDialog } from '@/components/whats-new'
 import { createClient } from '@/lib/supabase/client'
 import { toast } from 'sonner'
 
@@ -457,6 +458,9 @@ export default function DashboardLayout({
 
       {/* Keyboard shortcuts help dialog */}
       <KeyboardShortcutsDialog />
+
+      {/* What's New dialog - shows on first visit or after updates */}
+      <WhatsNewDialog />
     </div>
   )
 }
