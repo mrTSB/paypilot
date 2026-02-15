@@ -41,6 +41,7 @@ import { toast } from 'sonner'
 import { exportPayrollToCSV, generateReport } from '@/lib/export-utils'
 import Link from 'next/link'
 import { canTransitionPayroll, type PayrollStatus } from '@/lib/state-machines'
+import { PayrollTrendChart } from '@/components/payroll-trend-chart'
 
 // Demo payroll data
 const initialPayrollRuns = [
@@ -370,6 +371,9 @@ export default function PayrollPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Payroll Trend Chart */}
+      <PayrollTrendChart />
 
       {/* Current Payroll Card */}
       <CurrentPayrollCard

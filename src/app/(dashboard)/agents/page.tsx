@@ -129,6 +129,8 @@ const AGENT_TYPE_ICONS: Record<string, React.ReactNode> = {
   onboarding: <Users className="h-5 w-5" />,
   exit_interview: <MessageCircle className="h-5 w-5" />,
   manager_coaching: <Zap className="h-5 w-5" />,
+  manager_360: <Zap className="h-5 w-5" />,
+  chat_agent: <MessageCircle className="h-5 w-5" />,
 }
 
 const AGENT_TYPE_COLORS: Record<string, string> = {
@@ -136,6 +138,8 @@ const AGENT_TYPE_COLORS: Record<string, string> = {
   onboarding: 'bg-accent text-primary',
   exit_interview: 'bg-accent text-primary',
   manager_coaching: 'bg-accent text-primary',
+  manager_360: 'bg-accent text-primary',
+  chat_agent: 'bg-primary/10 text-primary',
 }
 
 const STATUS_COLORS: Record<string, string> = {
@@ -891,22 +895,38 @@ export default function AgentsPage() {
               </div>
             )}
 
-            {/* Cadence */}
-            <div className="space-y-2">
-              <Label>Cadence</Label>
-              <Select value={cadence} onValueChange={setCadence}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="once">Once</SelectItem>
-                  <SelectItem value="daily">Daily</SelectItem>
-                  <SelectItem value="weekly">Weekly</SelectItem>
-                  <SelectItem value="biweekly">Bi-weekly</SelectItem>
-                  <SelectItem value="monthly">Monthly</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            {/* Cadence - Hidden for Chat Agent */}
+            {agents.find(a => a.id === selectedAgentId)?.agent_type !== 'chat_agent' && (
+              <div className="space-y-2">
+                <Label>Cadence</Label>
+                <Select value={cadence} onValueChange={setCadence}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="once">Once</SelectItem>
+                    <SelectItem value="daily">Daily</SelectItem>
+                    <SelectItem value="weekly">Weekly</SelectItem>
+                    <SelectItem value="biweekly">Bi-weekly</SelectItem>
+                    <SelectItem value="monthly">Monthly</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+
+            {/* Chat Agent Info */}
+            {agents.find(a => a.id === selectedAgentId)?.agent_type === 'chat_agent' && (
+              <div className="p-3 bg-accent rounded-lg border">
+                <div className="flex items-center gap-2 mb-1">
+                  <MessageCircle className="h-4 w-4 text-primary" />
+                  <span className="font-medium text-sm">On-Demand Chat</span>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  This agent is available anytime. Employees can start a conversation from the Messages page.
+                  No scheduling required.
+                </p>
+              </div>
+            )}
 
             {/* Guardrails */}
             <div className="space-y-2">

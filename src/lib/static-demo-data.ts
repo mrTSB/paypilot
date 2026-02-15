@@ -275,6 +275,7 @@ export const AGENT_TEMPLATES = [
     description: 'Regular check-ins to understand employee sentiment and wellbeing',
     icon: '💬',
     color: 'bg-blue-500',
+    requiresSchedule: true,
   },
   {
     id: 'onboarding',
@@ -282,6 +283,7 @@ export const AGENT_TEMPLATES = [
     description: 'Helps new employees get settled and answers common questions',
     icon: '👋',
     color: 'bg-green-500',
+    requiresSchedule: true,
   },
   {
     id: 'exit_interview',
@@ -289,6 +291,7 @@ export const AGENT_TEMPLATES = [
     description: 'Conducts thoughtful exit interviews to gather feedback',
     icon: '🚪',
     color: 'bg-orange-500',
+    requiresSchedule: true,
   },
   {
     id: 'manager_360',
@@ -296,6 +299,15 @@ export const AGENT_TEMPLATES = [
     description: 'Collects anonymous feedback about managers from their reports',
     icon: '🎯',
     color: 'bg-purple-500',
+    requiresSchedule: true,
+  },
+  {
+    id: 'chat_agent',
+    name: 'Chat Agent (On-Demand)',
+    description: 'On-demand HR assistant that employees can chat with anytime. No scheduling required.',
+    icon: '💬',
+    color: 'bg-primary',
+    requiresSchedule: false,
   },
 ]
 

@@ -11,6 +11,10 @@ import {
   Search,
   Clock,
   AlertCircle,
+  Mic,
+  MicOff,
+  Volume2,
+  Settings2,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -19,6 +23,8 @@ import { Badge } from '@/components/ui/badge'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { cn } from '@/lib/utils'
 import { useUser } from '@/contexts/user-context'
+import { VoiceInput, VoiceOutput } from '@/components/voice-input'
+import { toast } from 'sonner'
 import {
   STATIC_CONVERSATIONS,
   STATIC_AGENT_INSTANCES,
@@ -33,6 +39,7 @@ const AGENT_TYPE_COLORS: Record<string, string> = {
   onboarding: 'bg-green-500',
   exit_interview: 'bg-orange-500',
   manager_360: 'bg-purple-500',
+  chat_agent: 'bg-primary',
 }
 
 export default function MessagesPage() {
@@ -43,6 +50,7 @@ export default function MessagesPage() {
   const [newMessage, setNewMessage] = useState('')
   const [searchQuery, setSearchQuery] = useState('')
   const [localMessages, setLocalMessages] = useState<Message[]>([])
+  const [isListening, setIsListening] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   // Get conversations based on user role (RBAC)
@@ -338,6 +346,10 @@ export default function MessagesPage() {
                           )}>
                             <Clock className="h-3 w-3" />
                             {formatTime(message.createdAt)}
+                            {/* Voice output for agent messages */}
+                            {message.senderType === 'agent' && (
+                              <VoiceOutput text={message.content} className="ml-1" />
+                            )}
                           </div>
                         </div>
                       </motion.div>
@@ -350,6 +362,17 @@ export default function MessagesPage() {
               {/* Message Input */}
               {selectedConversation.status !== 'escalated' && selectedConversation.status !== 'completed' && (
                 <div className="p-4 border-t">
+                  {/* Voice mode indicator */}
+                  {isListening && (
+                    <div className="flex items-center gap-2 mb-2 text-red-500 text-sm">
+                      <div className="flex gap-1">
+                        <span className="w-1.5 h-1.5 bg-red-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                        <span className="w-1.5 h-1.5 bg-red-500 rounded-full animate-bounce" style={{ animationDelay: '100ms' }} />
+                        <span className="w-1.5 h-1.5 bg-red-500 rounded-full animate-bounce" style={{ animationDelay: '200ms' }} />
+                      </div>
+                      <span>Listening...</span>
+                    </div>
+                  )}
                   <form
                     onSubmit={(e) => {
                       e.preventDefault()
@@ -357,8 +380,15 @@ export default function MessagesPage() {
                     }}
                     className="flex gap-2"
                   >
+                    <VoiceInput
+                      onTranscript={(text) => {
+                        setNewMessage(prev => prev ? `${prev} ${text}` : text)
+                        setIsListening(false)
+                      }}
+                      disabled={isSending}
+                    />
                     <Input
-                      placeholder="Type your message..."
+                      placeholder={isListening ? "Listening..." : "Type or speak your message..."}
                       value={newMessage}
                       onChange={(e) => setNewMessage(e.target.value)}
                       disabled={isSending}

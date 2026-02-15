@@ -84,6 +84,7 @@ const allNavigation = [
   { name: 'Compliance', href: '/compliance', icon: ClipboardCheck, adminOnly: true },
   { name: 'Reports', href: '/reports', icon: BarChart3, adminOnly: true },
   { name: 'AI Agents', href: '/agents', icon: Bot, adminOnly: true },
+  { name: 'Orchestration', href: '/agents/orchestration', icon: Network, adminOnly: true },
   { name: 'Messages', href: '/messages', icon: MessageCircle, adminOnly: false },
   { name: 'Insights', href: '/admin/insights', icon: Sparkles, adminOnly: true },
   { name: 'AI Assistant', href: '/ai', icon: MessageSquare, adminOnly: false },
@@ -91,7 +92,7 @@ const allNavigation = [
 ]
 
 // Protected routes that require admin access
-const ADMIN_ONLY_ROUTES = ['/agents', '/admin/insights', '/compliance', '/reports']
+const ADMIN_ONLY_ROUTES = ['/agents', '/admin/insights', '/compliance', '/reports', '/agents/orchestration']
 
 // Wrapper component to provide user context
 export default function DashboardLayout({
@@ -349,7 +350,7 @@ function DashboardLayoutContent({
                     </AvatarFallback>
                   </Avatar>
                   <span className="text-sm font-medium text-foreground">
-                    {user?.fullName || 'User'}
+                    Hi, {user?.firstName || 'User'}
                   </span>
                   {isAdmin && (
                     <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-4 bg-primary/10 text-primary border-primary/30">

@@ -14,6 +14,7 @@ export interface UserSession {
   userId: string
   email: string
   fullName: string
+  firstName: string // Extracted first name for greetings
   role: 'owner' | 'admin' | 'hr_manager' | 'manager' | 'employee' | 'member'
   companyId: string
   companyName: string
@@ -21,6 +22,41 @@ export interface UserSession {
   avatarUrl?: string
   initials: string
   employeeId?: string // For linking to employee record
+}
+
+/**
+ * Extract first name from various sources
+ * Priority: given_name > first word of full name > email local part
+ */
+function extractFirstName(
+  givenName?: string,
+  fullName?: string,
+  email?: string
+): string {
+  // 1. Prefer given_name from OAuth profile
+  if (givenName && givenName.trim()) {
+    return givenName.trim()
+  }
+
+  // 2. Extract from full name (first word)
+  if (fullName && fullName.trim()) {
+    const firstName = fullName.trim().split(/\s+/)[0]
+    if (firstName) {
+      return firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase()
+    }
+  }
+
+  // 3. Derive from email local part (before @)
+  if (email) {
+    const localPart = email.split('@')[0] || ''
+    // Handle formats like sarah.chen, sarah_chen, sarahchen
+    const nameMatch = localPart.split(/[._-]/)[0]
+    if (nameMatch && nameMatch.length > 1) {
+      return nameMatch.charAt(0).toUpperCase() + nameMatch.slice(1).toLowerCase()
+    }
+  }
+
+  return 'User'
 }
 
 interface UserContextType {
@@ -87,6 +123,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
           userId: demoContext.userId,
           email: demoContext.email,
           fullName: demoContext.fullName,
+          firstName: extractFirstName(undefined, demoContext.fullName, demoContext.email),
           role: demoContext.role,
           companyId: demoContext.companyId,
           companyName: demoContext.companyName,
@@ -104,7 +141,8 @@ export function UserProvider({ children }: { children: ReactNode }) {
       if (res.ok) {
         const data = await res.json()
         if (data.user) {
-          const initials = (data.user.name || data.user.email || 'U')
+          const fullName = data.user.name || data.user.email?.split('@')[0] || 'User'
+          const initials = (fullName || 'U')
             .split(' ')
             .map((n: string) => n[0])
             .join('')
@@ -114,7 +152,12 @@ export function UserProvider({ children }: { children: ReactNode }) {
           setUser({
             userId: data.user.id,
             email: data.user.email,
-            fullName: data.user.name || data.user.email?.split('@')[0] || 'User',
+            fullName,
+            firstName: extractFirstName(
+              data.user.given_name, // OAuth given_name if available
+              fullName,
+              data.user.email
+            ),
             role: data.membership?.role || 'employee',
             companyId: data.company?.id || '',
             companyName: data.company?.name || '',
@@ -136,6 +179,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
           userId: ADMIN_CONTEXT.userId,
           email: ADMIN_CONTEXT.email,
           fullName: ADMIN_CONTEXT.fullName,
+          firstName: extractFirstName(undefined, ADMIN_CONTEXT.fullName, ADMIN_CONTEXT.email),
           role: ADMIN_CONTEXT.role,
           companyId: ADMIN_CONTEXT.companyId,
           companyName: ADMIN_CONTEXT.companyName,
@@ -150,6 +194,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
         userId: ADMIN_CONTEXT.userId,
         email: ADMIN_CONTEXT.email,
         fullName: ADMIN_CONTEXT.fullName,
+        firstName: extractFirstName(undefined, ADMIN_CONTEXT.fullName, ADMIN_CONTEXT.email),
         role: ADMIN_CONTEXT.role,
         companyId: ADMIN_CONTEXT.companyId,
         companyName: ADMIN_CONTEXT.companyName,

@@ -133,7 +133,7 @@ export default function OverviewPage() {
     return 'Good evening'
   }
 
-  const firstName = user?.fullName?.split(' ')[0] || 'there'
+  const firstName = user?.firstName || 'there'
 
   // Animation variants
   const containerVariants = {
