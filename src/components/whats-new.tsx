@@ -101,22 +101,22 @@ export function WhatsNewDialog() {
         </DialogHeader>
         <div className="space-y-4 mt-4 max-h-[400px] overflow-y-auto">
           {updates.map((update, i) => (
-            <div key={i} className="flex gap-3 p-3 rounded-lg bg-slate-50 hover:bg-slate-100 transition-colors">
+            <div key={i} className="flex gap-3 p-3 rounded-lg bg-accent/50 hover:bg-accent transition-colors">
               <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${
-                update.isNew ? 'bg-primary/10' : 'bg-slate-200'
+                update.isNew ? 'bg-primary/10' : 'bg-accent'
               }`}>
-                <update.icon className={`w-5 h-5 ${update.isNew ? 'text-primary' : 'text-slate-600'}`} />
+                <update.icon className={`w-5 h-5 ${update.isNew ? 'text-primary' : 'text-muted-foreground'}`} />
               </div>
               <div className="flex-1">
                 <div className="flex items-center gap-2">
-                  <h4 className="font-medium text-slate-900 text-sm">{update.title}</h4>
+                  <h4 className="font-medium text-foreground text-sm">{update.title}</h4>
                   {update.isNew && (
                     <Badge className="text-[10px] px-1.5 py-0 bg-primary/10 text-primary border-0">
                       NEW
                     </Badge>
                   )}
                 </div>
-                <p className="text-sm text-slate-600 mt-0.5">{update.description}</p>
+                <p className="text-sm text-muted-foreground mt-0.5">{update.description}</p>
               </div>
             </div>
           ))}

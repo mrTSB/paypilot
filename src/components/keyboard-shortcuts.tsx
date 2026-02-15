@@ -61,16 +61,16 @@ export function KeyboardShortcutsDialog() {
         </DialogHeader>
         <div className="space-y-6 mt-4">
           <div>
-            <h4 className="text-sm font-medium text-slate-700 mb-3">General</h4>
+            <h4 className="text-sm font-medium text-foreground mb-3">General</h4>
             <div className="space-y-2">
               {shortcuts.map((shortcut, i) => (
                 <div key={i} className="flex items-center justify-between py-1.5">
-                  <span className="text-sm text-slate-600">{shortcut.description}</span>
+                  <span className="text-sm text-muted-foreground">{shortcut.description}</span>
                   <div className="flex items-center gap-1">
                     {shortcut.keys.map((key, j) => (
                       <kbd
                         key={j}
-                        className="px-2 py-1 text-xs font-mono bg-slate-100 border border-slate-200 rounded text-slate-700"
+                        className="px-2 py-1 text-xs font-mono bg-accent border border-border rounded text-foreground"
                       >
                         {key}
                       </kbd>
@@ -81,17 +81,17 @@ export function KeyboardShortcutsDialog() {
             </div>
           </div>
           <div>
-            <h4 className="text-sm font-medium text-slate-700 mb-3">Quick Navigation</h4>
-            <p className="text-xs text-slate-500 mb-3">Press keys in sequence (e.g., G then H)</p>
+            <h4 className="text-sm font-medium text-foreground mb-3">Quick Navigation</h4>
+            <p className="text-xs text-muted-foreground mb-3">Press keys in sequence (e.g., G then H)</p>
             <div className="space-y-2">
               {navigationShortcuts.map((shortcut, i) => (
                 <div key={i} className="flex items-center justify-between py-1.5">
-                  <span className="text-sm text-slate-600">{shortcut.description}</span>
+                  <span className="text-sm text-muted-foreground">{shortcut.description}</span>
                   <div className="flex items-center gap-1">
                     {shortcut.keys.map((key, j) => (
                       <kbd
                         key={j}
-                        className="px-2 py-1 text-xs font-mono bg-slate-100 border border-slate-200 rounded text-slate-700"
+                        className="px-2 py-1 text-xs font-mono bg-accent border border-border rounded text-foreground"
                       >
                         {key}
                       </kbd>
@@ -102,8 +102,8 @@ export function KeyboardShortcutsDialog() {
             </div>
           </div>
         </div>
-        <p className="text-xs text-slate-400 mt-4 text-center">
-          Press <kbd className="px-1.5 py-0.5 text-xs bg-slate-100 border rounded">Esc</kbd> to close
+        <p className="text-xs text-muted-foreground mt-4 text-center">
+          Press <kbd className="px-1.5 py-0.5 text-xs bg-accent border rounded">Esc</kbd> to close
         </p>
       </DialogContent>
     </Dialog>
