@@ -469,8 +469,8 @@ export default function TimePage() {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
-                <Hourglass className="w-5 h-5 text-amber-600" />
+              <div className="w-10 h-10 bg-accent rounded-lg flex items-center justify-center">
+                <Hourglass className="w-5 h-5 text-primary" />
               </div>
               <div>
                 <p className="text-2xl font-bold text-foreground">{pendingRequests.length}</p>
@@ -612,7 +612,7 @@ export default function TimePage() {
                           <TableCell className="text-right font-medium">{entry.totalHours.toFixed(1)}h</TableCell>
                         </TableRow>
                       ))}
-                      <TableRow className="bg-slate-50">
+                      <TableRow className="bg-accent/50">
                         <TableCell colSpan={5} className="font-semibold">Week Total</TableCell>
                         <TableCell className="text-right font-bold text-primary">37.0h</TableCell>
                       </TableRow>
@@ -688,9 +688,9 @@ export default function TimePage() {
               <CardDescription>Team members on leave this week</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
-              <div className="flex items-center gap-3 p-2 bg-amber-50 rounded-lg">
+              <div className="flex items-center gap-3 p-2 bg-accent/50 rounded-lg">
                 <Avatar className="w-8 h-8">
-                  <AvatarFallback className="bg-amber-100 text-amber-700 text-xs">RK</AvatarFallback>
+                  <AvatarFallback className="bg-accent text-primary text-xs">RK</AvatarFallback>
                 </Avatar>
                 <div className="flex-1 min-w-0">
                   <p className="font-medium text-sm">Rachel Kim</p>
@@ -698,7 +698,7 @@ export default function TimePage() {
                 </div>
               </div>
               <div className="text-center py-4 text-muted-foreground">
-                <Users className="w-8 h-8 mx-auto mb-2 text-slate-300" />
+                <Users className="w-8 h-8 mx-auto mb-2 text-muted-foreground/50" />
                 <p className="text-sm">No other team members out</p>
               </div>
             </CardContent>
