@@ -242,7 +242,7 @@ export default function OverviewPage() {
               </div>
               <div className="p-4 bg-accent/50 rounded-lg">
                 <p className="text-sm text-muted-foreground">Deductions</p>
-                <p className="text-xl font-semibold text-amber-600">
+                <p className="text-xl font-semibold text-muted-foreground">
                   -${PAYROLL.deductions.toLocaleString()}
                 </p>
               </div>
@@ -463,7 +463,7 @@ export default function OverviewPage() {
               ))}
             </div>
             <Link href="/ai">
-              <Button className="w-full bg-white text-foreground hover:bg-slate-100">
+              <Button className="w-full bg-white text-foreground hover:bg-accent">
                 <Sparkles className="w-4 h-4 mr-2" />
                 Open AI Assistant
               </Button>
