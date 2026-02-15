@@ -16,7 +16,8 @@ import {
   Check,
   Sparkles,
   TrendingDown,
-  DollarSign
+  DollarSign,
+  Loader2
 } from "lucide-react"
 
 // Animated counter component
@@ -112,6 +113,7 @@ const pricingPlans = [
   {
     name: "Starter",
     price: 40,
+    planId: "starter",
     description: "For small teams getting started",
     features: [
       "Up to 10 employees",
@@ -123,6 +125,7 @@ const pricingPlans = [
   {
     name: "Growth",
     price: 80,
+    planId: "growth",
     description: "For growing businesses",
     popular: true,
     features: [
@@ -136,6 +139,7 @@ const pricingPlans = [
   {
     name: "Enterprise",
     price: 150,
+    planId: "enterprise",
     description: "For larger organizations",
     features: [
       "Unlimited employees",
@@ -310,6 +314,33 @@ function ROICalculator() {
 }
 
 export default function LandingPage() {
+  const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null)
+
+  const handleCheckout = async (planId: string) => {
+    setCheckoutLoading(planId)
+    try {
+      const response = await fetch('/api/stripe/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          plan: planId,
+          email: '', // Will be collected on signup page
+        })
+      })
+
+      const data = await response.json()
+      if (data.url) {
+        window.location.href = data.url
+      }
+    } catch (error) {
+      console.error('Checkout error:', error)
+      // Fallback to signup page
+      window.location.href = `/signup?plan=${planId}`
+    } finally {
+      setCheckoutLoading(null)
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
       {/* Navigation */}
@@ -651,14 +682,19 @@ export default function LandingPage() {
                     <span className="text-4xl font-bold text-slate-900">${plan.price}</span>
                     <span className="text-slate-600">/month base + $6/employee</span>
                   </div>
-                  <Link href="/signup">
-                    <Button
+                  <Button
                       className={`w-full ${plan.popular ? 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700' : ''}`}
                       variant={plan.popular ? 'default' : 'outline'}
+                      onClick={() => handleCheckout(plan.planId)}
+                      disabled={checkoutLoading !== null}
                     >
-                      Get Started
+                      {checkoutLoading === plan.planId ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          Processing...
+                        </>
+                      ) : 'Start 14-Day Trial'}
                     </Button>
-                  </Link>
                   <ul className="mt-6 space-y-3">
                     {plan.features.map((feature) => (
                       <li key={feature} className="flex items-center gap-2 text-slate-600">
