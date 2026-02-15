@@ -388,9 +388,18 @@ export default function DashboardLayout({
         </header>
 
         {/* Page content */}
-        <main className="p-4 lg:p-6 mt-[calc(40px+56px)] lg:mt-[40px]">
+        <main className="p-4 lg:p-6 mt-[calc(40px+56px)] lg:mt-[40px] min-h-[calc(100vh-140px)]">
           {children}
         </main>
+
+        {/* Footer with keyboard hints */}
+        <footer className="hidden lg:flex items-center justify-center py-3 text-xs text-muted-foreground border-t border-border bg-card">
+          <div className="flex items-center gap-4">
+            <span>Press <kbd className="px-1.5 py-0.5 bg-secondary rounded text-[10px] font-mono">⌘K</kbd> for search</span>
+            <span className="text-border">|</span>
+            <span>Press <kbd className="px-1.5 py-0.5 bg-secondary rounded text-[10px] font-mono">?</kbd> for shortcuts</span>
+          </div>
+        </footer>
       </div>
 
       {/* Command Palette */}
