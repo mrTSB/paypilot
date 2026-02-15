@@ -21,6 +21,9 @@ import {
   UserPlus,
   Award,
   ArrowUpRight,
+  Cake,
+  PartyPopper,
+  Star,
 } from 'lucide-react'
 import Link from 'next/link'
 
@@ -71,6 +74,14 @@ const PULSE_DATA = {
   trend: '+5%',
   topTopics: ['Work-life balance', 'Career growth', 'Team collaboration', 'Benefits', 'Remote work'],
 }
+
+const CELEBRATIONS = [
+  { id: '1', type: 'birthday', name: 'Lisa Park', detail: 'Today!', avatar: 'LP', emoji: '🎂' },
+  { id: '2', type: 'anniversary', name: 'Michael Torres', detail: '3 years', avatar: 'MT', emoji: '🎉' },
+  { id: '3', type: 'new_hire', name: 'James Wilson', detail: 'Started Feb 14', avatar: 'JW', emoji: '👋' },
+  { id: '4', type: 'birthday', name: 'Emma Davis', detail: 'Tomorrow', avatar: 'ED', emoji: '🎂' },
+  { id: '5', type: 'anniversary', name: 'David Kim', detail: '5 years', avatar: 'DK', emoji: '⭐' },
+]
 
 export default function OverviewPage() {
   return (
@@ -406,6 +417,49 @@ export default function OverviewPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Employee Spotlight - Celebrations */}
+      <Card className="border-2 border-dashed border-amber-200 bg-gradient-to-r from-amber-50/50 to-pink-50/50">
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <PartyPopper className="w-5 h-5 text-amber-500" />
+              <CardTitle className="text-lg">Celebrations</CardTitle>
+            </div>
+            <Badge variant="outline" className="text-amber-600 border-amber-200 bg-amber-50">
+              {CELEBRATIONS.length} this week
+            </Badge>
+          </div>
+          <CardDescription>Birthdays, work anniversaries, and new team members</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex gap-4 overflow-x-auto pb-2">
+            {CELEBRATIONS.map((celebration) => (
+              <div
+                key={celebration.id}
+                className="flex-shrink-0 w-40 p-4 bg-white rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow text-center"
+              >
+                <div className="text-2xl mb-2">{celebration.emoji}</div>
+                <Avatar className="w-12 h-12 mx-auto mb-2">
+                  <AvatarFallback className={`text-sm font-medium ${
+                    celebration.type === 'birthday' ? 'bg-pink-100 text-pink-700' :
+                    celebration.type === 'anniversary' ? 'bg-amber-100 text-amber-700' :
+                    'bg-emerald-100 text-emerald-700'
+                  }`}>
+                    {celebration.avatar}
+                  </AvatarFallback>
+                </Avatar>
+                <p className="font-medium text-slate-900 text-sm truncate">{celebration.name}</p>
+                <p className="text-xs text-slate-500 mt-1">
+                  {celebration.type === 'birthday' && <span className="flex items-center justify-center gap-1"><Cake className="w-3 h-3" /> {celebration.detail}</span>}
+                  {celebration.type === 'anniversary' && <span className="flex items-center justify-center gap-1"><Star className="w-3 h-3" /> {celebration.detail}</span>}
+                  {celebration.type === 'new_hire' && <span className="flex items-center justify-center gap-1"><UserPlus className="w-3 h-3" /> {celebration.detail}</span>}
+                </p>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Recent Activity */}
       <Card>
