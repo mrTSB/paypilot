@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -75,6 +75,14 @@ const navigation = [
   { name: 'Settings', href: '/settings', icon: Settings },
 ]
 
+interface UserProfile {
+  id: string
+  email: string
+  name: string
+  avatarUrl?: string
+  initials: string
+}
+
 export default function DashboardLayout({
   children,
 }: {
@@ -84,6 +92,42 @@ export default function DashboardLayout({
   const router = useRouter()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [commandOpen, setCommandOpen] = useState(false)
+  const [user, setUser] = useState<UserProfile | null>(null)
+
+  // Fetch user profile on mount
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const supabase = createClient()
+        const { data: { user: authUser } } = await supabase.auth.getUser()
+
+        if (authUser) {
+          const name = authUser.user_metadata?.full_name ||
+                       authUser.user_metadata?.name ||
+                       authUser.email?.split('@')[0] ||
+                       'User'
+          const initials = name
+            .split(' ')
+            .map((n: string) => n[0])
+            .join('')
+            .substring(0, 2)
+            .toUpperCase()
+
+          setUser({
+            id: authUser.id,
+            email: authUser.email || '',
+            name: name,
+            avatarUrl: authUser.user_metadata?.avatar_url || authUser.user_metadata?.picture,
+            initials: initials,
+          })
+        }
+      } catch (err) {
+        console.error('Error fetching user:', err)
+      }
+    }
+
+    fetchUser()
+  }, [])
 
   // Cmd+K keyboard shortcut
   useEffect(() => {
@@ -218,7 +262,12 @@ export default function DashboardLayout({
             <Bell className="w-4 h-4" />
           </Button>
           <Avatar className="w-7 h-7">
-            <AvatarFallback className="bg-secondary text-foreground text-xs">JD</AvatarFallback>
+            {user?.avatarUrl && (
+              <AvatarImage src={user.avatarUrl} alt={user.name} />
+            )}
+            <AvatarFallback className="bg-secondary text-foreground text-xs">
+              {user?.initials || 'U'}
+            </AvatarFallback>
           </Avatar>
         </div>
       </header>
@@ -285,14 +334,26 @@ export default function DashboardLayout({
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="flex items-center gap-2 h-8 px-2">
                   <Avatar className="w-6 h-6">
-                    <AvatarFallback className="bg-secondary text-foreground text-xs">JD</AvatarFallback>
+                    {user?.avatarUrl && (
+                      <AvatarImage src={user.avatarUrl} alt={user.name} />
+                    )}
+                    <AvatarFallback className="bg-secondary text-foreground text-xs">
+                      {user?.initials || 'U'}
+                    </AvatarFallback>
                   </Avatar>
-                  <span className="text-sm font-medium text-foreground">John Doe</span>
+                  <span className="text-sm font-medium text-foreground">
+                    {user?.name || 'User'}
+                  </span>
                   <ChevronDown className="w-3 h-3 text-muted-foreground" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48 border-border">
-                <DropdownMenuLabel className="text-xs text-muted-foreground">My Account</DropdownMenuLabel>
+              <DropdownMenuContent align="end" className="w-56 border-border">
+                <DropdownMenuLabel className="font-normal">
+                  <div className="flex flex-col space-y-1">
+                    <p className="text-sm font-medium leading-none">{user?.name || 'User'}</p>
+                    <p className="text-xs leading-none text-muted-foreground">{user?.email || ''}</p>
+                  </div>
+                </DropdownMenuLabel>
                 <DropdownMenuSeparator className="bg-border" />
                 <DropdownMenuItem asChild className="text-sm">
                   <Link href="/settings">
