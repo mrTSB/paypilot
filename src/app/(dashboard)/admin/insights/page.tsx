@@ -212,7 +212,7 @@ export default function InsightsPage() {
       {(data.delta_highlights.improved.length > 0 ||
         data.delta_highlights.declined.length > 0 ||
         data.delta_highlights.new_concerns.length > 0) && (
-        <Card className="bg-gradient-to-r from-primary/5 to-primary/10 border-primary/20">
+        <Card className="bg-accent/50 border-primary/20">
           <CardContent className="pt-6">
             <div className="flex items-center gap-2 mb-4">
               <TrendingUp className="h-5 w-5 text-primary" />

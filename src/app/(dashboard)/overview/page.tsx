@@ -473,14 +473,14 @@ export default function OverviewPage() {
       </div>
 
       {/* Employee Spotlight - Celebrations */}
-      <Card className="border-2 border-dashed border-amber-200 bg-gradient-to-r from-amber-50/50 to-pink-50/50">
+      <Card className="border-2 border-dashed border-primary/20 bg-accent/50">
         <CardHeader>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <PartyPopper className="w-5 h-5 text-amber-500" />
+              <PartyPopper className="w-5 h-5 text-primary" />
               <CardTitle className="text-lg">Celebrations</CardTitle>
             </div>
-            <Badge variant="outline" className="text-amber-600 border-amber-200 bg-amber-50">
+            <Badge variant="outline" className="text-primary border-primary/20 bg-accent">
               {CELEBRATIONS.length} this week
             </Badge>
           </div>

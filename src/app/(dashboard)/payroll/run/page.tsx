@@ -314,7 +314,7 @@ export default function RunPayrollPage() {
               <Button
                 onClick={handleSubmit}
                 disabled={isSubmitting}
-                className="bg-gradient-to-r from-emerald-600 to-emerald-700"
+                className="bg-primary hover:bg-primary/90"
               >
                 {isSubmitting ? (
                   <>
