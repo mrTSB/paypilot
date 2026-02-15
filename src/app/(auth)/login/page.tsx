@@ -66,6 +66,33 @@ export default function LoginPage() {
     setLoading(true)
 
     try {
+      // Check for demo mode login first
+      const isDemoUser = Object.values(DEMO_USERS).some(u => u.email === email)
+
+      if (isDemoUser) {
+        // Set demo mode cookies
+        document.cookie = `paypilot_demo_mode=true; path=/; max-age=${7 * 24 * 60 * 60}`
+        document.cookie = `paypilot_demo_email=${encodeURIComponent(email)}; path=/; max-age=${7 * 24 * 60 * 60}`
+
+        // Store demo session in localStorage for persistence
+        const demoUser = Object.values(DEMO_USERS).find(u => u.email === email)
+        localStorage.setItem('paypilot_demo_session', JSON.stringify({
+          user: { email, name: demoUser?.name, role: demoUser?.role },
+          timestamp: Date.now(),
+        }))
+
+        toast.success(`Welcome, ${demoUser?.name || 'Demo User'}!`)
+
+        // Redirect based on user - employees go to messages, admins go to overview
+        if (email === DEMO_USERS.employee.email) {
+          router.push('/messages')
+        } else {
+          router.push('/overview')
+        }
+        return
+      }
+
+      // Try real Supabase auth for non-demo users
       const supabase = createClient()
 
       const { data, error } = await supabase.auth.signInWithPassword({
@@ -82,12 +109,7 @@ export default function LoginPage() {
 
       if (data.user) {
         toast.success('Welcome back!')
-        // Redirect based on user - employees go to messages, admins go to dashboard
-        if (email === DEMO_USERS.employee.email) {
-          router.push('/messages')
-        } else {
-          router.push('/dashboard')
-        }
+        router.push('/dashboard')
       }
     } catch (err) {
       console.error('Login error:', err)
