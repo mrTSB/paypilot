@@ -208,48 +208,42 @@ function DashboardMockup() {
   )
 }
 
-// Bento Grid Items - using site palette (primary green + muted stone colors)
+// Bento Grid Items - 2x3 layout with no gaps
 const bentoItems = [
   {
     title: "Automated Payroll",
     description: "Run payroll in minutes with automatic tax calculations, direct deposits, and full compliance",
     icon: Calculator,
-    size: "large",
     visual: "payroll"
   },
   {
     title: "Employee Management",
     description: "Centralize all HR data in one place",
     icon: Users,
-    size: "small",
     visual: "employees"
   },
   {
     title: "Time Tracking",
     description: "Track hours, PTO, and attendance",
     icon: Clock,
-    size: "small",
     visual: "time"
   },
   {
     title: "Benefits Admin",
-    description: "Health, dental, vision, and 401(k) management made simple",
+    description: "Manage health, dental, vision, and 401(k)",
     icon: Shield,
-    size: "medium",
     visual: "benefits"
   },
   {
     title: "AI HR Assistant",
     description: "Instant answers to HR questions",
     icon: MessageSquare,
-    size: "small",
     visual: "ai"
   },
   {
     title: "Analytics & Reports",
     description: "Insights and workforce analytics",
     icon: BarChart3,
-    size: "small",
     visual: "analytics"
   }
 ]
@@ -537,25 +531,19 @@ export default function LandingPage() {
               </p>
             </motion.div>
 
-            {/* Bento Grid - Clean design matching site style */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-[180px]">
+            {/* Bento Grid - Simple 3x2 layout, no gaps */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {bentoItems.map((item, index) => (
                 <motion.div
                   key={item.title}
-                  className={`${
-                    item.size === 'large'
-                      ? 'md:col-span-2 md:row-span-2'
-                      : item.size === 'medium'
-                        ? 'lg:col-span-1 md:row-span-2'
-                        : ''
-                  } relative group`}
+                  className="relative group"
                   variants={scaleIn}
                   initial="hidden"
                   whileInView="visible"
                   viewport={{ once: true }}
                   transition={{ delay: index * 0.08 }}
                 >
-                  <Card className="h-full overflow-hidden bg-card border border-border hover:border-primary/30 transition-all duration-300">
+                  <Card className="h-full min-h-[200px] overflow-hidden bg-card border border-border hover:border-primary/30 transition-all duration-300">
                     <div className="relative h-full p-6 flex flex-col">
                       {/* Icon */}
                       <div className="w-10 h-10 rounded-lg bg-accent border border-border flex items-center justify-center mb-4 group-hover:scale-105 transition-transform duration-300">
@@ -563,10 +551,10 @@ export default function LandingPage() {
                       </div>
 
                       {/* Title and Description */}
-                      <h3 className={`font-semibold text-foreground mb-2 ${item.size === 'large' ? 'text-xl' : 'text-base'}`}>
+                      <h3 className="font-semibold text-foreground mb-2 text-base">
                         {item.title}
                       </h3>
-                      <p className={`text-muted-foreground leading-relaxed ${item.size === 'large' ? 'text-base max-w-xs' : 'text-sm'}`}>
+                      <p className="text-muted-foreground leading-relaxed text-sm">
                         {item.description}
                       </p>
 
