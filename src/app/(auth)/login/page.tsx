@@ -10,11 +10,12 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Loader2, Info } from 'lucide-react'
 import { toast } from 'sonner'
 import { PayPilotLogo } from '@/components/logo'
+import { createClient } from '@/lib/supabase/client'
 
-// Demo mode - works without Supabase
+// Demo credentials for easy testing
 const DEMO_CREDENTIALS = {
-  email: 'demo@acme.com',
-  password: 'demo123'
+  email: 'demo@paypilot.com',
+  password: 'demo123456'
 }
 
 export default function LoginPage() {
@@ -27,30 +28,45 @@ export default function LoginPage() {
     e.preventDefault()
     setLoading(true)
 
-    // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, 800))
+    try {
+      const supabase = createClient()
 
-    // Demo mode: accept demo credentials or any valid-looking input
-    if (
-      (email === DEMO_CREDENTIALS.email && password === DEMO_CREDENTIALS.password) ||
-      (email.includes('@') && password.length >= 4)
-    ) {
-      // Store demo session in localStorage
-      localStorage.setItem('paypilot_demo_session', JSON.stringify({
-        user: {
-          id: 'demo-user-001',
-          email: email,
-          name: 'John Doe',
-          role: 'company_admin',
-          company: 'Acme Technologies'
-        },
-        expiresAt: Date.now() + 24 * 60 * 60 * 1000 // 24 hours
-      }))
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
 
-      toast.success('Welcome back!')
-      router.push('/dashboard')
-    } else {
-      toast.error('Invalid credentials. Try demo@acme.com / demo123')
+      if (error) {
+        // If Supabase auth fails, check if it's demo credentials for fallback
+        if (email === DEMO_CREDENTIALS.email && password === DEMO_CREDENTIALS.password) {
+          // Demo mode fallback
+          localStorage.setItem('paypilot_demo_session', JSON.stringify({
+            user: {
+              id: 'demo-user-001',
+              email: email,
+              name: 'Demo User',
+              role: 'company_admin',
+              company: 'Acme Technologies'
+            },
+            expiresAt: Date.now() + 24 * 60 * 60 * 1000
+          }))
+          toast.success('Welcome back! (Demo Mode)')
+          router.push('/dashboard')
+          return
+        }
+
+        toast.error(error.message || 'Invalid credentials')
+        setLoading(false)
+        return
+      }
+
+      if (data.user) {
+        toast.success('Welcome back!')
+        router.push('/dashboard')
+      }
+    } catch (err) {
+      console.error('Login error:', err)
+      toast.error('An error occurred. Please try again.')
       setLoading(false)
     }
   }
@@ -77,9 +93,9 @@ export default function LoginPage() {
         <div className="bg-accent border border-border rounded-lg p-4 mb-4 flex items-start gap-3">
           <Info className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
           <div>
-            <p className="text-sm font-medium text-foreground">Demo Mode</p>
+            <p className="text-sm font-medium text-foreground">Try Demo Mode</p>
             <p className="text-sm text-muted-foreground">
-              Use <button onClick={handleDemoLogin} className="font-mono underline text-primary">demo@acme.com</button> / <span className="font-mono">demo123</span> or any email with 4+ char password.
+              Use <button onClick={handleDemoLogin} className="font-mono underline text-primary">demo@paypilot.com</button> / <span className="font-mono">demo123456</span> to explore.
             </p>
           </div>
         </div>
@@ -98,7 +114,7 @@ export default function LoginPage() {
                 <Input
                   id="email"
                   type="email"
-                  placeholder="demo@acme.com"
+                  placeholder="you@company.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -115,7 +131,7 @@ export default function LoginPage() {
                 <Input
                   id="password"
                   type="password"
-                  placeholder="demo123"
+                  placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required

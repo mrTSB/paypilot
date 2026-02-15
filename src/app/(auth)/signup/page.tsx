@@ -10,6 +10,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Loader2, Building2, Info, CheckCircle2, PartyPopper } from 'lucide-react'
 import { toast } from 'sonner'
 import { PayPilotLogo } from '@/components/logo'
+import { createClient } from '@/lib/supabase/client'
 
 function SignupContent() {
   const router = useRouter()
@@ -74,23 +75,52 @@ function SignupContent() {
 
     setLoading(true)
 
-    // Simulate network delay
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    try {
+      const supabase = createClient()
 
-    // Demo mode: create session in localStorage
-    localStorage.setItem('paypilot_demo_session', JSON.stringify({
-      user: {
-        id: 'new-user-' + Date.now(),
-        email: email,
-        name: fullName,
-        role: 'company_admin',
-        company: companyName
-      },
-      expiresAt: Date.now() + 24 * 60 * 60 * 1000 // 24 hours
-    }))
+      // Sign up with Supabase
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: fullName,
+            company_name: companyName,
+            company_size: companySize,
+          },
+        },
+      })
 
-    toast.success('Account created! Welcome to PayPilot!')
-    router.push('/dashboard')
+      if (error) {
+        toast.error(error.message || 'Failed to create account')
+        setLoading(false)
+        return
+      }
+
+      if (data.user) {
+        // Check if email confirmation is required
+        if (data.user.identities && data.user.identities.length === 0) {
+          toast.error('This email is already registered. Please sign in instead.')
+          setLoading(false)
+          return
+        }
+
+        // Success - user created
+        if (data.session) {
+          // Auto-confirmed (email confirmation disabled)
+          toast.success('Account created! Welcome to PayPilot!')
+          router.push('/dashboard')
+        } else {
+          // Email confirmation required
+          toast.success('Please check your email to confirm your account!')
+          router.push('/login?message=check-email')
+        }
+      }
+    } catch (err) {
+      console.error('Signup error:', err)
+      toast.error('An error occurred. Please try again.')
+      setLoading(false)
+    }
   }
 
   // Show success screen after Stripe checkout
@@ -150,14 +180,14 @@ function SignupContent() {
           </Link>
         </div>
 
-        {/* Demo notice */}
+        {/* Info notice */}
         <div className="bg-accent border border-border rounded-lg p-4 mb-4 flex items-start gap-3">
           <Info className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
           <div>
-            <p className="text-sm font-medium text-foreground">Demo Mode</p>
+            <p className="text-sm font-medium text-foreground">Start your free trial</p>
             <p className="text-sm text-muted-foreground">
-              This is a demo. Your data won&apos;t be saved permanently. Or{' '}
-              <Link href="/login" className="underline font-medium text-primary">login with demo credentials</Link>.
+              14 days free, no credit card required. Or{' '}
+              <Link href="/login" className="underline font-medium text-primary">login with existing account</Link>.
             </p>
           </div>
         </div>
