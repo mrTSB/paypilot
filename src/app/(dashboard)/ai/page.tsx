@@ -80,17 +80,17 @@ function TypingIndicator() {
   return (
     <div className="flex items-center gap-1 px-2 py-1">
       <motion.span
-        className="w-2 h-2 bg-slate-400 rounded-full"
+        className="w-2 h-2 bg-muted-foreground rounded-full"
         animate={{ scale: [1, 1.2, 1] }}
         transition={{ duration: 0.6, repeat: Infinity, delay: 0 }}
       />
       <motion.span
-        className="w-2 h-2 bg-slate-400 rounded-full"
+        className="w-2 h-2 bg-muted-foreground rounded-full"
         animate={{ scale: [1, 1.2, 1] }}
         transition={{ duration: 0.6, repeat: Infinity, delay: 0.2 }}
       />
       <motion.span
-        className="w-2 h-2 bg-slate-400 rounded-full"
+        className="w-2 h-2 bg-muted-foreground rounded-full"
         animate={{ scale: [1, 1.2, 1] }}
         transition={{ duration: 0.6, repeat: Infinity, delay: 0.4 }}
       />
@@ -139,7 +139,7 @@ function MessageBubble({
         className={`max-w-[80%] rounded-2xl px-4 py-3 ${
           isUser
             ? 'bg-primary text-white rounded-tr-none'
-            : 'bg-slate-100 text-slate-900 rounded-tl-none'
+            : 'bg-accent text-foreground rounded-tl-none'
         }`}
       >
         <div
@@ -151,7 +151,7 @@ function MessageBubble({
           }}
         />
         {message.isStreaming && !isComplete && (
-          <span className="inline-block w-0.5 h-4 bg-slate-400 ml-0.5 animate-pulse" />
+          <span className="inline-block w-0.5 h-4 bg-muted-foreground ml-0.5 animate-pulse" />
         )}
       </div>
       {isUser && (
@@ -324,8 +324,8 @@ export default function AIAssistantPage() {
             <Sparkles className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-slate-900">AI HR Assistant</h1>
-            <p className="text-slate-600">Ask me anything about HR, payroll, or company policies</p>
+            <h1 className="text-2xl font-bold text-foreground">AI HR Assistant</h1>
+            <p className="text-muted-foreground">Ask me anything about HR, payroll, or company policies</p>
           </div>
         </div>
       </div>
@@ -363,7 +363,7 @@ export default function AIAssistantPage() {
                       <Sparkles className="w-4 h-4 text-white" />
                     </AvatarFallback>
                   </Avatar>
-                  <div className="bg-slate-100 rounded-2xl rounded-tl-none px-4 py-3">
+                  <div className="bg-accent rounded-2xl rounded-tl-none px-4 py-3">
                     <TypingIndicator />
                   </div>
                 </motion.div>
@@ -399,8 +399,8 @@ export default function AIAssistantPage() {
 
         {/* Suggested Questions */}
         {messages.length === 1 && (
-          <div className="p-4 border-t bg-slate-50 shrink-0">
-            <p className="text-sm text-slate-500 mb-3">Suggested questions:</p>
+          <div className="p-4 border-t bg-accent/50 shrink-0">
+            <p className="text-sm text-muted-foreground mb-3">Suggested questions:</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
               {suggestedQuestions.map((q, i) => (
                 <button
@@ -412,10 +412,10 @@ export default function AIAssistantPage() {
                     <q.icon className="w-4 h-4 text-primary" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-slate-900 truncate">{q.text}</p>
-                    <p className="text-xs text-slate-500">{q.category}</p>
+                    <p className="text-sm font-medium text-foreground truncate">{q.text}</p>
+                    <p className="text-xs text-muted-foreground">{q.category}</p>
                   </div>
-                  <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-primary shrink-0" />
+                  <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-primary shrink-0" />
                 </button>
               ))}
             </div>
@@ -447,7 +447,7 @@ export default function AIAssistantPage() {
               <Send className="w-4 h-4" />
             </Button>
           </form>
-          <p className="text-xs text-center text-slate-400 mt-2">
+          <p className="text-xs text-center text-muted-foreground mt-2">
             AI responses are for informational purposes. Always verify important details with HR.
           </p>
         </div>

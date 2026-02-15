@@ -62,8 +62,8 @@ const kpiCards = [
     trend: 'up',
     period: 'vs last year',
     icon: DollarSign,
-    bgColor: 'bg-emerald-100',
-    iconColor: 'text-emerald-600'
+    bgColor: 'bg-accent',
+    iconColor: 'text-primary'
   },
   {
     title: 'Turnover Rate',
@@ -72,8 +72,8 @@ const kpiCards = [
     trend: 'down',
     period: 'vs last quarter',
     icon: TrendingDown,
-    bgColor: 'bg-amber-100',
-    iconColor: 'text-amber-600'
+    bgColor: 'bg-accent',
+    iconColor: 'text-primary'
   },
   {
     title: 'Time to Fill',
@@ -82,8 +82,8 @@ const kpiCards = [
     trend: 'down',
     period: 'vs last quarter',
     icon: Clock,
-    bgColor: 'bg-violet-100',
-    iconColor: 'text-violet-600'
+    bgColor: 'bg-accent',
+    iconColor: 'text-primary'
   }
 ]
 
@@ -199,8 +199,8 @@ export default function ReportsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Reports & Analytics</h1>
-          <p className="text-slate-600">Insights into your workforce and HR operations</p>
+          <h1 className="text-2xl font-bold text-foreground">Reports & Analytics</h1>
+          <p className="text-muted-foreground">Insights into your workforce and HR operations</p>
         </div>
         <div className="flex gap-2">
           <Select value={timeRange} onValueChange={setTimeRange}>
@@ -251,9 +251,9 @@ export default function ReportsPage() {
                   {kpi.change}
                 </Badge>
               </div>
-              <p className="text-2xl font-bold text-slate-900">{kpi.value}</p>
-              <p className="text-sm text-slate-500">{kpi.title}</p>
-              <p className="text-xs text-slate-400 mt-1">{kpi.period}</p>
+              <p className="text-2xl font-bold text-foreground">{kpi.value}</p>
+              <p className="text-sm text-muted-foreground">{kpi.title}</p>
+              <p className="text-xs text-muted-foreground mt-1">{kpi.period}</p>
             </CardContent>
           </Card>
         ))}
@@ -293,16 +293,16 @@ export default function ReportsPage() {
             </div>
             <div className="mt-4 grid grid-cols-3 gap-4 pt-4 border-t">
               <div>
-                <p className="text-sm text-slate-500">This Month</p>
-                <p className="text-lg font-semibold text-slate-900">$249,700</p>
+                <p className="text-sm text-muted-foreground">This Month</p>
+                <p className="text-lg font-semibold text-foreground">$249,700</p>
               </div>
               <div>
-                <p className="text-sm text-slate-500">Avg Monthly</p>
-                <p className="text-lg font-semibold text-slate-900">$256,000</p>
+                <p className="text-sm text-muted-foreground">Avg Monthly</p>
+                <p className="text-lg font-semibold text-foreground">$256,000</p>
               </div>
               <div>
-                <p className="text-sm text-slate-500">Peak (Dec)</p>
-                <p className="text-lg font-semibold text-slate-900">$312,000</p>
+                <p className="text-sm text-muted-foreground">Peak (Dec)</p>
+                <p className="text-lg font-semibold text-foreground">$312,000</p>
               </div>
             </div>
           </CardContent>
@@ -312,7 +312,7 @@ export default function ReportsPage() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <PieChart className="w-5 h-5 text-violet-600" />
+              <PieChart className="w-5 h-5 text-primary" />
               Headcount by Department
             </CardTitle>
             <CardDescription>47 total employees</CardDescription>
@@ -321,10 +321,10 @@ export default function ReportsPage() {
             {departmentBreakdown.map((dept) => (
               <div key={dept.name}>
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-sm font-medium text-slate-700">{dept.name}</span>
-                  <span className="text-sm text-slate-500">{dept.count} ({dept.percentage}%)</span>
+                  <span className="text-sm font-medium text-foreground">{dept.name}</span>
+                  <span className="text-sm text-muted-foreground">{dept.count} ({dept.percentage}%)</span>
                 </div>
-                <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                <div className="h-2 bg-accent rounded-full overflow-hidden">
                   <div
                     className={`h-full ${dept.color} rounded-full transition-all`}
                     style={{ width: `${dept.percentage}%` }}
@@ -342,7 +342,7 @@ export default function ReportsPage() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Target className="w-5 h-5 text-emerald-600" />
+              <Target className="w-5 h-5 text-primary" />
               Hiring Funnel
             </CardTitle>
             <CardDescription>Q1 2026 recruitment pipeline</CardDescription>
@@ -353,19 +353,19 @@ export default function ReportsPage() {
                 const width = (stage.count / hiringFunnel[0].count) * 100
                 return (
                   <div key={stage.stage} className="flex items-center gap-4">
-                    <div className="w-24 text-sm text-slate-600">{stage.stage}</div>
-                    <div className="flex-1 h-8 bg-slate-100 rounded-lg overflow-hidden relative">
+                    <div className="w-24 text-sm text-muted-foreground">{stage.stage}</div>
+                    <div className="flex-1 h-8 bg-accent rounded-lg overflow-hidden relative">
                       <div
                         className={`h-full transition-all ${
-                          idx === 0 ? 'bg-slate-400' :
-                          idx === 1 ? 'bg-primary/60' :
-                          idx === 2 ? 'bg-primary/80' :
-                          idx === 3 ? 'bg-violet-400' :
-                          'bg-emerald-500'
+                          idx === 0 ? 'bg-muted-foreground' :
+                          idx === 1 ? 'bg-primary/40' :
+                          idx === 2 ? 'bg-primary/60' :
+                          idx === 3 ? 'bg-primary/80' :
+                          'bg-primary'
                         }`}
                         style={{ width: `${width}%` }}
                       />
-                      <span className="absolute inset-0 flex items-center justify-center text-sm font-medium text-slate-700">
+                      <span className="absolute inset-0 flex items-center justify-center text-sm font-medium text-foreground">
                         {stage.count}
                       </span>
                     </div>
@@ -373,12 +373,12 @@ export default function ReportsPage() {
                 )
               })}
             </div>
-            <div className="mt-6 flex items-center justify-between p-4 bg-emerald-50 rounded-lg">
+            <div className="mt-6 flex items-center justify-between p-4 bg-accent rounded-lg">
               <div>
-                <p className="font-medium text-emerald-800">Conversion Rate</p>
-                <p className="text-sm text-emerald-600">Applications to Hire</p>
+                <p className="font-medium text-primary">Conversion Rate</p>
+                <p className="text-sm text-primary">Applications to Hire</p>
               </div>
-              <p className="text-2xl font-bold text-emerald-700">3.3%</p>
+              <p className="text-2xl font-bold text-primary">3.3%</p>
             </div>
           </CardContent>
         </Card>
@@ -387,7 +387,7 @@ export default function ReportsPage() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Clock className="w-5 h-5 text-amber-600" />
+              <Clock className="w-5 h-5 text-primary" />
               Time Off Analytics
             </CardTitle>
             <CardDescription>PTO and sick leave usage</CardDescription>
@@ -398,36 +398,36 @@ export default function ReportsPage() {
                 <p className="text-3xl font-bold text-primary">1,840</p>
                 <p className="text-sm text-primary">PTO Hours Used</p>
               </div>
-              <div className="p-4 bg-amber-50 rounded-lg text-center">
-                <p className="text-3xl font-bold text-amber-700">312</p>
-                <p className="text-sm text-amber-600">Sick Hours Used</p>
+              <div className="p-4 bg-accent/50 rounded-lg text-center">
+                <p className="text-3xl font-bold text-foreground">312</p>
+                <p className="text-sm text-muted-foreground">Sick Hours Used</p>
               </div>
             </div>
 
             <div className="space-y-4">
               <div>
                 <div className="flex justify-between mb-1">
-                  <span className="text-sm text-slate-600">PTO Utilization Rate</span>
+                  <span className="text-sm text-muted-foreground">PTO Utilization Rate</span>
                   <span className="text-sm font-medium">65%</span>
                 </div>
-                <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
+                <div className="h-3 bg-accent rounded-full overflow-hidden">
                   <div className="h-full bg-primary rounded-full" style={{ width: '65%' }} />
                 </div>
               </div>
               <div>
                 <div className="flex justify-between mb-1">
-                  <span className="text-sm text-slate-600">Sick Leave Utilization</span>
+                  <span className="text-sm text-muted-foreground">Sick Leave Utilization</span>
                   <span className="text-sm font-medium">35%</span>
                 </div>
-                <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
-                  <div className="h-full bg-amber-500 rounded-full" style={{ width: '35%' }} />
+                <div className="h-3 bg-accent rounded-full overflow-hidden">
+                  <div className="h-full bg-primary/60 rounded-full" style={{ width: '35%' }} />
                 </div>
               </div>
             </div>
 
-            <div className="mt-6 p-4 bg-slate-50 rounded-lg">
-              <p className="text-sm text-slate-600">Average PTO days per employee</p>
-              <p className="text-2xl font-bold text-slate-900">12.5 days</p>
+            <div className="mt-6 p-4 bg-accent/50 rounded-lg">
+              <p className="text-sm text-muted-foreground">Average PTO days per employee</p>
+              <p className="text-2xl font-bold text-foreground">12.5 days</p>
             </div>
           </CardContent>
         </Card>
@@ -439,7 +439,7 @@ export default function ReportsPage() {
           <div className="flex items-center justify-between">
             <div>
               <CardTitle className="flex items-center gap-2">
-                <Briefcase className="w-5 h-5 text-slate-600" />
+                <Briefcase className="w-5 h-5 text-primary" />
                 Recent Reports
               </CardTitle>
               <CardDescription>Download and view generated reports</CardDescription>
@@ -455,15 +455,15 @@ export default function ReportsPage() {
             {reports.map((report, idx) => (
               <div
                 key={`${report.name}-${idx}`}
-                className="flex items-center justify-between p-4 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors"
+                className="flex items-center justify-between p-4 bg-accent/50 rounded-lg hover:bg-accent transition-colors"
               >
                 <div className="flex items-center gap-4">
                   <div className="w-10 h-10 bg-white rounded-lg border flex items-center justify-center">
-                    <BarChart3 className="w-5 h-5 text-slate-400" />
+                    <BarChart3 className="w-5 h-5 text-muted-foreground" />
                   </div>
                   <div>
-                    <p className="font-medium text-slate-900">{report.name}</p>
-                    <p className="text-sm text-slate-500">{report.date}</p>
+                    <p className="font-medium text-foreground">{report.name}</p>
+                    <p className="text-sm text-muted-foreground">{report.date}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
@@ -520,11 +520,11 @@ export default function ReportsPage() {
               </Select>
             </div>
             {reportType && reportPeriod && (
-              <div className="bg-blue-50 p-3 rounded-lg flex items-center gap-3">
-                <FileText className="w-5 h-5 text-blue-600" />
+              <div className="bg-accent p-3 rounded-lg flex items-center gap-3">
+                <FileText className="w-5 h-5 text-primary" />
                 <div>
-                  <p className="text-sm font-medium text-blue-800">{reportType} Report</p>
-                  <p className="text-xs text-blue-600">Period: {reportPeriod}</p>
+                  <p className="text-sm font-medium text-foreground">{reportType} Report</p>
+                  <p className="text-xs text-primary">Period: {reportPeriod}</p>
                 </div>
               </div>
             )}

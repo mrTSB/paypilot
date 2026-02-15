@@ -214,8 +214,8 @@ export default function BenefitsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Benefits</h1>
-          <p className="text-slate-600">Manage your benefits and view enrollment details</p>
+          <h1 className="text-2xl font-bold text-foreground">Benefits</h1>
+          <p className="text-muted-foreground">Manage your benefits and view enrollment details</p>
         </div>
         <Button variant="outline">
           <FileText className="w-4 h-4 mr-2" />
@@ -232,8 +232,8 @@ export default function BenefitsPage() {
                 <Shield className="w-5 h-5 text-primary" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-slate-900">{enrolledBenefitsList.length}</p>
-                <p className="text-sm text-slate-500">Active Benefits</p>
+                <p className="text-2xl font-bold text-foreground">{enrolledBenefitsList.length}</p>
+                <p className="text-sm text-muted-foreground">Active Benefits</p>
               </div>
             </div>
           </CardContent>
@@ -241,12 +241,12 @@ export default function BenefitsPage() {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
-                <PiggyBank className="w-5 h-5 text-amber-600" />
+              <div className="w-10 h-10 bg-accent rounded-lg flex items-center justify-center">
+                <PiggyBank className="w-5 h-5 text-primary" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-slate-900">${totalMonthlyEmployeeCost.toFixed(0)}</p>
-                <p className="text-sm text-slate-500">Your Monthly Cost</p>
+                <p className="text-2xl font-bold text-foreground">${totalMonthlyEmployeeCost.toFixed(0)}</p>
+                <p className="text-sm text-muted-foreground">Your Monthly Cost</p>
               </div>
             </div>
           </CardContent>
@@ -254,12 +254,12 @@ export default function BenefitsPage() {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
-                <Heart className="w-5 h-5 text-emerald-600" />
+              <div className="w-10 h-10 bg-accent rounded-lg flex items-center justify-center">
+                <Heart className="w-5 h-5 text-primary" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-slate-900">${totalMonthlyEmployerCost.toFixed(0)}</p>
-                <p className="text-sm text-slate-500">Employer Contribution</p>
+                <p className="text-2xl font-bold text-foreground">${totalMonthlyEmployerCost.toFixed(0)}</p>
+                <p className="text-sm text-muted-foreground">Employer Contribution</p>
               </div>
             </div>
           </CardContent>
@@ -276,36 +276,36 @@ export default function BenefitsPage() {
           {enrolledBenefitsList.map((benefit) => {
             const colors = getColorClasses(benefit.color)
             return (
-              <div key={benefit.id} className="border rounded-lg p-4 hover:bg-slate-50 transition-colors">
+              <div key={benefit.id} className="border rounded-lg p-4 hover:bg-accent/50 transition-colors">
                 <div className="flex items-start gap-4">
                   <div className={`w-12 h-12 ${colors.bg} rounded-lg flex items-center justify-center`}>
                     <benefit.icon className={`w-6 h-6 ${colors.icon}`} />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
-                      <h3 className="font-semibold text-slate-900">{benefit.name}</h3>
-                      <Badge className="bg-emerald-100 text-emerald-700">
+                      <h3 className="font-semibold text-foreground">{benefit.name}</h3>
+                      <Badge className="bg-accent text-primary">
                         <CheckCircle2 className="w-3 h-3 mr-1" />
                         Active
                       </Badge>
                     </div>
-                    <p className="text-sm text-slate-500 mb-2">
+                    <p className="text-sm text-muted-foreground mb-2">
                       {benefit.provider} • {benefit.coverage}
                     </p>
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-sm">
                       {Object.entries(benefit.details).map(([key, value]) => (
-                        <div key={key} className="bg-slate-100 rounded px-2 py-1">
-                          <span className="text-slate-500 capitalize">{key}: </span>
-                          <span className="font-medium text-slate-700">{value}</span>
+                        <div key={key} className="bg-accent/50 rounded px-2 py-1">
+                          <span className="text-muted-foreground capitalize">{key}: </span>
+                          <span className="font-medium text-foreground">{value}</span>
                         </div>
                       ))}
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="text-lg font-semibold text-slate-900">
+                    <p className="text-lg font-semibold text-foreground">
                       ${(benefit.employeeCost / 100).toFixed(0)}/mo
                     </p>
-                    <p className="text-xs text-slate-500">Your cost</p>
+                    <p className="text-xs text-muted-foreground">Your cost</p>
                     <Button variant="ghost" size="sm" className="mt-2">
                       <ExternalLink className="w-4 h-4 mr-1" />
                       Details
@@ -328,27 +328,27 @@ export default function BenefitsPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm text-slate-600">2026 Contribution Progress</span>
+                <span className="text-sm text-muted-foreground">2026 Contribution Progress</span>
                 <span className="text-sm font-medium">$4,800 / $23,000</span>
               </div>
               <Progress value={21} className="h-3 mb-4" />
               <div className="grid grid-cols-2 gap-4">
-                <div className="bg-slate-50 rounded-lg p-3">
-                  <p className="text-sm text-slate-500">Your Contribution</p>
+                <div className="bg-accent/50 rounded-lg p-3">
+                  <p className="text-sm text-muted-foreground">Your Contribution</p>
                   <p className="text-lg font-semibold">6%</p>
-                  <p className="text-xs text-slate-500">$461/paycheck</p>
+                  <p className="text-xs text-muted-foreground">$461/paycheck</p>
                 </div>
-                <div className="bg-emerald-50 rounded-lg p-3">
-                  <p className="text-sm text-emerald-600">Company Match</p>
-                  <p className="text-lg font-semibold text-emerald-700">4%</p>
-                  <p className="text-xs text-emerald-600">$307/paycheck</p>
+                <div className="bg-accent rounded-lg p-3">
+                  <p className="text-sm text-primary">Company Match</p>
+                  <p className="text-lg font-semibold text-primary">4%</p>
+                  <p className="text-xs text-primary">$307/paycheck</p>
                 </div>
               </div>
             </div>
-            <div className="bg-slate-50 rounded-lg p-4">
-              <h4 className="font-medium text-slate-900 mb-3">Account Balance</h4>
-              <p className="text-3xl font-bold text-slate-900 mb-1">$47,825.32</p>
-              <p className="text-sm text-emerald-600 mb-4">+$2,450.00 this year</p>
+            <div className="bg-accent/50 rounded-lg p-4">
+              <h4 className="font-medium text-foreground mb-3">Account Balance</h4>
+              <p className="text-3xl font-bold text-foreground mb-1">$47,825.32</p>
+              <p className="text-sm text-primary mb-4">+$2,450.00 this year</p>
               <Button variant="outline" className="w-full">
                 <ExternalLink className="w-4 h-4 mr-2" />
                 View in Fidelity
@@ -368,19 +368,19 @@ export default function BenefitsPage() {
           </CardHeader>
           <CardContent className="space-y-3">
             {availableBenefitsList.length === 0 ? (
-              <div className="text-center py-8 text-slate-500">
-                <CheckCircle2 className="w-12 h-12 mx-auto mb-2 text-emerald-300" />
+              <div className="text-center py-8 text-muted-foreground">
+                <CheckCircle2 className="w-12 h-12 mx-auto mb-2 text-primary/50" />
                 <p>You&apos;re enrolled in all available benefits!</p>
               </div>
             ) : (
               availableBenefitsList.map((benefit, i) => (
                 <div key={i} className="flex items-center gap-3 p-3 border rounded-lg">
-                  <div className="w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center">
-                    <benefit.icon className="w-5 h-5 text-slate-600" />
+                  <div className="w-10 h-10 bg-accent rounded-lg flex items-center justify-center">
+                    <benefit.icon className="w-5 h-5 text-primary" />
                   </div>
                   <div className="flex-1">
-                    <p className="font-medium text-slate-900">{benefit.name}</p>
-                    <p className="text-sm text-slate-500">{benefit.description}</p>
+                    <p className="font-medium text-foreground">{benefit.name}</p>
+                    <p className="text-sm text-muted-foreground">{benefit.description}</p>
                   </div>
                   <Button size="sm" onClick={() => handleEnrollClick(benefit)}>Enroll</Button>
                 </div>
@@ -397,11 +397,11 @@ export default function BenefitsPage() {
           </CardHeader>
           <CardContent className="space-y-2">
             {documents.map((doc, i) => (
-              <div key={i} className="flex items-center gap-3 p-3 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer">
-                <FileText className="w-5 h-5 text-slate-400" />
+              <div key={i} className="flex items-center gap-3 p-3 bg-accent/50 rounded-lg hover:bg-accent transition-colors cursor-pointer">
+                <FileText className="w-5 h-5 text-muted-foreground" />
                 <div className="flex-1">
-                  <p className="font-medium text-slate-900">{doc.name}</p>
-                  <p className="text-xs text-slate-500">{doc.type} • {doc.size}</p>
+                  <p className="font-medium text-foreground">{doc.name}</p>
+                  <p className="text-xs text-muted-foreground">{doc.type} • {doc.size}</p>
                 </div>
                 <Button
                   variant="ghost"
@@ -482,12 +482,12 @@ export default function BenefitsPage() {
         </CardHeader>
         <CardContent>
           <div className="flex items-center gap-4 p-4 border rounded-lg">
-            <div className="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center">
-              <Users className="w-6 h-6 text-pink-600" />
+            <div className="w-12 h-12 bg-accent rounded-full flex items-center justify-center">
+              <Users className="w-6 h-6 text-primary" />
             </div>
             <div className="flex-1">
-              <p className="font-medium text-slate-900">Jane Doe</p>
-              <p className="text-sm text-slate-500">Spouse • Covered under Health Plan</p>
+              <p className="font-medium text-foreground">Jane Doe</p>
+              <p className="text-sm text-muted-foreground">Spouse • Covered under Health Plan</p>
             </div>
             <Button variant="outline" size="sm">Edit</Button>
           </div>

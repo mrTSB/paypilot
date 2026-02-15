@@ -152,7 +152,7 @@ export default function EmployeesPage() {
 
     toast.success(`Invite sent to ${formData.firstName} ${formData.lastName}!`, {
       description: `${formData.email} will receive an onboarding email shortly.`,
-      icon: <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+      icon: <CheckCircle2 className="w-4 h-4 text-primary" />
     })
 
     // Refresh employee list
@@ -171,15 +171,15 @@ export default function EmployeesPage() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'active':
-        return <Badge className="bg-emerald-100 text-emerald-700 hover:bg-emerald-100">Active</Badge>
+        return <Badge className="bg-accent text-primary hover:bg-accent">Active</Badge>
       case 'onboarding':
         return <Badge className="bg-accent text-primary hover:bg-accent">Onboarding</Badge>
       case 'on_leave':
-        return <Badge className="bg-amber-100 text-amber-700 hover:bg-amber-100">On Leave</Badge>
+        return <Badge className="bg-accent text-muted-foreground hover:bg-accent">On Leave</Badge>
       case 'terminated':
         return <Badge className="bg-red-100 text-red-700 hover:bg-red-100">Terminated</Badge>
       case 'invited':
-        return <Badge className="bg-violet-100 text-violet-700 hover:bg-violet-100">Invited</Badge>
+        return <Badge className="bg-accent text-primary hover:bg-accent">Invited</Badge>
       default:
         return <Badge variant="secondary">{status}</Badge>
     }
@@ -233,8 +233,8 @@ export default function EmployeesPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Employees</h1>
-          <p className="text-slate-600">Manage your team members and their information</p>
+          <h1 className="text-2xl font-bold text-foreground">Employees</h1>
+          <p className="text-muted-foreground">Manage your team members and their information</p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" size="icon" onClick={fetchEmployees}>
@@ -419,8 +419,8 @@ export default function EmployeesPage() {
                 <Users className="w-5 h-5 text-primary" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-slate-900">{employees.length}</p>
-                <p className="text-sm text-slate-500">Total Employees</p>
+                <p className="text-2xl font-bold text-foreground">{employees.length}</p>
+                <p className="text-sm text-muted-foreground">Total Employees</p>
               </div>
             </div>
           </CardContent>
@@ -428,14 +428,14 @@ export default function EmployeesPage() {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
-                <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+              <div className="w-10 h-10 bg-accent rounded-lg flex items-center justify-center">
+                <CheckCircle2 className="w-5 h-5 text-primary" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-slate-900">
+                <p className="text-2xl font-bold text-foreground">
                   {employees.filter(e => e.status === 'active').length}
                 </p>
-                <p className="text-sm text-slate-500">Active</p>
+                <p className="text-sm text-muted-foreground">Active</p>
               </div>
             </div>
           </CardContent>
@@ -443,11 +443,11 @@ export default function EmployeesPage() {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
-                <Calendar className="w-5 h-5 text-amber-600" />
+              <div className="w-10 h-10 bg-accent rounded-lg flex items-center justify-center">
+                <Calendar className="w-5 h-5 text-primary" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-slate-900">
+                <p className="text-2xl font-bold text-foreground">
                   {employees.filter(e => {
                     if (!e.hireDate) return false
                     const hireDate = new Date(e.hireDate)
@@ -456,7 +456,7 @@ export default function EmployeesPage() {
                     return hireDate >= thirtyDaysAgo
                   }).length}
                 </p>
-                <p className="text-sm text-slate-500">New Hires (30d)</p>
+                <p className="text-sm text-muted-foreground">New Hires (30d)</p>
               </div>
             </div>
           </CardContent>
@@ -464,14 +464,14 @@ export default function EmployeesPage() {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-violet-100 rounded-lg flex items-center justify-center">
-                <Building2 className="w-5 h-5 text-violet-600" />
+              <div className="w-10 h-10 bg-accent rounded-lg flex items-center justify-center">
+                <Building2 className="w-5 h-5 text-primary" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-slate-900">
+                <p className="text-2xl font-bold text-foreground">
                   {new Set(employees.map(e => e.department).filter(Boolean)).size}
                 </p>
-                <p className="text-sm text-slate-500">Departments</p>
+                <p className="text-sm text-muted-foreground">Departments</p>
               </div>
             </div>
           </CardContent>
@@ -483,7 +483,7 @@ export default function EmployeesPage() {
         <CardHeader className="pb-4">
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input
                 placeholder="Search employees..."
                 className="pl-10"
@@ -533,7 +533,7 @@ export default function EmployeesPage() {
             </TableHeader>
             <TableBody>
               {filteredEmployees.map((employee) => (
-                <TableRow key={employee.id} className="hover:bg-slate-50 cursor-pointer">
+                <TableRow key={employee.id} className="hover:bg-accent cursor-pointer">
                   <TableCell>
                     <Link href={`/employees/${employee.id}`} className="flex items-center gap-3">
                       <Avatar>
@@ -542,8 +542,8 @@ export default function EmployeesPage() {
                         </AvatarFallback>
                       </Avatar>
                       <div>
-                        <p className="font-medium text-slate-900">{employee.name}</p>
-                        <p className="text-sm text-slate-500">{employee.email}</p>
+                        <p className="font-medium text-foreground">{employee.name}</p>
+                        <p className="text-sm text-muted-foreground">{employee.email}</p>
                       </div>
                     </Link>
                   </TableCell>
@@ -589,8 +589,8 @@ export default function EmployeesPage() {
           </Table>
           {filteredEmployees.length === 0 && (
             <div className="text-center py-12">
-              <Users className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-              <p className="text-slate-600">
+              <Users className="w-12 h-12 text-muted-foreground/50 mx-auto mb-4" />
+              <p className="text-muted-foreground">
                 {employees.length === 0
                   ? 'No employees found. Add your first team member!'
                   : 'No employees found matching your criteria'}

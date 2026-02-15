@@ -84,15 +84,15 @@ export default function EmployeeDetailPage() {
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'active':
-        return <Badge className="bg-emerald-100 text-emerald-700">Active</Badge>
+        return <Badge className="bg-accent text-primary">Active</Badge>
       case 'onboarding':
         return <Badge className="bg-accent text-primary">Onboarding</Badge>
       case 'on_leave':
-        return <Badge className="bg-amber-100 text-amber-700">On Leave</Badge>
+        return <Badge className="bg-accent text-muted-foreground">On Leave</Badge>
       case 'terminated':
         return <Badge className="bg-red-100 text-red-700">Terminated</Badge>
       case 'invited':
-        return <Badge className="bg-slate-100 text-slate-700">Invited</Badge>
+        return <Badge className="bg-accent/50 text-muted-foreground">Invited</Badge>
       default:
         return <Badge variant="secondary">{status}</Badge>
     }
@@ -150,11 +150,11 @@ export default function EmployeeDetailPage() {
           </Avatar>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-2xl font-bold text-slate-900">{employee.name}</h1>
+              <h1 className="text-2xl font-bold text-foreground">{employee.name}</h1>
               {getStatusBadge(employee.status)}
             </div>
-            <p className="text-slate-600">{employee.jobTitle}</p>
-            <p className="text-sm text-slate-500">{employee.department}</p>
+            <p className="text-muted-foreground">{employee.jobTitle}</p>
+            <p className="text-sm text-muted-foreground">{employee.department}</p>
           </div>
         </div>
         <div className="flex gap-2">
@@ -198,14 +198,14 @@ export default function EmployeeDetailPage() {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
-                <DollarSign className="w-5 h-5 text-emerald-600" />
+              <div className="w-10 h-10 bg-accent rounded-lg flex items-center justify-center">
+                <DollarSign className="w-5 h-5 text-primary" />
               </div>
               <div>
-                <p className="text-lg font-bold text-slate-900">
+                <p className="text-lg font-bold text-foreground">
                   ${employee.salary.toLocaleString()}
                 </p>
-                <p className="text-xs text-slate-500">Annual Salary</p>
+                <p className="text-xs text-muted-foreground">Annual Salary</p>
               </div>
             </div>
           </CardContent>
@@ -217,8 +217,8 @@ export default function EmployeeDetailPage() {
                 <Clock className="w-5 h-5 text-primary" />
               </div>
               <div>
-                <p className="text-lg font-bold text-slate-900">{employee.ptoBalance}h</p>
-                <p className="text-xs text-slate-500">PTO Balance</p>
+                <p className="text-lg font-bold text-foreground">{employee.ptoBalance}h</p>
+                <p className="text-xs text-muted-foreground">PTO Balance</p>
               </div>
             </div>
           </CardContent>
@@ -226,12 +226,12 @@ export default function EmployeeDetailPage() {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
-                <Shield className="w-5 h-5 text-red-600" />
+              <div className="w-10 h-10 bg-accent rounded-lg flex items-center justify-center">
+                <Shield className="w-5 h-5 text-primary" />
               </div>
               <div>
-                <p className="text-lg font-bold text-slate-900">{employee.sickBalance}h</p>
-                <p className="text-xs text-slate-500">Sick Leave</p>
+                <p className="text-lg font-bold text-foreground">{employee.sickBalance}h</p>
+                <p className="text-xs text-muted-foreground">Sick Leave</p>
               </div>
             </div>
           </CardContent>
@@ -239,14 +239,14 @@ export default function EmployeeDetailPage() {
         <Card>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-violet-100 rounded-lg flex items-center justify-center">
-                <Calendar className="w-5 h-5 text-violet-600" />
+              <div className="w-10 h-10 bg-accent rounded-lg flex items-center justify-center">
+                <Calendar className="w-5 h-5 text-primary" />
               </div>
               <div>
-                <p className="text-lg font-bold text-slate-900">
+                <p className="text-lg font-bold text-foreground">
                   {new Date(employee.startDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
                 </p>
-                <p className="text-xs text-slate-500">Start Date</p>
+                <p className="text-xs text-muted-foreground">Start Date</p>
               </div>
             </div>
           </CardContent>
@@ -271,25 +271,25 @@ export default function EmployeeDetailPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-center gap-3">
-                  <Mail className="w-4 h-4 text-slate-400" />
+                  <Mail className="w-4 h-4 text-muted-foreground" />
                   <div>
-                    <p className="text-sm text-slate-500">Email</p>
+                    <p className="text-sm text-muted-foreground">Email</p>
                     <p className="font-medium">{employee.email}</p>
                   </div>
                 </div>
                 <Separator />
                 <div className="flex items-center gap-3">
-                  <Phone className="w-4 h-4 text-slate-400" />
+                  <Phone className="w-4 h-4 text-muted-foreground" />
                   <div>
-                    <p className="text-sm text-slate-500">Phone</p>
+                    <p className="text-sm text-muted-foreground">Phone</p>
                     <p className="font-medium">+1 (555) 123-4567</p>
                   </div>
                 </div>
                 <Separator />
                 <div className="flex items-center gap-3">
-                  <MapPin className="w-4 h-4 text-slate-400" />
+                  <MapPin className="w-4 h-4 text-muted-foreground" />
                   <div>
-                    <p className="text-sm text-slate-500">Location</p>
+                    <p className="text-sm text-muted-foreground">Location</p>
                     <p className="font-medium">San Francisco, CA</p>
                   </div>
                 </div>
@@ -303,33 +303,33 @@ export default function EmployeeDetailPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-center gap-3">
-                  <Building2 className="w-4 h-4 text-slate-400" />
+                  <Building2 className="w-4 h-4 text-muted-foreground" />
                   <div>
-                    <p className="text-sm text-slate-500">Department</p>
+                    <p className="text-sm text-muted-foreground">Department</p>
                     <p className="font-medium">{employee.department}</p>
                   </div>
                 </div>
                 <Separator />
                 <div className="flex items-center gap-3">
-                  <User className="w-4 h-4 text-slate-400" />
+                  <User className="w-4 h-4 text-muted-foreground" />
                   <div>
-                    <p className="text-sm text-slate-500">Manager</p>
+                    <p className="text-sm text-muted-foreground">Manager</p>
                     <p className="font-medium">{employee.manager}</p>
                   </div>
                 </div>
                 <Separator />
                 <div className="flex items-center gap-3">
-                  <FileText className="w-4 h-4 text-slate-400" />
+                  <FileText className="w-4 h-4 text-muted-foreground" />
                   <div>
-                    <p className="text-sm text-slate-500">Employment Type</p>
+                    <p className="text-sm text-muted-foreground">Employment Type</p>
                     <p className="font-medium capitalize">{employee.employmentType.replace('_', ' ')}</p>
                   </div>
                 </div>
                 <Separator />
                 <div className="flex items-center gap-3">
-                  <Calendar className="w-4 h-4 text-slate-400" />
+                  <Calendar className="w-4 h-4 text-muted-foreground" />
                   <div>
-                    <p className="text-sm text-slate-500">Start Date</p>
+                    <p className="text-sm text-muted-foreground">Start Date</p>
                     <p className="font-medium">
                       {new Date(employee.startDate).toLocaleDateString('en-US', {
                         month: 'long',
@@ -348,10 +348,10 @@ export default function EmployeeDetailPage() {
                 <CardTitle className="text-lg">Emergency Contact</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="p-4 bg-slate-50 rounded-lg">
+                <div className="p-4 bg-accent/50 rounded-lg">
                   <p className="font-medium">Jane {employee.name.split(' ')[1]}</p>
-                  <p className="text-sm text-slate-500">Spouse</p>
-                  <p className="text-sm text-slate-600 mt-2">+1 (555) 987-6543</p>
+                  <p className="text-sm text-muted-foreground">Spouse</p>
+                  <p className="text-sm text-muted-foreground mt-2">+1 (555) 987-6543</p>
                 </div>
               </CardContent>
             </Card>
@@ -368,12 +368,12 @@ export default function EmployeeDetailPage() {
                   { name: 'Vision', plan: 'Plus', status: 'active' },
                   { name: '401(k)', plan: '6% contribution', status: 'active' },
                 ].map((benefit, i) => (
-                  <div key={i} className="flex items-center justify-between p-2 bg-slate-50 rounded">
+                  <div key={i} className="flex items-center justify-between p-2 bg-accent/50 rounded">
                     <div>
                       <p className="font-medium text-sm">{benefit.name}</p>
-                      <p className="text-xs text-slate-500">{benefit.plan}</p>
+                      <p className="text-xs text-muted-foreground">{benefit.plan}</p>
                     </div>
-                    <Badge className="bg-emerald-100 text-emerald-700 text-xs">Active</Badge>
+                    <Badge className="bg-accent text-primary text-xs">Active</Badge>
                   </div>
                 ))}
               </CardContent>
@@ -392,18 +392,18 @@ export default function EmployeeDetailPage() {
                 <div className="flex items-center justify-between p-4 border rounded-lg">
                   <div>
                     <p className="font-medium">Current Salary</p>
-                    <p className="text-sm text-slate-500">Effective Jan 1, 2026</p>
+                    <p className="text-sm text-muted-foreground">Effective Jan 1, 2026</p>
                   </div>
-                  <p className="text-xl font-bold text-emerald-600">
+                  <p className="text-xl font-bold text-primary">
                     ${employee.salary.toLocaleString()}/year
                   </p>
                 </div>
-                <div className="flex items-center justify-between p-4 border rounded-lg bg-slate-50">
+                <div className="flex items-center justify-between p-4 border rounded-lg bg-accent/50">
                   <div>
-                    <p className="font-medium text-slate-600">Previous Salary</p>
-                    <p className="text-sm text-slate-500">Jan 1, 2025 - Dec 31, 2025</p>
+                    <p className="font-medium text-muted-foreground">Previous Salary</p>
+                    <p className="text-sm text-muted-foreground">Jan 1, 2025 - Dec 31, 2025</p>
                   </div>
-                  <p className="text-lg text-slate-600">
+                  <p className="text-lg text-muted-foreground">
                     ${(employee.salary * 0.92).toLocaleString()}/year
                   </p>
                 </div>
@@ -424,11 +424,11 @@ export default function EmployeeDetailPage() {
                   <h4 className="font-medium mb-4">PTO Balance</h4>
                   <div className="space-y-2">
                     <div className="flex justify-between">
-                      <span className="text-slate-600">Annual Allowance</span>
+                      <span className="text-muted-foreground">Annual Allowance</span>
                       <span className="font-medium">120 hours</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-600">Used</span>
+                      <span className="text-muted-foreground">Used</span>
                       <span className="font-medium">{120 - employee.ptoBalance} hours</span>
                     </div>
                     <Separator />
@@ -442,11 +442,11 @@ export default function EmployeeDetailPage() {
                   <h4 className="font-medium mb-4">Sick Leave Balance</h4>
                   <div className="space-y-2">
                     <div className="flex justify-between">
-                      <span className="text-slate-600">Annual Allowance</span>
+                      <span className="text-muted-foreground">Annual Allowance</span>
                       <span className="font-medium">40 hours</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-600">Used</span>
+                      <span className="text-muted-foreground">Used</span>
                       <span className="font-medium">{40 - employee.sickBalance} hours</span>
                     </div>
                     <Separator />
@@ -475,12 +475,12 @@ export default function EmployeeDetailPage() {
                   { name: 'Direct Deposit Authorization', date: employee.startDate, type: 'Banking' },
                   { name: 'I-9 Form', date: employee.startDate, type: 'Compliance' },
                 ].map((doc, i) => (
-                  <div key={i} className="flex items-center justify-between p-3 border rounded-lg hover:bg-slate-50">
+                  <div key={i} className="flex items-center justify-between p-3 border rounded-lg hover:bg-accent/50">
                     <div className="flex items-center gap-3">
-                      <FileText className="w-5 h-5 text-slate-400" />
+                      <FileText className="w-5 h-5 text-muted-foreground" />
                       <div>
                         <p className="font-medium">{doc.name}</p>
-                        <p className="text-xs text-slate-500">{doc.type} • {doc.date}</p>
+                        <p className="text-xs text-muted-foreground">{doc.type} • {doc.date}</p>
                       </div>
                     </div>
                     <Button variant="ghost" size="sm">View</Button>

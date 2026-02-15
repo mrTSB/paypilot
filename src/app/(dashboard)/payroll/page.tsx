@@ -95,14 +95,14 @@ const currentPayrollEmployees = [
 function CurrentPayrollCard({ payroll, onApprove }: { payroll: typeof initialPayrollRuns[0]; onApprove: () => void }) {
   const statusConfig = {
     pending_approval: {
-      borderColor: 'border-amber-200',
-      bgColor: 'bg-amber-50/50',
-      iconBg: 'bg-amber-100',
-      iconColor: 'text-amber-600',
+      borderColor: 'border-primary/30',
+      bgColor: 'bg-accent/50',
+      iconBg: 'bg-accent',
+      iconColor: 'text-primary',
       icon: AlertTriangle,
       title: 'Payroll Pending Approval',
       action: (
-        <Button onClick={onApprove} className="bg-emerald-600 hover:bg-emerald-700">
+        <Button onClick={onApprove} className="bg-primary hover:bg-primary/90">
           <CheckCircle2 className="w-4 h-4 mr-2" />
           Approve & Submit
         </Button>
@@ -118,23 +118,23 @@ function CurrentPayrollCard({ payroll, onApprove }: { payroll: typeof initialPay
       action: <Badge className="bg-accent text-primary border border-border">Approved</Badge>
     },
     processing: {
-      borderColor: 'border-violet-200',
-      bgColor: 'bg-violet-50/50',
-      iconBg: 'bg-violet-100',
-      iconColor: 'text-violet-600',
+      borderColor: 'border-primary/30',
+      bgColor: 'bg-accent/50',
+      iconBg: 'bg-accent',
+      iconColor: 'text-primary',
       icon: Loader2,
       title: 'Payroll Processing',
-      action: <Badge className="bg-violet-100 text-violet-700">Processing</Badge>,
+      action: <Badge className="bg-accent text-primary">Processing</Badge>,
       iconAnimate: true
     },
     completed: {
-      borderColor: 'border-emerald-200',
-      bgColor: 'bg-emerald-50/50',
-      iconBg: 'bg-emerald-100',
-      iconColor: 'text-emerald-600',
+      borderColor: 'border-primary/30',
+      bgColor: 'bg-accent',
+      iconBg: 'bg-accent',
+      iconColor: 'text-primary',
       icon: CheckCircle2,
       title: 'Payroll Completed',
-      action: <Badge className="bg-emerald-100 text-emerald-700">Completed</Badge>
+      action: <Badge className="bg-accent text-primary">Completed</Badge>
     }
   }
 
@@ -160,26 +160,26 @@ function CurrentPayrollCard({ payroll, onApprove }: { payroll: typeof initialPay
       <CardContent>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
           <div className="p-4 bg-white rounded-lg border">
-            <p className="text-sm text-slate-500">Gross Pay</p>
-            <p className="text-xl font-semibold text-slate-900">${payroll.grossPay.toLocaleString()}</p>
+            <p className="text-sm text-muted-foreground">Gross Pay</p>
+            <p className="text-xl font-semibold text-foreground">${payroll.grossPay.toLocaleString()}</p>
           </div>
           <div className="p-4 bg-white rounded-lg border">
-            <p className="text-sm text-slate-500">Total Taxes</p>
+            <p className="text-sm text-muted-foreground">Total Taxes</p>
             <p className="text-xl font-semibold text-red-600">-${payroll.taxes.toLocaleString()}</p>
           </div>
           <div className="p-4 bg-white rounded-lg border">
-            <p className="text-sm text-slate-500">Deductions</p>
-            <p className="text-xl font-semibold text-amber-600">-${payroll.deductions.toLocaleString()}</p>
+            <p className="text-sm text-muted-foreground">Deductions</p>
+            <p className="text-xl font-semibold text-muted-foreground">-${payroll.deductions.toLocaleString()}</p>
           </div>
-          <div className="p-4 bg-white rounded-lg border border-emerald-200 bg-emerald-50">
-            <p className="text-sm text-emerald-600">Net Pay</p>
-            <p className="text-xl font-semibold text-emerald-700">${payroll.netPay.toLocaleString()}</p>
+          <div className="p-4 bg-white rounded-lg border border-primary/30 bg-accent">
+            <p className="text-sm text-primary">Net Pay</p>
+            <p className="text-xl font-semibold text-primary">${payroll.netPay.toLocaleString()}</p>
           </div>
         </div>
         <div className="mb-4">
           <div className="flex items-center justify-between mb-2">
-            <p className="text-sm font-medium text-slate-700">Payroll Progress</p>
-            <p className="text-sm text-slate-500">{payroll.employees} of {payroll.employees} employees calculated</p>
+            <p className="text-sm font-medium text-foreground">Payroll Progress</p>
+            <p className="text-sm text-muted-foreground">{payroll.employees} of {payroll.employees} employees calculated</p>
           </div>
           <Progress value={100} className="h-2" />
         </div>
@@ -260,13 +260,13 @@ export default function PayrollPage() {
       case 'calculating':
         return <Badge className="bg-accent text-primary">Calculating</Badge>
       case 'pending_approval':
-        return <Badge className="bg-amber-100 text-amber-700">Pending Approval</Badge>
+        return <Badge className="bg-accent text-primary">Pending Approval</Badge>
       case 'approved':
-        return <Badge className="bg-emerald-100 text-emerald-700">Approved</Badge>
+        return <Badge className="bg-accent text-primary">Approved</Badge>
       case 'processing':
-        return <Badge className="bg-violet-100 text-violet-700">Processing</Badge>
+        return <Badge className="bg-accent text-primary">Processing</Badge>
       case 'completed':
-        return <Badge className="bg-emerald-100 text-emerald-700">Completed</Badge>
+        return <Badge className="bg-accent text-primary">Completed</Badge>
       default:
         return <Badge variant="secondary">{status}</Badge>
     }
@@ -282,8 +282,8 @@ export default function PayrollPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900">Payroll</h1>
-          <p className="text-slate-600">Manage payroll runs and view payment history</p>
+          <h1 className="text-2xl font-bold text-foreground">Payroll</h1>
+          <p className="text-muted-foreground">Manage payroll runs and view payment history</p>
         </div>
         <div className="flex gap-2">
           <Button
@@ -324,8 +324,8 @@ export default function PayrollPage() {
                 <DollarSign className="w-5 h-5 text-emerald-600" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-slate-900">$124,850</p>
-                <p className="text-sm text-slate-500">Next Payroll</p>
+                <p className="text-2xl font-bold text-foreground">$124,850</p>
+                <p className="text-sm text-muted-foreground">Next Payroll</p>
               </div>
             </div>
           </CardContent>
@@ -337,8 +337,8 @@ export default function PayrollPage() {
                 <Users className="w-5 h-5 text-primary" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-slate-900">47</p>
-                <p className="text-sm text-slate-500">Employees</p>
+                <p className="text-2xl font-bold text-foreground">47</p>
+                <p className="text-sm text-muted-foreground">Employees</p>
               </div>
             </div>
           </CardContent>
@@ -350,8 +350,8 @@ export default function PayrollPage() {
                 <Clock className="w-5 h-5 text-amber-600" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-slate-900">Feb 20</p>
-                <p className="text-sm text-slate-500">Next Pay Date</p>
+                <p className="text-2xl font-bold text-foreground">Feb 20</p>
+                <p className="text-sm text-muted-foreground">Next Pay Date</p>
               </div>
             </div>
           </CardContent>
@@ -363,8 +363,8 @@ export default function PayrollPage() {
                 <Calculator className="w-5 h-5 text-violet-600" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-slate-900">$487K</p>
-                <p className="text-sm text-slate-500">YTD Total</p>
+                <p className="text-2xl font-bold text-foreground">$487K</p>
+                <p className="text-sm text-muted-foreground">YTD Total</p>
               </div>
             </div>
           </CardContent>
@@ -515,19 +515,19 @@ export default function PayrollPage() {
           <div className="py-4">
             <div className="bg-slate-50 rounded-lg p-4 space-y-3">
               <div className="flex justify-between">
-                <span className="text-slate-600">Employees</span>
+                <span className="text-muted-foreground">Employees</span>
                 <span className="font-medium">{selectedPayroll?.employees}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-600">Total Gross Pay</span>
+                <span className="text-muted-foreground">Total Gross Pay</span>
                 <span className="font-medium">${selectedPayroll?.grossPay.toLocaleString()}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-600">Total Net Pay</span>
+                <span className="text-muted-foreground">Total Net Pay</span>
                 <span className="font-semibold text-emerald-600">${selectedPayroll?.netPay.toLocaleString()}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-600">Pay Date</span>
+                <span className="text-muted-foreground">Pay Date</span>
                 <span className="font-medium">{selectedPayroll?.payDate}</span>
               </div>
             </div>
@@ -569,7 +569,7 @@ export default function PayrollPage() {
               </Avatar>
               <div>
                 <span>{selectedEmployee?.name}</span>
-                <p className="text-sm font-normal text-slate-500">{selectedEmployee?.department}</p>
+                <p className="text-sm font-normal text-muted-foreground">{selectedEmployee?.department}</p>
               </div>
             </DialogTitle>
             <DialogDescription>
@@ -579,15 +579,15 @@ export default function PayrollPage() {
           <div className="space-y-4">
             {/* Earnings Section */}
             <div className="bg-slate-50 rounded-lg p-4">
-              <h4 className="font-semibold text-slate-900 mb-3">Earnings</h4>
+              <h4 className="font-semibold text-foreground mb-3">Earnings</h4>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-slate-600">Regular Pay ({selectedEmployee?.regularHours} hrs)</span>
+                  <span className="text-muted-foreground">Regular Pay ({selectedEmployee?.regularHours} hrs)</span>
                   <span className="font-medium">${((selectedEmployee?.grossPay || 0) * 0.9).toLocaleString()}</span>
                 </div>
                 {(selectedEmployee?.overtimeHours || 0) > 0 && (
                   <div className="flex justify-between">
-                    <span className="text-slate-600">Overtime Pay ({selectedEmployee?.overtimeHours} hrs @ 1.5x)</span>
+                    <span className="text-muted-foreground">Overtime Pay ({selectedEmployee?.overtimeHours} hrs @ 1.5x)</span>
                     <span className="font-medium text-amber-600">${((selectedEmployee?.grossPay || 0) * 0.1).toLocaleString()}</span>
                   </div>
                 )}
@@ -662,15 +662,15 @@ export default function PayrollPage() {
             {/* YTD Summary */}
             <div className="grid grid-cols-3 gap-4 pt-4 border-t">
               <div className="text-center">
-                <p className="text-sm text-slate-500">YTD Gross</p>
-                <p className="font-semibold text-slate-900">${((selectedEmployee?.grossPay || 0) * 4).toLocaleString()}</p>
+                <p className="text-sm text-muted-foreground">YTD Gross</p>
+                <p className="font-semibold text-foreground">${((selectedEmployee?.grossPay || 0) * 4).toLocaleString()}</p>
               </div>
               <div className="text-center">
-                <p className="text-sm text-slate-500">YTD Taxes</p>
+                <p className="text-sm text-muted-foreground">YTD Taxes</p>
                 <p className="font-semibold text-red-600">${((selectedEmployee?.taxes || 0) * 4).toLocaleString()}</p>
               </div>
               <div className="text-center">
-                <p className="text-sm text-slate-500">YTD Net</p>
+                <p className="text-sm text-muted-foreground">YTD Net</p>
                 <p className="font-semibold text-emerald-600">${((selectedEmployee?.netPay || 0) * 4).toLocaleString()}</p>
               </div>
             </div>

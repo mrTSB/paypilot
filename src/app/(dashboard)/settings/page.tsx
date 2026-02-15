@@ -45,8 +45,8 @@ export default function SettingsPage() {
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">Settings</h1>
-        <p className="text-slate-600">Manage your account and company settings</p>
+        <h1 className="text-2xl font-bold text-foreground">Settings</h1>
+        <p className="text-muted-foreground">Manage your account and company settings</p>
       </div>
 
       <Tabs defaultValue="profile" className="space-y-6">
@@ -76,7 +76,7 @@ export default function SettingsPage() {
                     <Upload className="w-4 h-4 mr-2" />
                     Change Photo
                   </Button>
-                  <p className="text-xs text-slate-500 mt-1">JPG, PNG or GIF. Max 2MB.</p>
+                  <p className="text-xs text-muted-foreground mt-1">JPG, PNG or GIF. Max 2MB.</p>
                 </div>
               </div>
 
@@ -141,10 +141,10 @@ export default function SettingsPage() {
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <Mail className="w-5 h-5 text-slate-400" />
+                    <Mail className="w-5 h-5 text-muted-foreground" />
                     <div>
                       <p className="font-medium">Email Notifications</p>
-                      <p className="text-sm text-slate-500">Receive email updates</p>
+                      <p className="text-sm text-muted-foreground">Receive email updates</p>
                     </div>
                   </div>
                   <Switch defaultChecked />
@@ -154,10 +154,10 @@ export default function SettingsPage() {
 
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <Smartphone className="w-5 h-5 text-slate-400" />
+                    <Smartphone className="w-5 h-5 text-muted-foreground" />
                     <div>
                       <p className="font-medium">Push Notifications</p>
-                      <p className="text-sm text-slate-500">Browser push notifications</p>
+                      <p className="text-sm text-muted-foreground">Browser push notifications</p>
                     </div>
                   </div>
                   <Switch defaultChecked />
@@ -167,10 +167,10 @@ export default function SettingsPage() {
 
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <Bell className="w-5 h-5 text-slate-400" />
+                    <Bell className="w-5 h-5 text-muted-foreground" />
                     <div>
                       <p className="font-medium">Payroll Reminders</p>
-                      <p className="text-sm text-slate-500">Get notified before payroll deadlines</p>
+                      <p className="text-sm text-muted-foreground">Get notified before payroll deadlines</p>
                     </div>
                   </div>
                   <Switch defaultChecked />
@@ -180,10 +180,10 @@ export default function SettingsPage() {
 
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <User className="w-5 h-5 text-slate-400" />
+                    <User className="w-5 h-5 text-muted-foreground" />
                     <div>
                       <p className="font-medium">PTO Request Updates</p>
-                      <p className="text-sm text-slate-500">Notifications for PTO approvals/denials</p>
+                      <p className="text-sm text-muted-foreground">Notifications for PTO approvals/denials</p>
                     </div>
                   </div>
                   <Switch defaultChecked />
@@ -193,10 +193,10 @@ export default function SettingsPage() {
 
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <Globe className="w-5 h-5 text-slate-400" />
+                    <Globe className="w-5 h-5 text-muted-foreground" />
                     <div>
                       <p className="font-medium">Marketing Emails</p>
-                      <p className="text-sm text-slate-500">Product updates and tips</p>
+                      <p className="text-sm text-muted-foreground">Product updates and tips</p>
                     </div>
                   </div>
                   <Switch />
@@ -249,12 +249,12 @@ export default function SettingsPage() {
               <CardContent>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
-                      <Shield className="w-5 h-5 text-emerald-600" />
+                    <div className="w-10 h-10 bg-accent rounded-lg flex items-center justify-center">
+                      <Shield className="w-5 h-5 text-primary" />
                     </div>
                     <div>
                       <p className="font-medium">2FA is enabled</p>
-                      <p className="text-sm text-slate-500">Using authenticator app</p>
+                      <p className="text-sm text-muted-foreground">Using authenticator app</p>
                     </div>
                   </div>
                   <Button variant="outline">Configure</Button>
@@ -268,22 +268,22 @@ export default function SettingsPage() {
                 <CardDescription>Manage your active login sessions</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+                <div className="flex items-center justify-between p-3 bg-accent/50 rounded-lg">
                   <div className="flex items-center gap-3">
-                    <Globe className="w-5 h-5 text-slate-400" />
+                    <Globe className="w-5 h-5 text-muted-foreground" />
                     <div>
                       <p className="font-medium">Chrome on macOS</p>
-                      <p className="text-sm text-slate-500">San Francisco, CA • Current session</p>
+                      <p className="text-sm text-muted-foreground">San Francisco, CA • Current session</p>
                     </div>
                   </div>
-                  <span className="text-xs text-emerald-600 font-medium">Active now</span>
+                  <span className="text-xs text-primary font-medium">Active now</span>
                 </div>
-                <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+                <div className="flex items-center justify-between p-3 bg-accent/50 rounded-lg">
                   <div className="flex items-center gap-3">
-                    <Smartphone className="w-5 h-5 text-slate-400" />
+                    <Smartphone className="w-5 h-5 text-muted-foreground" />
                     <div>
                       <p className="font-medium">PayPilot Mobile App</p>
-                      <p className="text-sm text-slate-500">iPhone • Last active 2 hours ago</p>
+                      <p className="text-sm text-muted-foreground">iPhone • Last active 2 hours ago</p>
                     </div>
                   </div>
                   <Button variant="ghost" size="sm" className="text-red-600">Revoke</Button>
@@ -391,12 +391,12 @@ export default function SettingsPage() {
                 <div className="flex items-center justify-between p-4 bg-accent rounded-lg border border-border">
                   <div>
                     <p className="text-lg font-semibold text-foreground">Growth Plan</p>
-                    <p className="text-slate-600">$80/month + $6/employee</p>
-                    <p className="text-sm text-slate-500 mt-1">47 employees • Next billing: Mar 1, 2026</p>
+                    <p className="text-muted-foreground">$80/month + $6/employee</p>
+                    <p className="text-sm text-muted-foreground mt-1">47 employees • Next billing: Mar 1, 2026</p>
                   </div>
                   <div className="text-right">
                     <p className="text-2xl font-bold text-foreground">$362</p>
-                    <p className="text-sm text-slate-500">/month</p>
+                    <p className="text-sm text-muted-foreground">/month</p>
                   </div>
                 </div>
                 <div className="flex gap-2 mt-4">
@@ -418,7 +418,7 @@ export default function SettingsPage() {
                   </div>
                   <div className="flex-1">
                     <p className="font-medium">Visa ending in 4242</p>
-                    <p className="text-sm text-slate-500">Expires 12/2027</p>
+                    <p className="text-sm text-muted-foreground">Expires 12/2027</p>
                   </div>
                   <Button variant="outline" size="sm">Update</Button>
                 </div>
