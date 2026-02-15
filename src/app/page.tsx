@@ -353,7 +353,7 @@ export default function LandingPage() {
           <h1 className="text-5xl md:text-7xl font-bold text-slate-900 mb-6 leading-tight">
             Payroll & HR that
             <br />
-            <span className="bg-gradient-to-r from-blue-600 to-indigo-600 text-transparent bg-clip-text">
+            <span className="animate-gradient">
               runs itself
             </span>
           </h1>
