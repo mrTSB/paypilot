@@ -282,6 +282,97 @@ export function canTransitionPTO(
 }
 
 // =============================================================================
+// CONVERSATION STATE MACHINE
+// =============================================================================
+export type ConversationStatus = 'active' | 'paused' | 'escalated' | 'completed'
+
+export interface ConversationTransition {
+  from: ConversationStatus[]
+  to: ConversationStatus
+  trigger: string
+  guard?: (context: ConversationContext) => boolean
+}
+
+export interface ConversationContext {
+  conversationId: string
+  currentStatus: ConversationStatus
+  agentInstanceId?: string
+  participantId?: string
+  actorRole?: 'admin' | 'agent' | 'employee' | 'system'
+  hasEscalationSignal?: boolean
+  messageCount?: number
+}
+
+export const conversationTransitions: ConversationTransition[] = [
+  {
+    from: ['active'],
+    to: 'paused',
+    trigger: 'PAUSE',
+    guard: (ctx) => ctx.actorRole === 'admin' || ctx.actorRole === 'system',
+  },
+  {
+    from: ['paused'],
+    to: 'active',
+    trigger: 'RESUME',
+    guard: (ctx) => ctx.actorRole === 'admin' || ctx.actorRole === 'system',
+  },
+  {
+    from: ['active'],
+    to: 'escalated',
+    trigger: 'ESCALATE',
+    guard: (ctx) => {
+      // Can be escalated by agent detecting signal, or admin manually
+      return ctx.actorRole === 'admin' || ctx.actorRole === 'agent' || ctx.hasEscalationSignal === true
+    },
+  },
+  {
+    from: ['active', 'paused'],
+    to: 'completed',
+    trigger: 'COMPLETE',
+    guard: (ctx) => {
+      // Must have at least some messages
+      return (ctx.messageCount || 0) >= 2
+    },
+  },
+  {
+    from: ['escalated'],
+    to: 'completed',
+    trigger: 'RESOLVE_ESCALATION',
+    guard: (ctx) => ctx.actorRole === 'admin',
+  },
+]
+
+export function canTransitionConversation(
+  currentStatus: ConversationStatus,
+  targetStatus: ConversationStatus,
+  context: Partial<ConversationContext>
+): { allowed: boolean; reason?: string } {
+  const transition = conversationTransitions.find(
+    (t) => t.from.includes(currentStatus) && t.to === targetStatus
+  )
+
+  if (!transition) {
+    return { allowed: false, reason: `Invalid transition from ${currentStatus} to ${targetStatus}` }
+  }
+
+  const fullContext: ConversationContext = {
+    conversationId: context.conversationId || '',
+    currentStatus,
+    ...context,
+  }
+
+  if (transition.guard && !transition.guard(fullContext)) {
+    return { allowed: false, reason: 'Transition guard failed' }
+  }
+
+  return { allowed: true }
+}
+
+export function getConversationNextStates(status: ConversationStatus): { to: ConversationStatus; trigger: string }[] {
+  return getValidTransitions(status, conversationTransitions)
+}
+
+// =============================================================================
 // STATE MACHINE VALIDATION HELPERS
 // =============================================================================
 export function getValidTransitions<T extends string>(
