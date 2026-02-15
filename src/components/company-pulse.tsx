@@ -59,34 +59,34 @@ const MOCK_PULSE_DATA: PulseData = {
 const MOOD_CONFIG = {
   positive: {
     icon: Smile,
-    color: 'text-green-500',
-    bgColor: 'bg-green-500',
+    color: 'text-primary',
+    bgColor: 'bg-primary',
     label: 'Positive',
-    gradient: 'from-green-400 to-emerald-500',
-    pulseColor: 'bg-green-400',
+    gradient: 'bg-primary',
+    pulseColor: 'bg-primary/60',
   },
   neutral: {
     icon: Meh,
-    color: 'text-yellow-500',
-    bgColor: 'bg-yellow-500',
+    color: 'text-stone-500',
+    bgColor: 'bg-stone-500',
     label: 'Neutral',
-    gradient: 'from-yellow-400 to-amber-500',
-    pulseColor: 'bg-yellow-400',
+    gradient: 'bg-stone-500',
+    pulseColor: 'bg-stone-400',
   },
   negative: {
     icon: Frown,
-    color: 'text-red-500',
-    bgColor: 'bg-red-500',
+    color: 'text-destructive',
+    bgColor: 'bg-destructive',
     label: 'Needs Attention',
-    gradient: 'from-red-400 to-rose-500',
-    pulseColor: 'bg-red-400',
+    gradient: 'bg-destructive',
+    pulseColor: 'bg-destructive/60',
   },
 }
 
 const TREND_CONFIG = {
-  up: { icon: TrendingUp, color: 'text-green-500', label: 'Improving' },
-  down: { icon: TrendingDown, color: 'text-red-500', label: 'Declining' },
-  stable: { icon: Minus, color: 'text-gray-500', label: 'Stable' },
+  up: { icon: TrendingUp, color: 'text-primary', label: 'Improving' },
+  down: { icon: TrendingDown, color: 'text-destructive', label: 'Declining' },
+  stable: { icon: Minus, color: 'text-muted-foreground', label: 'Stable' },
 }
 
 export function CompanyPulse() {
@@ -179,7 +179,7 @@ export function CompanyPulse() {
               {/* Center circle with mood icon */}
               <motion.div
                 className={cn(
-                  "absolute inset-4 rounded-full flex items-center justify-center bg-gradient-to-br shadow-lg",
+                  "absolute inset-4 rounded-full flex items-center justify-center shadow-lg",
                   moodConfig.gradient
                 )}
                 animate={{
