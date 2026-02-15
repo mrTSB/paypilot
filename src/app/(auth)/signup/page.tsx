@@ -42,15 +42,16 @@ function SignupContent() {
   const [step, setStep] = useState(1)
   const [loading, setLoading] = useState(false)
   const [googleLoading, setGoogleLoading] = useState(false)
-  const [showSuccess, setShowSuccess] = useState(false)
 
   // Check for successful Stripe checkout
-  useEffect(() => {
-    const success = searchParams.get('success')
-    const sessionId = searchParams.get('session_id')
+  const success = searchParams.get('success')
+  const sessionId = searchParams.get('session_id')
+  const isStripeSuccess = success === 'true' && sessionId
+  const [showSuccess] = useState(() => isStripeSuccess || false)
 
-    if (success === 'true' && sessionId) {
-      setShowSuccess(true)
+  // Handle Stripe checkout success - only show toast and redirect
+  useEffect(() => {
+    if (isStripeSuccess) {
       toast.success('Payment successful! Welcome to PayPilot!')
 
       // Auto-redirect to dashboard after 3 seconds

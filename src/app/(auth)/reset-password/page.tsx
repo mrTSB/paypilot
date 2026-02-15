@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, Suspense } from 'react'
+import { useState, Suspense } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
@@ -19,17 +19,12 @@ function ResetPasswordContent() {
   const [confirmPassword, setConfirmPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
-  const [error, setError] = useState<string | null>(null)
 
   // Check for error in URL params (e.g., expired token)
-  useEffect(() => {
-    const errorParam = searchParams.get('error')
-    const errorDescription = searchParams.get('error_description')
-
-    if (errorParam) {
-      setError(errorDescription || 'The reset link is invalid or has expired.')
-    }
-  }, [searchParams])
+  const errorParam = searchParams.get('error')
+  const errorDescription = searchParams.get('error_description')
+  const initialError = errorParam ? (errorDescription || 'The reset link is invalid or has expired.') : null
+  const [error, setError] = useState<string | null>(initialError)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
