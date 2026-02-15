@@ -740,18 +740,47 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="border-t py-12 px-4">
         <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
-                <Sparkles className="w-5 h-5 text-white" />
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+            <div className="md:col-span-2">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
+                  <Sparkles className="w-5 h-5 text-white" />
+                </div>
+                <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 text-transparent bg-clip-text">
+                  PayPilot
+                </span>
               </div>
-              <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 text-transparent bg-clip-text">
-                PayPilot
-              </span>
+              <p className="text-slate-600 text-sm max-w-sm">
+                The AI-native HR and payroll platform built for modern teams. Automate the mundane, focus on your people.
+              </p>
             </div>
+            <div>
+              <h4 className="font-semibold text-slate-900 mb-4">Product</h4>
+              <ul className="space-y-2 text-sm text-slate-600">
+                <li><Link href="#features" className="hover:text-blue-600">Features</Link></li>
+                <li><Link href="#pricing" className="hover:text-blue-600">Pricing</Link></li>
+                <li><Link href="#ai" className="hover:text-blue-600">AI Assistant</Link></li>
+                <li><Link href="/dashboard" className="hover:text-blue-600">Demo</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-semibold text-slate-900 mb-4">Company</h4>
+              <ul className="space-y-2 text-sm text-slate-600">
+                <li><span className="hover:text-blue-600 cursor-pointer">About</span></li>
+                <li><span className="hover:text-blue-600 cursor-pointer">Careers</span></li>
+                <li><span className="hover:text-blue-600 cursor-pointer">Privacy</span></li>
+                <li><span className="hover:text-blue-600 cursor-pointer">Terms</span></li>
+              </ul>
+            </div>
+          </div>
+          <div className="border-t pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-slate-500 text-sm">
-              2026 PayPilot. All rights reserved.
+              © 2026 PayPilot. All rights reserved.
             </p>
+            <div className="flex items-center gap-2 text-sm text-slate-500">
+              <Sparkles className="w-4 h-4 text-blue-500" />
+              <span>Built with AI</span>
+            </div>
           </div>
         </div>
       </footer>
