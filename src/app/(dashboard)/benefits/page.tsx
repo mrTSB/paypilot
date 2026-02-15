@@ -1,9 +1,26 @@
 'use client'
 
+import { useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Progress } from '@/components/ui/progress'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
+import { Label } from '@/components/ui/label'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import {
   Shield,
   Heart,
@@ -14,11 +31,29 @@ import {
   CheckCircle2,
   ExternalLink,
   Download,
-  Users
+  Users,
+  Loader2,
+  Plus
 } from 'lucide-react'
+import { toast } from 'sonner'
+import { LucideIcon } from 'lucide-react'
+
+interface Benefit {
+  id: string
+  name: string
+  type: string
+  provider: string
+  icon: LucideIcon
+  color: string
+  coverage: string
+  employeeCost: number
+  employerCost: number
+  status: string
+  details: Record<string, string>
+}
 
 // Demo benefits data
-const enrolledBenefits = [
+const enrolledBenefits: Benefit[] = [
   {
     id: '1',
     name: 'Premium Health Plan',
@@ -112,8 +147,57 @@ const documents = [
 ]
 
 export default function BenefitsPage() {
-  const totalMonthlyEmployeeCost = enrolledBenefits.reduce((acc, b) => acc + b.employeeCost, 0) / 100
-  const totalMonthlyEmployerCost = enrolledBenefits.reduce((acc, b) => acc + b.employerCost, 0) / 100
+  const [availableBenefitsList, setAvailableBenefitsList] = useState(availableBenefits)
+  const [enrolledBenefitsList, setEnrolledBenefitsList] = useState(enrolledBenefits)
+  const [enrollDialogOpen, setEnrollDialogOpen] = useState(false)
+  const [selectedBenefit, setSelectedBenefit] = useState<typeof availableBenefits[0] | null>(null)
+  const [isEnrolling, setIsEnrolling] = useState(false)
+  const [coverageLevel, setCoverageLevel] = useState('')
+
+  const totalMonthlyEmployeeCost = enrolledBenefitsList.reduce((acc, b) => acc + b.employeeCost, 0) / 100
+  const totalMonthlyEmployerCost = enrolledBenefitsList.reduce((acc, b) => acc + b.employerCost, 0) / 100
+
+  const handleEnrollClick = (benefit: typeof availableBenefits[0]) => {
+    setSelectedBenefit(benefit)
+    setCoverageLevel('')
+    setEnrollDialogOpen(true)
+  }
+
+  const handleEnroll = async () => {
+    if (!selectedBenefit || !coverageLevel) {
+      toast.error('Please select a coverage level')
+      return
+    }
+
+    setIsEnrolling(true)
+    await new Promise(resolve => setTimeout(resolve, 1500))
+
+    // Add to enrolled benefits
+    const newBenefit: Benefit = {
+      id: `new-${Date.now()}`,
+      name: selectedBenefit.name,
+      type: selectedBenefit.name.toLowerCase().replace(' ', '_'),
+      provider: selectedBenefit.name === 'Life Insurance' ? 'MetLife' : 'HealthEquity',
+      icon: selectedBenefit.icon,
+      color: selectedBenefit.name === 'Life Insurance' ? 'blue' : 'emerald',
+      coverage: coverageLevel,
+      employeeCost: selectedBenefit.name === 'Life Insurance' ? 0 : 5000,
+      employerCost: selectedBenefit.name === 'Life Insurance' ? 2500 : 2500,
+      status: 'active',
+      details: selectedBenefit.name === 'Life Insurance'
+        ? { coverage: '1x Annual Salary', beneficiary: 'To be designated' }
+        : { contributionLimit: '$3,850/year', rollover: 'Yes' }
+    }
+
+    setEnrolledBenefitsList(prev => [...prev, newBenefit])
+    setAvailableBenefitsList(prev => prev.filter(b => b.name !== selectedBenefit.name))
+
+    setIsEnrolling(false)
+    setEnrollDialogOpen(false)
+    toast.success(`Successfully enrolled in ${selectedBenefit.name}!`, {
+      description: 'Your enrollment will be effective next pay period.'
+    })
+  }
 
   const getColorClasses = (color: string) => {
     const colors: Record<string, { bg: string; text: string; icon: string }> = {
@@ -148,7 +232,7 @@ export default function BenefitsPage() {
                 <Shield className="w-5 h-5 text-blue-600" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-slate-900">{enrolledBenefits.length}</p>
+                <p className="text-2xl font-bold text-slate-900">{enrolledBenefitsList.length}</p>
                 <p className="text-sm text-slate-500">Active Benefits</p>
               </div>
             </div>
@@ -189,7 +273,7 @@ export default function BenefitsPage() {
           <CardDescription>Benefits you&apos;re currently enrolled in</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
-          {enrolledBenefits.map((benefit) => {
+          {enrolledBenefitsList.map((benefit) => {
             const colors = getColorClasses(benefit.color)
             return (
               <div key={benefit.id} className="border rounded-lg p-4 hover:bg-slate-50 transition-colors">
@@ -283,18 +367,25 @@ export default function BenefitsPage() {
             <CardDescription>Benefits you can enroll in</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
-            {availableBenefits.map((benefit, i) => (
-              <div key={i} className="flex items-center gap-3 p-3 border rounded-lg">
-                <div className="w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center">
-                  <benefit.icon className="w-5 h-5 text-slate-600" />
-                </div>
-                <div className="flex-1">
-                  <p className="font-medium text-slate-900">{benefit.name}</p>
-                  <p className="text-sm text-slate-500">{benefit.description}</p>
-                </div>
-                <Button size="sm">Enroll</Button>
+            {availableBenefitsList.length === 0 ? (
+              <div className="text-center py-8 text-slate-500">
+                <CheckCircle2 className="w-12 h-12 mx-auto mb-2 text-emerald-300" />
+                <p>You&apos;re enrolled in all available benefits!</p>
               </div>
-            ))}
+            ) : (
+              availableBenefitsList.map((benefit, i) => (
+                <div key={i} className="flex items-center gap-3 p-3 border rounded-lg">
+                  <div className="w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center">
+                    <benefit.icon className="w-5 h-5 text-slate-600" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-medium text-slate-900">{benefit.name}</p>
+                    <p className="text-sm text-slate-500">{benefit.description}</p>
+                  </div>
+                  <Button size="sm" onClick={() => handleEnrollClick(benefit)}>Enroll</Button>
+                </div>
+              ))
+            )}
           </CardContent>
         </Card>
 
@@ -344,6 +435,63 @@ export default function BenefitsPage() {
           </Button>
         </CardContent>
       </Card>
+
+      {/* Enrollment Dialog */}
+      <Dialog open={enrollDialogOpen} onOpenChange={setEnrollDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Enroll in {selectedBenefit?.name}</DialogTitle>
+            <DialogDescription>
+              {selectedBenefit?.description}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="coverage">Coverage Level</Label>
+              <Select value={coverageLevel} onValueChange={setCoverageLevel} disabled={isEnrolling}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select coverage level" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Employee Only">Employee Only</SelectItem>
+                  <SelectItem value="Employee + Spouse">Employee + Spouse</SelectItem>
+                  <SelectItem value="Employee + Children">Employee + Children</SelectItem>
+                  <SelectItem value="Employee + Family">Employee + Family</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="bg-blue-50 p-4 rounded-lg">
+              <div className="flex items-center gap-2 mb-2">
+                {selectedBenefit && <selectedBenefit.icon className="w-5 h-5 text-blue-600" />}
+                <span className="font-medium text-blue-800">{selectedBenefit?.name}</span>
+              </div>
+              <p className="text-sm text-blue-600">
+                {selectedBenefit?.name === 'Life Insurance'
+                  ? 'Coverage: 1x your annual salary. Company paid - no cost to you.'
+                  : 'HSA contribution limit: $3,850/year. Pre-tax contributions reduce your taxable income.'}
+              </p>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setEnrollDialogOpen(false)} disabled={isEnrolling}>
+              Cancel
+            </Button>
+            <Button onClick={handleEnroll} disabled={isEnrolling}>
+              {isEnrolling ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Enrolling...
+                </>
+              ) : (
+                <>
+                  <Plus className="w-4 h-4 mr-2" />
+                  Confirm Enrollment
+                </>
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

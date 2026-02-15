@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { Button } from '@/components/ui/button'
@@ -20,6 +20,15 @@ import {
 } from '@/components/ui/popover'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import {
+  CommandDialog,
+  CommandInput,
+  CommandList,
+  CommandEmpty,
+  CommandGroup,
+  CommandItem,
+  CommandShortcut,
+} from '@/components/ui/command'
 import {
   Sparkles,
   LayoutDashboard,
@@ -67,6 +76,19 @@ export default function DashboardLayout({
   const pathname = usePathname()
   const router = useRouter()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [commandOpen, setCommandOpen] = useState(false)
+
+  // Cmd+K keyboard shortcut
+  useEffect(() => {
+    const down = (e: KeyboardEvent) => {
+      if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault()
+        setCommandOpen((open) => !open)
+      }
+    }
+    document.addEventListener('keydown', down)
+    return () => document.removeEventListener('keydown', down)
+  }, [])
 
   const handleSignOut = async () => {
     const supabase = createClient()
@@ -198,6 +220,17 @@ export default function DashboardLayout({
             </h1>
           </div>
           <div className="flex items-center gap-4">
+            {/* Command Palette Trigger */}
+            <Button
+              variant="outline"
+              className="hidden md:flex items-center gap-2 text-slate-500 px-3"
+              onClick={() => setCommandOpen(true)}
+            >
+              <span className="text-sm">Search...</span>
+              <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-slate-100 px-1.5 font-mono text-[10px] font-medium text-slate-600">
+                <span className="text-xs">⌘</span>K
+              </kbd>
+            </Button>
             <Popover>
               <PopoverTrigger asChild>
                 <Button variant="ghost" size="icon" className="relative">
@@ -274,6 +307,81 @@ export default function DashboardLayout({
           {children}
         </main>
       </div>
+
+      {/* Command Palette */}
+      <CommandDialog open={commandOpen} onOpenChange={setCommandOpen}>
+        <CommandInput placeholder="Type a command or search..." />
+        <CommandList>
+          <CommandEmpty>No results found.</CommandEmpty>
+          <CommandGroup heading="Navigation">
+            {navigation.map((item) => (
+              <CommandItem
+                key={item.name}
+                onSelect={() => {
+                  router.push(item.href)
+                  setCommandOpen(false)
+                }}
+              >
+                <item.icon className="mr-2 h-4 w-4" />
+                <span>{item.name}</span>
+                {item.name === 'Dashboard' && <CommandShortcut>⌘D</CommandShortcut>}
+                {item.name === 'Employees' && <CommandShortcut>⌘E</CommandShortcut>}
+                {item.name === 'Payroll' && <CommandShortcut>⌘P</CommandShortcut>}
+              </CommandItem>
+            ))}
+          </CommandGroup>
+          <CommandGroup heading="Actions">
+            <CommandItem
+              onSelect={() => {
+                router.push('/employees?add=true')
+                setCommandOpen(false)
+              }}
+            >
+              <Users className="mr-2 h-4 w-4" />
+              <span>Add New Employee</span>
+            </CommandItem>
+            <CommandItem
+              onSelect={() => {
+                router.push('/payroll/run')
+                setCommandOpen(false)
+              }}
+            >
+              <Calculator className="mr-2 h-4 w-4" />
+              <span>Run Payroll</span>
+            </CommandItem>
+            <CommandItem
+              onSelect={() => {
+                router.push('/ai')
+                setCommandOpen(false)
+              }}
+            >
+              <Sparkles className="mr-2 h-4 w-4" />
+              <span>Ask AI Assistant</span>
+            </CommandItem>
+          </CommandGroup>
+          <CommandGroup heading="Account">
+            <CommandItem
+              onSelect={() => {
+                router.push('/settings')
+                setCommandOpen(false)
+              }}
+            >
+              <Settings className="mr-2 h-4 w-4" />
+              <span>Settings</span>
+            </CommandItem>
+            <CommandItem
+              onSelect={() => {
+                handleSignOut()
+                setCommandOpen(false)
+              }}
+              className="text-red-600"
+            >
+              <LogOut className="mr-2 h-4 w-4" />
+              <span>Sign Out</span>
+            </CommandItem>
+          </CommandGroup>
+        </CommandList>
+      </CommandDialog>
     </div>
   )
 }

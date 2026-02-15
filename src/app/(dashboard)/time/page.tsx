@@ -44,7 +44,8 @@ import {
   Sun,
   Plane,
   Stethoscope,
-  Users
+  Users,
+  Loader2
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { canTransitionPTO, type PTOStatus } from '@/lib/state-machines'
@@ -59,7 +60,7 @@ const initialPtoRequests = [
 ]
 
 // Demo time entries for current week
-const timeEntries = [
+const initialTimeEntries = [
   { day: 'Mon', date: 'Feb 10', clockIn: '9:00 AM', clockOut: '5:30 PM', breakMin: 30, totalHours: 8.0 },
   { day: 'Tue', date: 'Feb 11', clockIn: '8:45 AM', clockOut: '6:00 PM', breakMin: 45, totalHours: 8.5 },
   { day: 'Wed', date: 'Feb 12', clockIn: '9:15 AM', clockOut: '5:45 PM', breakMin: 30, totalHours: 8.0 },
@@ -80,6 +81,104 @@ export default function TimePage() {
   const [date, setDate] = useState<Date | undefined>(new Date())
   const [requestDialogOpen, setRequestDialogOpen] = useState(false)
   const [ptoRequests, setPtoRequests] = useState(initialPtoRequests)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isClockedIn, setIsClockedIn] = useState(true) // Today (Friday) they're clocked in
+  const [clockInTime, setClockInTime] = useState('9:00 AM')
+  const [timeEntries, setTimeEntries] = useState(initialTimeEntries)
+  const [requestForm, setRequestForm] = useState({
+    type: '',
+    startDate: '',
+    endDate: '',
+    reason: ''
+  })
+
+  const handleClockToggle = () => {
+    if (isClockedIn) {
+      // Clock out
+      const now = new Date()
+      const clockOutTime = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })
+
+      // Update today's entry (Friday)
+      setTimeEntries(prev => prev.map((entry, idx) => {
+        if (idx === prev.length - 1) {
+          // Calculate hours worked
+          const hoursWorked = (now.getHours() - 9) + (now.getMinutes() / 60)
+          return { ...entry, clockOut: clockOutTime, totalHours: Math.round(hoursWorked * 10) / 10 }
+        }
+        return entry
+      }))
+
+      setIsClockedIn(false)
+      toast.success('Clocked out!', {
+        description: `Clocked out at ${clockOutTime}`
+      })
+    } else {
+      // Clock in
+      const now = new Date()
+      const newClockInTime = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })
+      setClockInTime(newClockInTime)
+      setIsClockedIn(true)
+      toast.success('Clocked in!', {
+        description: `Clocked in at ${newClockInTime}`
+      })
+    }
+  }
+
+  const resetRequestForm = () => {
+    setRequestForm({ type: '', startDate: '', endDate: '', reason: '' })
+  }
+
+  const calculateHours = (startDate: string, endDate: string): number => {
+    if (!startDate || !endDate) return 0
+    const start = new Date(startDate)
+    const end = new Date(endDate)
+    const diffTime = Math.abs(end.getTime() - start.getTime())
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1
+    return diffDays * 8 // 8 hours per day
+  }
+
+  const handleSubmitRequest = async () => {
+    if (!requestForm.type || !requestForm.startDate || !requestForm.endDate) {
+      toast.error('Please fill in all required fields')
+      return
+    }
+
+    if (new Date(requestForm.startDate) > new Date(requestForm.endDate)) {
+      toast.error('End date must be after start date')
+      return
+    }
+
+    setIsSubmitting(true)
+    await new Promise(resolve => setTimeout(resolve, 1500))
+
+    const hours = calculateHours(requestForm.startDate, requestForm.endDate)
+    const formatDate = (dateStr: string) => {
+      const date = new Date(dateStr)
+      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+    }
+
+    const newRequest = {
+      id: `pto-${Date.now()}`,
+      employee: 'John Doe',
+      employeeId: 'current-user',
+      avatar: 'JD',
+      type: requestForm.type,
+      startDate: formatDate(requestForm.startDate),
+      endDate: formatDate(requestForm.endDate),
+      hours,
+      hoursAvailable: 96,
+      reason: requestForm.reason || 'Time off request',
+      status: 'pending' as PTOStatus
+    }
+
+    setPtoRequests(prev => [newRequest, ...prev])
+    setIsSubmitting(false)
+    setRequestDialogOpen(false)
+    resetRequestForm()
+    toast.success('Time off request submitted!', {
+      description: `Requested ${hours} hours from ${formatDate(requestForm.startDate)} to ${formatDate(requestForm.endDate)}`
+    })
+  }
 
   // Handle PTO approval with state machine validation
   const handleApprove = (requestId: string) => {
@@ -162,11 +261,15 @@ export default function TimePage() {
           <p className="text-slate-600">Track time, manage PTO requests, and view balances</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline">
+          <Button
+            variant={isClockedIn ? "default" : "outline"}
+            onClick={handleClockToggle}
+            className={isClockedIn ? "bg-emerald-600 hover:bg-emerald-700" : ""}
+          >
             <Clock className="w-4 h-4 mr-2" />
-            Clock In
+            {isClockedIn ? 'Clock Out' : 'Clock In'}
           </Button>
-          <Dialog open={requestDialogOpen} onOpenChange={setRequestDialogOpen}>
+          <Dialog open={requestDialogOpen} onOpenChange={(open) => { setRequestDialogOpen(open); if (!open) resetRequestForm(); }}>
             <DialogTrigger asChild>
               <Button className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700">
                 <Plus className="w-4 h-4 mr-2" />
@@ -182,8 +285,12 @@ export default function TimePage() {
               </DialogHeader>
               <div className="grid gap-4 py-4">
                 <div className="space-y-2">
-                  <Label htmlFor="type">Request Type</Label>
-                  <Select>
+                  <Label htmlFor="type">Request Type *</Label>
+                  <Select
+                    value={requestForm.type}
+                    onValueChange={(value) => setRequestForm(prev => ({ ...prev, type: value }))}
+                    disabled={isSubmitting}
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Select type" />
                     </SelectTrigger>
@@ -198,27 +305,67 @@ export default function TimePage() {
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="startDate">Start Date</Label>
-                    <Input id="startDate" type="date" />
+                    <Label htmlFor="startDate">Start Date *</Label>
+                    <Input
+                      id="startDate"
+                      type="date"
+                      value={requestForm.startDate}
+                      onChange={(e) => setRequestForm(prev => ({ ...prev, startDate: e.target.value }))}
+                      disabled={isSubmitting}
+                    />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="endDate">End Date</Label>
-                    <Input id="endDate" type="date" />
+                    <Label htmlFor="endDate">End Date *</Label>
+                    <Input
+                      id="endDate"
+                      type="date"
+                      value={requestForm.endDate}
+                      onChange={(e) => setRequestForm(prev => ({ ...prev, endDate: e.target.value }))}
+                      disabled={isSubmitting}
+                    />
                   </div>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="reason">Reason (Optional)</Label>
-                  <Textarea id="reason" placeholder="Brief description..." />
+                  <Textarea
+                    id="reason"
+                    placeholder="Brief description..."
+                    value={requestForm.reason}
+                    onChange={(e) => setRequestForm(prev => ({ ...prev, reason: e.target.value }))}
+                    disabled={isSubmitting}
+                  />
                 </div>
                 <div className="bg-blue-50 p-3 rounded-lg">
-                  <p className="text-sm text-blue-700">
-                    <strong>Your PTO Balance:</strong> 96 hours (12 days) remaining
-                  </p>
+                  <div className="flex justify-between items-center">
+                    <p className="text-sm text-blue-700">
+                      <strong>Your PTO Balance:</strong> 96 hours (12 days) remaining
+                    </p>
+                    {requestForm.startDate && requestForm.endDate && (
+                      <Badge className="bg-blue-100 text-blue-700">
+                        {calculateHours(requestForm.startDate, requestForm.endDate)}h requested
+                      </Badge>
+                    )}
+                  </div>
                 </div>
               </div>
               <DialogFooter>
-                <Button variant="outline" onClick={() => setRequestDialogOpen(false)}>Cancel</Button>
-                <Button className="bg-gradient-to-r from-blue-600 to-indigo-600">Submit Request</Button>
+                <Button variant="outline" onClick={() => { setRequestDialogOpen(false); resetRequestForm(); }} disabled={isSubmitting}>
+                  Cancel
+                </Button>
+                <Button
+                  className="bg-gradient-to-r from-blue-600 to-indigo-600"
+                  onClick={handleSubmitRequest}
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Submitting...
+                    </>
+                  ) : (
+                    'Submit Request'
+                  )}
+                </Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
@@ -273,7 +420,9 @@ export default function TimePage() {
                 <Clock className="w-5 h-5 text-emerald-600" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-slate-900">37.0</p>
+                <p className="text-2xl font-bold text-slate-900">
+                  {timeEntries.reduce((sum, e) => sum + e.totalHours, 0).toFixed(1)}
+                </p>
                 <p className="text-sm text-slate-500">Hours This Week</p>
               </div>
             </div>
