@@ -42,7 +42,10 @@ import {
   Bell,
   ChevronDown,
   Network,
-  BarChart3
+  BarChart3,
+  Bot,
+  MessageCircle,
+  Sparkles,
 } from 'lucide-react'
 import { PayPilotLogo } from '@/components/logo'
 import { createClient } from '@/lib/supabase/client'
@@ -63,6 +66,9 @@ const navigation = [
   { name: 'Time & PTO', href: '/time', icon: Clock },
   { name: 'Benefits', href: '/benefits', icon: Shield },
   { name: 'Reports', href: '/reports', icon: BarChart3 },
+  { name: 'AI Agents', href: '/agents', icon: Bot },
+  { name: 'Messages', href: '/messages', icon: MessageCircle },
+  { name: 'Insights', href: '/admin/insights', icon: Sparkles },
   { name: 'AI Assistant', href: '/ai', icon: MessageSquare },
   { name: 'Settings', href: '/settings', icon: Settings },
 ]
