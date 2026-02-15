@@ -46,14 +46,16 @@ import {
   Stethoscope,
   Users
 } from 'lucide-react'
+import { toast } from 'sonner'
+import { canTransitionPTO, type PTOStatus } from '@/lib/state-machines'
 
-// Demo PTO requests
-const ptoRequests = [
-  { id: '1', employee: 'Sarah Chen', avatar: 'SC', type: 'pto', startDate: 'Feb 24, 2026', endDate: 'Feb 26, 2026', hours: 24, reason: 'Family vacation', status: 'pending' },
-  { id: '2', employee: 'Tom Wilson', avatar: 'TW', type: 'pto', startDate: 'Mar 3, 2026', endDate: 'Mar 7, 2026', hours: 40, reason: 'Spring break trip', status: 'pending' },
-  { id: '3', employee: 'Emily Davis', avatar: 'ED', type: 'sick', startDate: 'Feb 10, 2026', endDate: 'Feb 10, 2026', hours: 8, reason: 'Doctor appointment', status: 'approved' },
-  { id: '4', employee: 'Lisa Park', avatar: 'LP', type: 'pto', startDate: 'Jan 20, 2026', endDate: 'Jan 24, 2026', hours: 40, reason: 'Personal time', status: 'approved' },
-  { id: '5', employee: 'Alex Wong', avatar: 'AW', type: 'pto', startDate: 'Feb 1, 2026', endDate: 'Feb 2, 2026', hours: 16, reason: 'Moving to new apartment', status: 'denied' },
+// Demo PTO requests - initial data
+const initialPtoRequests = [
+  { id: '1', employee: 'Sarah Chen', employeeId: 'e1', avatar: 'SC', type: 'pto', startDate: 'Feb 24, 2026', endDate: 'Feb 26, 2026', hours: 24, hoursAvailable: 96, reason: 'Family vacation', status: 'pending' as PTOStatus },
+  { id: '2', employee: 'Tom Wilson', employeeId: 'e4', avatar: 'TW', type: 'pto', startDate: 'Mar 3, 2026', endDate: 'Mar 7, 2026', hours: 40, hoursAvailable: 72, reason: 'Spring break trip', status: 'pending' as PTOStatus },
+  { id: '3', employee: 'Emily Davis', employeeId: 'e3', avatar: 'ED', type: 'sick', startDate: 'Feb 10, 2026', endDate: 'Feb 10, 2026', hours: 8, hoursAvailable: 32, reason: 'Doctor appointment', status: 'approved' as PTOStatus },
+  { id: '4', employee: 'Lisa Park', employeeId: 'e5', avatar: 'LP', type: 'pto', startDate: 'Jan 20, 2026', endDate: 'Jan 24, 2026', hours: 40, hoursAvailable: 80, reason: 'Personal time', status: 'approved' as PTOStatus },
+  { id: '5', employee: 'Alex Wong', employeeId: 'e6', avatar: 'AW', type: 'pto', startDate: 'Feb 1, 2026', endDate: 'Feb 2, 2026', hours: 16, hoursAvailable: 112, reason: 'Moving to new apartment', status: 'denied' as PTOStatus },
 ]
 
 // Demo time entries for current week
@@ -77,6 +79,53 @@ const ptoBalances = [
 export default function TimePage() {
   const [date, setDate] = useState<Date | undefined>(new Date())
   const [requestDialogOpen, setRequestDialogOpen] = useState(false)
+  const [ptoRequests, setPtoRequests] = useState(initialPtoRequests)
+
+  // Handle PTO approval with state machine validation
+  const handleApprove = (requestId: string) => {
+    const request = ptoRequests.find(r => r.id === requestId)
+    if (!request) return
+
+    const result = canTransitionPTO(request.status, 'approved', {
+      requestId,
+      requesterId: request.employeeId,
+      actorId: 'admin-user-id', // Current user (admin in demo)
+      actorRole: 'admin',
+      hoursRequested: request.hours,
+      hoursAvailable: request.hoursAvailable,
+    })
+
+    if (!result.allowed) {
+      toast.error(`Cannot approve: ${result.reason}`)
+      return
+    }
+
+    setPtoRequests(prev => prev.map(r =>
+      r.id === requestId ? { ...r, status: 'approved' as PTOStatus } : r
+    ))
+    toast.success(`Approved ${request.employee}'s ${request.type.toUpperCase()} request`)
+  }
+
+  // Handle PTO denial with state machine validation
+  const handleDeny = (requestId: string) => {
+    const request = ptoRequests.find(r => r.id === requestId)
+    if (!request) return
+
+    const result = canTransitionPTO(request.status, 'denied', {
+      requestId,
+      actorRole: 'admin',
+    })
+
+    if (!result.allowed) {
+      toast.error(`Cannot deny: ${result.reason}`)
+      return
+    }
+
+    setPtoRequests(prev => prev.map(r =>
+      r.id === requestId ? { ...r, status: 'denied' as PTOStatus } : r
+    ))
+    toast.success(`Denied ${request.employee}'s request`)
+  }
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -293,10 +342,19 @@ export default function TimePage() {
                           <TableCell>
                             {request.status === 'pending' && (
                               <div className="flex gap-1">
-                                <Button size="sm" variant="ghost" className="text-red-600 hover:text-red-700 hover:bg-red-50">
+                                <Button
+                                  size="sm"
+                                  variant="ghost"
+                                  className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                  onClick={(e) => { e.stopPropagation(); handleDeny(request.id) }}
+                                >
                                   <XCircle className="w-4 h-4" />
                                 </Button>
-                                <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700">
+                                <Button
+                                  size="sm"
+                                  className="bg-emerald-600 hover:bg-emerald-700"
+                                  onClick={(e) => { e.stopPropagation(); handleApprove(request.id) }}
+                                >
                                   <CheckCircle2 className="w-4 h-4" />
                                 </Button>
                               </div>
